@@ -1,3 +1,6 @@
+#ifndef SRC_POINT_H_
+#define SRC_POINT_H_
+
 #include <sstream>
 #include <string>
 
@@ -31,3 +34,5 @@ class Point {
   double x_;
   double y_;
 };
+
+#endif /* end of include guard: SRC_POINT_H_ */
