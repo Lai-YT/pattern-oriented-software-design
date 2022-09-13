@@ -14,7 +14,7 @@ TEST(PointTest, CheckXYSetProperlyByConstructor) {
 TEST(PointTest, TestInfoOnIntegerXY) {
   const auto p = Point{2, -3};
 
-  ASSERT_EQ("(2, -3)", p.info());
+  ASSERT_EQ("(2.00, -3.00)", p.info());
 }
 
 TEST(PointTest, TestInfoOnDoubleXYRoundsToTwoDecimalPlaces) {
@@ -23,7 +23,7 @@ TEST(PointTest, TestInfoOnDoubleXYRoundsToTwoDecimalPlaces) {
   ASSERT_EQ("(-4.59, -3.47)", p.info());
 }
 
-TEST(DISABLED_PointTest, TestInfoOnDoubleFillWithZerosIfNotEnoughDecimalNumber) {
+TEST(PointTest, TestInfoOnDoubleFillWithZerosIfNotEnoughDecimalNumber) {
   const auto p = Point{-3.0, 4.1};
 
   ASSERT_EQ("(-3.00, 4.10)", p.info());

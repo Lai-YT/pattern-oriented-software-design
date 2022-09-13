@@ -1,6 +1,7 @@
 #ifndef SRC_POINT_H_
 #define SRC_POINT_H_
 
+#include <ios>
 #include <sstream>
 #include <string>
 
@@ -19,7 +20,8 @@ class Point {
    */
   std::string info() const {
     auto ss = std::stringstream{};
-    ss.precision(3);
+    ss.precision(2);
+    ss << std::fixed;
     ss << '(' << x_ << ", " << y_ << ')';
     return ss.str();
   }

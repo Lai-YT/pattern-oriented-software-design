@@ -13,7 +13,7 @@ TEST(TwoDimensionalVectorTest, CheckHeadTailSetProperlyByConstructor) {
 TEST(TwoDimensionalVectorTest, TestInfo) {
   const auto vector = TwoDimensionalVector{{2, -3}, {-3, 2}};
 
-  ASSERT_EQ("Vector ((2, -3), (-3, 2))", vector.info());
+  ASSERT_EQ("Vector ((2.00, -3.00), (-3.00, 2.00))", vector.info());
 }
 
 TEST(TwoDimensionalVectorTest, TestLength) {
