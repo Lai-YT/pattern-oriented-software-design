@@ -4,9 +4,10 @@
 #include <cmath>
 
 #include "point.h"
+#include "shape.h"
 #include "two_dimensional_vector.h"
 
-class Triangle {
+class Triangle : Shape {
  public:
   Triangle(const TwoDimensionalVector& side_1,
            const TwoDimensionalVector& side_2)
@@ -18,18 +19,18 @@ class Triangle {
                                    FindUncommonPoint_(side_2, common_point)};
   }
 
-  double perimeter() const {
+  double perimeter() const override {
     return side_1_.length() + side_2_.length() + side_3_.length();
   }
 
-  double area() const {
+  double area() const override {
     const double half_perimeter = perimeter() / 2;
     return std::sqrt(half_perimeter * (half_perimeter - side_1_.length()) *
                      (half_perimeter - side_2_.length()) *
                      (half_perimeter - side_3_.length()));
   }
 
-  std::string info() const {
+  std::string info() const override {
     return "Triangle (" + side_1_.info() + ", " + side_2_.info() + ")";
   }
 
