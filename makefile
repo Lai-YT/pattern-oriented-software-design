@@ -1,7 +1,7 @@
 .PHONY: dirs clean
 
-SRC = src/point.h
-TEST = test/ut_point.h
+SRC = src/point.h src/two_dimensional_vector.h src/circle.h
+TEST = test/ut_point.h test/ut_two_dimensional_vector.h test/ut_circle.h
 
 all: dirs bin/ut_all
 
