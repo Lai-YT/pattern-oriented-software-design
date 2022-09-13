@@ -27,9 +27,14 @@ class TwoDimensionalVector {
     return x_offset_() * that.x_offset_() + y_offset_() * that.y_offset_();
   }
 
+  /**
+   * Returns the value on z-axis of the vectors.
+   *
+   * Since there's no such cross product on 2-dimensional vectors,
+   * the z-axis is filled with 0.
+  */
   double cross(const TwoDimensionalVector& that) const {
-    const double theta = std::acos(dot(that) / (length() * that.length()));
-    return (length() * that.length()) * std::sin(theta);
+    return x_offset_() * that.y_offset_() - y_offset_() * that.x_offset_();
   }
 
  private:
