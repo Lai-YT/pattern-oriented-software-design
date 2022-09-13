@@ -4,7 +4,7 @@
 
 #include "../src/point.h"
 
-TEST(PointTest, CheckXYSetProperly) {
+TEST(PointTest, CheckXYSetProperlyByConstructor) {
   const auto p = Point{2, -3};
 
   EXPECT_EQ(2, p.x());
@@ -17,10 +17,16 @@ TEST(PointTest, TestInfoOnIntegerXY) {
   ASSERT_EQ("(2, -3)", p.info());
 }
 
-TEST(PointTest, TestInfoOnDoubleXYShouldRoundToTwoDecimalPlaces) {
+TEST(PointTest, TestInfoOnDoubleXYRoundsToTwoDecimalPlaces) {
   const auto p = Point{-4.586, -3.471};
 
   ASSERT_EQ("(-4.59, -3.47)", p.info());
+}
+
+TEST(DISABLED_PointTest, TestInfoOnDoubleFillWithZerosIfNotEnoughDecimalNumber) {
+  const auto p = Point{-3.0, 4.1};
+
+  ASSERT_EQ("(-3.00, 4.10)", p.info());
 }
 
 TEST(PointTest, TestEqualityOnSameXY) {
