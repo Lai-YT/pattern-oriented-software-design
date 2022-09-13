@@ -12,4 +12,4 @@ dirs:
 	mkdir -p bin
 
 clean:
-	rm bin/*
+	rm -f bin/*
