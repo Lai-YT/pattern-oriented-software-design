@@ -1,3 +1,6 @@
+#ifndef SRC_SHAPE_H_
+#define SRC_SHAPE_H_
+
 #include <string>
 
 class Shape {
@@ -7,3 +10,5 @@ class Shape {
   virtual double perimeter() const = 0;
   virtual std::string info() const = 0;
 };
+
+#endif
