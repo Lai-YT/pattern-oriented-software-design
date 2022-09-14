@@ -11,4 +11,4 @@ class Shape {
   virtual std::string info() const = 0;
 };
 
-#endif
+#endif /* end of include guard: SRC_SHAPE_H_ */

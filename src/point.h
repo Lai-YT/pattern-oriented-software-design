@@ -13,10 +13,10 @@ class Point {
 
   double y() const { return y_; }
 
-  /*
+  /**
    * Returns the point in string "(x, y)".
    *
-   * Floating-point numbers are rounded to the second decimal places.
+   * Numbers are rounded or padded to the second decimal places.
    */
   std::string info() const {
     auto ss = std::stringstream{};

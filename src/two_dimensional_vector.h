@@ -9,8 +9,7 @@
 
 class TwoDimensionalVector {
  public:
-  TwoDimensionalVector(Point* head, Point* tail)
-      : head_{head}, tail_{tail} {}
+  TwoDimensionalVector(Point* head, Point* tail) : head_{head}, tail_{tail} {}
 
   Point head() const { return *head_; }
 
@@ -29,11 +28,12 @@ class TwoDimensionalVector {
   }
 
   /**
-   * Returns the value on z-axis of the vectors.
+   * Returns the value on z-axis after cross.
    *
    * Since there's no such cross product on 2-dimensional vectors,
-   * the z-axis is filled with 0.
-  */
+   * the z-axis is set as 0, and their cross product will always be
+   * (0, 0, some_value).
+   */
   double cross(const TwoDimensionalVector& that) const {
     return x_offset_() * that.y_offset_() - y_offset_() * that.x_offset_();
   }
