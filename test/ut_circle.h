@@ -4,23 +4,30 @@
 #include "../src/point.h"
 #include "../src/two_dimensional_vector.h"
 
-TEST(CircleTest, TestArea) {
-  const auto circle =
-      Circle{new TwoDimensionalVector{new Point{1, 2}, new Point{-3, 5}}};
+class CircleTest : public ::testing::Test {
+ protected:
+  const double DELTA = 0.001;
 
-  ASSERT_NEAR(78.540, circle.area(), 0.001);
+  void SetUp() override {
+    circle_ =
+        new Circle{new TwoDimensionalVector{new Point{1, 2}, new Point{-3, 5}}};
+  }
+
+  void TearDown() override {
+    delete circle_;
+  }
+
+  Circle* circle_;
+};
+
+TEST_F(CircleTest, TestArea) {
+  ASSERT_NEAR(78.540, circle_->area(), DELTA);
 }
 
-TEST(CircleTest, TestPerimeter) {
-  const auto circle =
-      Circle{new TwoDimensionalVector{new Point{1, 2}, new Point{-3, 5}}};
-
-  ASSERT_NEAR(31.416, circle.perimeter(), 0.001);
+TEST_F(CircleTest, TestPerimeter) {
+  ASSERT_NEAR(31.416, circle_->perimeter(), DELTA);
 }
 
-TEST(CircleTest, TestInfo) {
-  const auto circle =
-      Circle{new TwoDimensionalVector{new Point{1, 2}, new Point{-3, 5}}};
-
-  ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle.info());
+TEST_F(CircleTest, TestInfo) {
+  ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_->info());
 }
