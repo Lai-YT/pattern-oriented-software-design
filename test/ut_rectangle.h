@@ -44,6 +44,26 @@ TEST_F(RectangleTest, TestPerimeter) {
   ASSERT_NEAR(14, rectangle_->perimeter(), DELTA);
 }
 
+TEST_F(RectangleTest, PassingNonOrthognalSidesShouldThrowException) {
+  ASSERT_THROW(
+      {
+        const auto rectangle = Rectangle(
+            new TwoDimensionalVector{new Point{0, 0}, new Point{3, 1}},
+            new TwoDimensionalVector{new Point{0, 0}, new Point{0, 4}});
+      },
+      Rectangle::NonOrthogonalSideException);
+}
+
+TEST_F(RectangleTest, PassingSidesWithNoCommonPointShouldThrowException) {
+  ASSERT_THROW(
+      {
+        const auto rectangle = Rectangle(
+            new TwoDimensionalVector{new Point{1, 0}, new Point{3, 0}},
+            new TwoDimensionalVector{new Point{0, 0}, new Point{0, 4}});
+      },
+      Rectangle::NoCommonPointException);
+}
+
 class RectanglePolymorphismTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
