@@ -18,18 +18,26 @@ class TwoDimensionalVector {
     return *head_;
   }
 
-  /** An alias of head(). */
-  Point a() const {
-    return head();
+  /** Returns head in pointer type.
+   *
+   * WARN: this function doesn't not release the ownership of pointer,
+   * one should not delete it.
+   */
+  Point* a() const {
+    return head_.get();
   }
 
   Point tail() const {
     return *tail_;
   }
 
-  /** An alias of tail(). */
-  Point b() const {
-    return tail();
+  /** Returns tail in pointer type.
+   *
+   * WARN: this function doesn't not release the ownership of pointer,
+   * one should not delete it.
+   */
+  Point* b() const {
+    return tail_.get();
   }
 
   std::string info() const {
