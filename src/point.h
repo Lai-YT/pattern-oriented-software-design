@@ -9,9 +9,13 @@ class Point {
  public:
   Point(const double x, const double y) : x_{x}, y_{y} {}
 
-  double x() const { return x_; }
+  double x() const {
+    return x_;
+  }
 
-  double y() const { return y_; }
+  double y() const {
+    return y_;
+  }
 
   /**
    * Returns the point in string "(x, y)".
@@ -30,7 +34,9 @@ class Point {
     return (&that == this) || HasEqualXY_(that);
   }
 
-  bool operator!=(const Point& that) const { return !operator==(that); }
+  bool operator!=(const Point& that) const {
+    return !operator==(that);
+  }
 
  private:
   double x_;

@@ -17,9 +17,13 @@ class Circle : Shape {
     radius_ = represent_vector_->length();
   }
 
-  double area() const override { return M_PI * radius_ * radius_; }
+  double area() const override {
+    return M_PI * radius_ * radius_;
+  }
 
-  double perimeter() const override { return 2 * M_PI * radius_; }
+  double perimeter() const override {
+    return 2 * M_PI * radius_;
+  }
 
   std::string info() const override {
     return "Circle (" + represent_vector_->info() + ")";

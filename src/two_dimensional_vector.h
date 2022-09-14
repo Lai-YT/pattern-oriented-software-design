@@ -14,9 +14,13 @@ class TwoDimensionalVector {
     tail = nullptr;
   }
 
-  Point head() const { return *head_; }
+  Point head() const {
+    return *head_;
+  }
 
-  Point tail() const { return *tail_; }
+  Point tail() const {
+    return *tail_;
+  }
 
   std::string info() const {
     return "Vector (" + head_->info() + ", " + tail_->info() + ")";
@@ -45,9 +49,13 @@ class TwoDimensionalVector {
   std::unique_ptr<Point> head_;
   std::unique_ptr<Point> tail_;
 
-  double x_offset_() const { return tail_->x() - head_->x(); }
+  double x_offset_() const {
+    return tail_->x() - head_->x();
+  }
 
-  double y_offset_() const { return tail_->y() - head_->y(); }
+  double y_offset_() const {
+    return tail_->y() - head_->y();
+  }
 };
 
 #endif /* end of include guard: SRC_TWO_DIMENSIONAL_VECTOR_H_ */

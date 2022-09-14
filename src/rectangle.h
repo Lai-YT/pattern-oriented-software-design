@@ -29,9 +29,13 @@ class Rectangle : Shape {
            ")";
   }
 
-  double length() const { return length_side_->length(); }
+  double length() const {
+    return length_side_->length();
+  }
 
-  double width() const { return width_side_->length(); }
+  double width() const {
+    return width_side_->length();
+  }
 
  private:
   std::unique_ptr<TwoDimensionalVector> length_side_;
