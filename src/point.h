@@ -31,7 +31,7 @@ class Point {
   }
 
   bool operator==(const Point& that) const {
-    return (&that == this) || HasEqualXY_(that);
+    return (&that == this) || HasEqualXY_(that) || HasSwappedXY_(that);
   }
 
   bool operator!=(const Point& that) const {
@@ -43,7 +43,11 @@ class Point {
   double y_;
 
   bool HasEqualXY_(const Point& that) const {
-    return that.x_ == this->x_ && that.y_ == this->y_;
+    return that.x_ == x_ && that.y_ == y_;
+  }
+
+  bool HasSwappedXY_(const Point& that) const {
+    return that.x_ == y_ && that.y_ == x_;
   }
 };
 
