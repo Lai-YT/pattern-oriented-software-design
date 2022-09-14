@@ -10,8 +10,8 @@
 class TwoDimensionalVector {
  public:
   TwoDimensionalVector(Point* head, Point* tail) : head_{head}, tail_{tail} {
-    head = nullptr;
-    tail = nullptr;
+    // head = nullptr;
+    // tail = nullptr;
   }
 
   Point head() const {
@@ -24,7 +24,7 @@ class TwoDimensionalVector {
    * one should not delete it.
    */
   Point* a() const {
-    return head_.get();
+    return head_;
   }
 
   Point tail() const {
@@ -37,7 +37,7 @@ class TwoDimensionalVector {
    * one should not delete it.
    */
   Point* b() const {
-    return tail_.get();
+    return tail_;
   }
 
   std::string info() const {
@@ -64,8 +64,8 @@ class TwoDimensionalVector {
   }
 
  private:
-  std::unique_ptr<Point> head_;
-  std::unique_ptr<Point> tail_;
+  Point* head_;
+  Point* tail_;
 
   double x_offset_() const {
     return tail_->x() - head_->x();
