@@ -49,4 +49,4 @@ class Triangle : Shape {
   }
 };
 
-#endif
+#endif /* end of include guard: SRC_TRIANGLE_H_ */
