@@ -36,6 +36,26 @@ TEST_F(TriangleTest, TestInfo) {
       triangle_->info());
 }
 
+TEST_F(TriangleTest, PassingVectorsWithNoCommonPointShoudThrowException) {
+  ASSERT_THROW(
+      {
+        const auto triangle = Triangle(
+            new TwoDimensionalVector{new Point{0, 0}, new Point{4, 0}},
+            new TwoDimensionalVector{new Point{3, 4}, new Point{3, 0}});
+      },
+      Triangle::NoCommonPointException);
+}
+
+TEST_F(TriangleTest, PassingParallelVectorsShoudThrowException) {
+  ASSERT_THROW(
+      {
+        const auto triangle = Triangle(
+            new TwoDimensionalVector{new Point{0, 0}, new Point{4, 0}},
+            new TwoDimensionalVector{new Point{4, 0}, new Point{5, 0}});
+      },
+      Triangle::ParallelSideException);
+}
+
 class TrianglePolymorphismTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
@@ -66,26 +86,4 @@ TEST_F(TrianglePolymorphismTest, TestInfo) {
       "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), "
       "(3.00, 0.00)))",
       triangle_->info());
-}
-
-TEST_F(TrianglePolymorphismTest,
-       PassingVectorsWithNoCommonPointShoudThrowException) {
-  ASSERT_THROW(
-      {
-        const auto triangle = Triangle(
-            new TwoDimensionalVector{new Point{0, 0}, new Point{4, 0}},
-            new TwoDimensionalVector{new Point{3, 4}, new Point{3, 0}});
-      },
-      Triangle::NoCommonPointException);
-}
-
-TEST_F(TrianglePolymorphismTest,
-       PassingParallelVectorsShoudThrowException) {
-  ASSERT_THROW(
-      {
-        const auto triangle = Triangle(
-            new TwoDimensionalVector{new Point{0, 0}, new Point{4, 0}},
-            new TwoDimensionalVector{new Point{4, 0}, new Point{5, 0}});
-      },
-      Triangle::ParallelSideException);
 }
