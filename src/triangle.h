@@ -12,6 +12,8 @@ class Triangle : Shape {
  public:
   Triangle(TwoDimensionalVector* side_1, TwoDimensionalVector* side_2)
       : side_1_{side_1}, side_2_{side_2} {
+    side_1 = nullptr;
+    side_2 = nullptr;
     const Point common_point = FindCommonPoint_();
     side_3_ = std::unique_ptr<TwoDimensionalVector>{new TwoDimensionalVector{
         new Point{FindUncommonPoint_(*side_1_, common_point)},

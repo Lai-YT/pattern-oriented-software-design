@@ -11,7 +11,10 @@
 class Rectangle : Shape {
  public:
   Rectangle(TwoDimensionalVector* length_side, TwoDimensionalVector* width_side)
-      : length_side_{length_side}, width_side_{width_side} {}
+      : length_side_{length_side}, width_side_{width_side} {
+    length_side = nullptr;
+    width_side = nullptr;
+  }
 
   double area() const override {
     return length_side_->length() * width_side_->length();
