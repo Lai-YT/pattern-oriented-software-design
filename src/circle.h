@@ -25,6 +25,10 @@ class Circle : Shape {
     return 2 * M_PI * radius_;
   }
 
+  double radius() const {
+    return radius_;
+  }
+
   std::string info() const override {
     return "Circle (" + represent_vector_->info() + ")";
   }

@@ -20,6 +20,10 @@ class CircleTest : public ::testing::Test {
   Circle* circle_;
 };
 
+TEST_F(CircleTest, TestRadius) {
+  ASSERT_NEAR(5, circle_->radius(), DELTA);
+}
+
 TEST_F(CircleTest, TestArea) {
   ASSERT_NEAR(78.540, circle_->area(), DELTA);
 }
@@ -31,3 +35,4 @@ TEST_F(CircleTest, TestPerimeter) {
 TEST_F(CircleTest, TestInfo) {
   ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_->info());
 }
+
