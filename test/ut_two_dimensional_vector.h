@@ -15,6 +15,13 @@ TEST_F(TwoDimensionalVectorTest, CheckHeadTailSetProperlyByConstructor) {
   EXPECT_EQ(Point(-3, 2), vector.tail());
 }
 
+TEST_F(TwoDimensionalVectorTest, CheckHeadTailAliasSetProperlyByConstructor) {
+  const auto vector = TwoDimensionalVector{new Point{2, -3}, new Point{-3, 2}};
+
+  EXPECT_EQ(Point(2, -3), vector.a());
+  EXPECT_EQ(Point(-3, 2), vector.b());
+}
+
 TEST_F(TwoDimensionalVectorTest, TestInfo) {
   const auto vector = TwoDimensionalVector{new Point{2, -3}, new Point{-3, 2}};
 

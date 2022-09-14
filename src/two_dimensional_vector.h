@@ -18,8 +18,18 @@ class TwoDimensionalVector {
     return *head_;
   }
 
+  /** An alias of head(). */
+  Point a() const {
+    return head();
+  }
+
   Point tail() const {
     return *tail_;
+  }
+
+  /** An alias of tail(). */
+  Point b() const {
+    return tail();
   }
 
   std::string info() const {
