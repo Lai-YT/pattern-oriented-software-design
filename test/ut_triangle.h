@@ -35,3 +35,35 @@ TEST_F(TriangleTest, TestInfo) {
       "(3.00, 0.00)))",
       triangle_->info());
 }
+
+class TrianglePolymorphismTest : public ::testing::Test {
+ protected:
+  const double DELTA = 0.001;
+
+  void SetUp() override {
+    triangle_ = new Triangle{
+        new TwoDimensionalVector{new Point{0, 0}, new Point{3, 0}},
+        new TwoDimensionalVector{new Point{3, 4}, new Point{3, 0}}};
+  }
+
+  void TearDown() override {
+    delete triangle_;
+  }
+
+  Shape* triangle_;
+};
+
+TEST_F(TrianglePolymorphismTest, TestPerimeter) {
+  ASSERT_NEAR(12, triangle_->perimeter(), DELTA);
+}
+
+TEST_F(TrianglePolymorphismTest, TestArea) {
+  ASSERT_NEAR(6, triangle_->area(), DELTA);
+}
+
+TEST_F(TrianglePolymorphismTest, TestInfo) {
+  ASSERT_EQ(
+      "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), "
+      "(3.00, 0.00)))",
+      triangle_->info());
+}

@@ -36,3 +36,30 @@ TEST_F(CircleTest, TestInfo) {
   ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_->info());
 }
 
+class CirclePolymorphismTest : public ::testing::Test {
+ protected:
+  const double DELTA = 0.001;
+
+  void SetUp() override {
+    circle_ =
+        new Circle{new TwoDimensionalVector{new Point{1, 2}, new Point{-3, 5}}};
+  }
+
+  void TearDown() override {
+    delete circle_;
+  }
+
+  Shape* circle_;
+};
+
+TEST_F(CirclePolymorphismTest, TestArea) {
+  ASSERT_NEAR(78.540, circle_->area(), DELTA);
+}
+
+TEST_F(CirclePolymorphismTest, TestPerimeter) {
+  ASSERT_NEAR(31.416, circle_->perimeter(), DELTA);
+}
+
+TEST_F(CirclePolymorphismTest, TestInfo) {
+  ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_->info());
+}
