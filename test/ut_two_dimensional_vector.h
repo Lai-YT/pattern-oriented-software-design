@@ -26,7 +26,7 @@ TEST(TwoDimensionalVector, TestCrossProduct) {
   const auto vector_1 = TwoDimensionalVector{new Point{0, 0}, new Point{4, 5}};
   const auto vector_2 = TwoDimensionalVector{new Point{0, 0}, new Point{-3, 2}};
 
-  ASSERT_NEAR(23, vector_1.cross(vector_2), 0.001);
+  ASSERT_NEAR(23, vector_1.cross(&vector_2), 0.001);
 }
 
 TEST(TwoDimensionalVector, TestCrossProductAngleOverPi) {
@@ -34,5 +34,5 @@ TEST(TwoDimensionalVector, TestCrossProductAngleOverPi) {
   const auto vector_2 =
       TwoDimensionalVector{new Point{0, 0}, new Point{-3, -10}};
 
-  ASSERT_NEAR(-25, vector_1.cross(vector_2), 0.001);
+  ASSERT_NEAR(-25, vector_1.cross(&vector_2), 0.001);
 }
