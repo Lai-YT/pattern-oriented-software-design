@@ -8,7 +8,7 @@
 #include "shape.h"
 #include "two_dimensional_vector.h"
 
-class Triangle : Shape {
+class Triangle : public Shape {
  public:
   Triangle(TwoDimensionalVector* side_1, TwoDimensionalVector* side_2)
       : side_1_{side_1}, side_2_{side_2} {

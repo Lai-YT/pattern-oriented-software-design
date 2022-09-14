@@ -9,7 +9,7 @@
 #include "shape.h"
 #include "two_dimensional_vector.h"
 
-class Circle : Shape {
+class Circle : public Shape {
  public:
   /** The length of the vector is the radius of the circle. */
   Circle(TwoDimensionalVector* vector) : represent_vector_{vector} {

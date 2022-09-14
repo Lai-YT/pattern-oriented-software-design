@@ -8,7 +8,7 @@
 #include "shape.h"
 #include "two_dimensional_vector.h"
 
-class Rectangle : Shape {
+class Rectangle : public Shape {
  public:
   Rectangle(TwoDimensionalVector* length_side, TwoDimensionalVector* width_side)
       : length_side_{length_side}, width_side_{width_side} {
