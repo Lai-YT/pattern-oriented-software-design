@@ -2,7 +2,6 @@
 #define SRC_CIRCLE_H_
 #define _USE_MATH_DEFINES
 
-#include <cassert>
 #include <cmath>
 #include <memory>
 #include <string>
