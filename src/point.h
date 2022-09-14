@@ -9,14 +9,18 @@ class Point {
  public:
   Point(const double x, const double y) : x_{x}, y_{y} {}
 
-  double x() const { return x_; }
+  double x() const {
+    return x_;
+  }
 
-  double y() const { return y_; }
+  double y() const {
+    return y_;
+  }
 
-  /*
+  /**
    * Returns the point in string "(x, y)".
    *
-   * Floating-point numbers are rounded to the second decimal places.
+   * Numbers are rounded or padded to the second decimal places.
    */
   std::string info() const {
     auto ss = std::stringstream{};
@@ -27,14 +31,20 @@ class Point {
   }
 
   bool operator==(const Point& that) const {
-    return (&that == this) || (that.x_ == this->x_ && that.y_ == this->y_);
+    return (&that == this) || HasEqualXY_(that);
   }
 
-  bool operator!=(const Point& that) const { return !operator==(that); }
+  bool operator!=(const Point& that) const {
+    return !operator==(that);
+  }
 
  private:
   double x_;
   double y_;
+
+  bool HasEqualXY_(const Point& that) const {
+    return that.x_ == this->x_ && that.y_ == this->y_;
+  }
 };
 
 #endif /* end of include guard: SRC_POINT_H_ */
