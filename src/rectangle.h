@@ -8,24 +8,30 @@
 
 class Rectangle : Shape {
  public:
-  Rectangle(const TwoDimensionalVector& side_1, const TwoDimensionalVector& side_2)
-    : side_1_{side_1}, side_2_{side_2} {}
+  Rectangle(const TwoDimensionalVector& length_side,
+            const TwoDimensionalVector& width_side)
+      : length_side_{length_side}, width_side_{width_side} {}
 
   double area() const override {
-    return side_1_.length() * side_2_.length();
+    return length_side_.length() * width_side_.length();
   }
 
   double perimeter() const override {
-    return (side_1_.length() + side_2_.length()) * 2;
+    return (length_side_.length() + width_side_.length()) * 2;
   }
 
   std::string info() const override {
-    return "Rectangle (" + side_1_.info() + ", " + side_2_.info() + ")";
+    return "Rectangle (" + length_side_.info() + ", " + width_side_.info() +
+           ")";
   }
 
+  double length() const { return length_side_.length(); }
+
+  double width() const { return width_side_.length(); }
+
  private:
-  TwoDimensionalVector side_1_;
-  TwoDimensionalVector side_2_;
+  TwoDimensionalVector length_side_;
+  TwoDimensionalVector width_side_;
 };
 
 #endif /* end of include guard: SRC_RECTANGLE_H_ */
