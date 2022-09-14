@@ -2,6 +2,7 @@
 #define SRC_POINT_H_
 
 #include <ios>
+#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -31,6 +32,8 @@ class Point {
   }
 
   bool operator==(const Point& that) const {
+    std::cout << "this: " << info() << '\n';
+    std::cout << "that: " << that.info() << '\n';
     return (&that == this) || HasEqualXY_(that);
   }
 
