@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <memory>
+#include <stdexcept>
 
 #include "point.h"
 #include "shape.h"
@@ -14,6 +15,9 @@ class Triangle : public Shape {
       : side_1_{side_1}, side_2_{side_2} {
     side_1 = nullptr;
     side_2 = nullptr;
+    if (side_1_->cross(side_2_.get()) == 0) {
+      throw ParallelSideException{""};
+    }
     const Point common_point = FindCommonPoint_();
     side_3_ = std::unique_ptr<TwoDimensionalVector>{new TwoDimensionalVector{
         new Point{FindUncommonPoint_(*side_1_, common_point)},
@@ -32,14 +36,28 @@ class Triangle : public Shape {
     return "Triangle (" + side_1_->info() + ", " + side_2_->info() + ")";
   }
 
+  class NoCommonPointException : public std::invalid_argument {
+    using std::invalid_argument::invalid_argument;
+  };
+
+  class ParallelSideException : public std::invalid_argument {
+    using std::invalid_argument::invalid_argument;
+  };
+
  private:
   std::unique_ptr<TwoDimensionalVector> side_1_;
   std::unique_ptr<TwoDimensionalVector> side_2_;
   std::unique_ptr<TwoDimensionalVector> side_3_;
 
+  /* TODO: refactor & constructor exception should not be hidden */
   Point FindCommonPoint_() const {
     bool head_of_side_1_is_common_point = side_1_->head() == side_2_->head() ||
                                           side_1_->head() == side_2_->tail();
+    bool tail_of_side_1_is_common_point = side_1_->tail() == side_2_->head() ||
+                                          side_1_->tail() == side_2_->tail();
+    if (!head_of_side_1_is_common_point && !tail_of_side_1_is_common_point) {
+      throw NoCommonPointException{""};
+    }
     return head_of_side_1_is_common_point ? side_1_->head() : side_1_->tail();
   }
 
