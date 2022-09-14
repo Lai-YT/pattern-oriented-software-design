@@ -27,7 +27,7 @@ class Point {
   }
 
   bool operator==(const Point& that) const {
-    return (&that == this) || (that.x_ == this->x_ && that.y_ == this->y_);
+    return (&that == this) || HasEqualXY_(that);
   }
 
   bool operator!=(const Point& that) const { return !operator==(that); }
@@ -35,6 +35,10 @@ class Point {
  private:
   double x_;
   double y_;
+
+  bool HasEqualXY_(const Point& that) const {
+    return that.x_ == this->x_ && that.y_ == this->y_;
+  }
 };
 
 #endif /* end of include guard: SRC_POINT_H_ */

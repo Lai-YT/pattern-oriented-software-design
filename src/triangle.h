@@ -25,10 +25,7 @@ class Triangle : Shape {
   }
 
   double area() const override {
-    const double half_perimeter = perimeter() / 2;
-    return std::sqrt(half_perimeter * (half_perimeter - side_1_->length()) *
-                     (half_perimeter - side_2_->length()) *
-                     (half_perimeter - side_3_->length()));
+    return std::abs(side_1_->cross(side_2_.get())) / 2;
   }
 
   std::string info() const override {
@@ -41,10 +38,9 @@ class Triangle : Shape {
   std::unique_ptr<TwoDimensionalVector> side_3_;
 
   Point FindCommonPoint_() const {
-    return side_1_->head() == side_2_->head() ||
-                   side_1_->head() == side_2_->tail()
-               ? side_1_->head()
-               : side_1_->tail();
+    bool head_of_side_1_is_common_point = side_1_->head() == side_2_->head() ||
+                                          side_1_->head() == side_2_->tail();
+    return head_of_side_1_is_common_point ? side_1_->head() : side_1_->tail();
   }
 
   Point FindUncommonPoint_(const TwoDimensionalVector& side,
