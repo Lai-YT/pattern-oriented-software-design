@@ -36,13 +36,6 @@ TEST(PointTest, TestEqualityOnSameXY) {
   ASSERT_TRUE(a == b);
 }
 
-TEST(PointTest, SwappedXYShouldBeEqual) {
-  const auto a = Point{2, -3};
-  const auto b = Point{-3, 2};
-
-  ASSERT_TRUE(a == b);
-}
-
 TEST(PointTest, TestEqualityOnSelfComparison) {
   const auto p = Point{2, -3};
 
@@ -51,14 +44,14 @@ TEST(PointTest, TestEqualityOnSelfComparison) {
 
 TEST(PointTest, TestEqualityOnDifferentXY) {
   const auto a = Point{2, -3};
-  const auto b = Point{2, 4};
+  const auto b = Point{-3, 2};
 
   ASSERT_FALSE(a == b);
 }
 
 TEST(PointTest, TestInequalityOnDifferentXY) {
   const auto a = Point{2, -3};
-  const auto b = Point{2, 4};
+  const auto b = Point{-3, 2};
 
   ASSERT_TRUE(a != b);
 }
