@@ -1,7 +1,7 @@
 #ifndef SRC_RECTANGLE_H_
 #define SRC_RECTANGLE_H_
 
-#include <memory>
+#include <experimental/memory>
 #include <stdexcept>
 #include <string>
 
@@ -12,10 +12,8 @@
 class Rectangle : public Shape {
  public:
   /* TODO: refactor */
-  Rectangle(TwoDimensionalVector* length_side, TwoDimensionalVector* width_side)
+  Rectangle(const TwoDimensionalVector* length_side, const TwoDimensionalVector* width_side)
       : length_side_{length_side}, width_side_{width_side} {
-    length_side = nullptr;
-    width_side = nullptr;
     if (length_side_->dot(width_side_.get())) {
       throw NonOrthogonalSideException{""};
     }
@@ -61,8 +59,8 @@ class Rectangle : public Shape {
   };
 
  private:
-  std::unique_ptr<TwoDimensionalVector> length_side_;
-  std::unique_ptr<TwoDimensionalVector> width_side_;
+  std::experimental::observer_ptr<const TwoDimensionalVector> length_side_;
+  std::experimental::observer_ptr<const TwoDimensionalVector> width_side_;
 };
 
 #endif /* end of include guard: SRC_RECTANGLE_H_ */
