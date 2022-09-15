@@ -4,6 +4,7 @@
 #include <ios>
 #include <sstream>
 #include <string>
+#include <tuple>
 
 class Point {
  public:
@@ -43,7 +44,7 @@ class Point {
   double y_;
 
   bool HasEqualXY_(const Point& that) const {
-    return that.x_ == this->x_ && that.y_ == this->y_;
+    return std::tie(that.x_, that.y_) == std::tie(x_, y_);
   }
 };
 
