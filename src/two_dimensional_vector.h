@@ -16,11 +16,7 @@ class TwoDimensionalVector {
     return *head_;
   }
 
-  /** Returns head in pointer type.
-   *
-   * WARN: this function doesn't not release the ownership of pointer,
-   * one should not delete it.
-   */
+  /** Returns head in pointer type. */
   const Point* a() const {
     return head_.get();
   }
@@ -29,11 +25,7 @@ class TwoDimensionalVector {
     return *tail_;
   }
 
-  /** Returns tail in pointer type.
-   *
-   * WARN: this function doesn't not release the ownership of pointer,
-   * one should not delete it.
-   */
+  /** Returns tail in pointer type. */
   const Point* b() const {
     return tail_.get();
   }
