@@ -2,16 +2,14 @@
 #define SRC_TWO_DIMENSIONAL_VECTOR_H_
 
 #include <cmath>
-#include <memory>
+#include <experimental/memory>
 #include <string>
 
 #include "point.h"
 
 class TwoDimensionalVector {
  public:
-  TwoDimensionalVector(Point* head, Point* tail) : head_{head}, tail_{tail} {
-    head = nullptr;
-    tail = nullptr;
+  TwoDimensionalVector(const Point* head, const Point* tail) : head_{head}, tail_{tail} {
   }
 
   Point head() const {
@@ -23,7 +21,7 @@ class TwoDimensionalVector {
    * WARN: this function doesn't not release the ownership of pointer,
    * one should not delete it.
    */
-  Point* a() const {
+  const Point* a() const {
     return head_.get();
   }
 
@@ -36,7 +34,7 @@ class TwoDimensionalVector {
    * WARN: this function doesn't not release the ownership of pointer,
    * one should not delete it.
    */
-  Point* b() const {
+  const Point* b() const {
     return tail_.get();
   }
 
@@ -64,8 +62,8 @@ class TwoDimensionalVector {
   }
 
  private:
-  std::unique_ptr<Point> head_;
-  std::unique_ptr<Point> tail_;
+  std::experimental::observer_ptr<const Point> head_;
+  std::experimental::observer_ptr<const Point> tail_;
 
   double x_offset_() const {
     return tail_->x() - head_->x();
