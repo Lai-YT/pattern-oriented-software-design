@@ -30,6 +30,10 @@ class Point {
     return ss.str();
   }
 
+  /**
+   * Points with their x, y values the same correspondingly after rounded to the
+   * second decimal places are considered as equal.
+   */
   bool operator==(const Point& that) const {
     return (&that == this) || HasEqualXY_(that);
   }
@@ -43,8 +47,6 @@ class Point {
   double y_;
 
   bool HasEqualXY_(const Point& that) const {
-    /* Comparing x and y directly fails the Jenkins test case.
-      By comparing info, we care only the values up to the second decimal places. */
     return that.info() == info();
   }
 };
