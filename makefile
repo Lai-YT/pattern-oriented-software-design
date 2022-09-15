@@ -1,9 +1,8 @@
 .PHONY: dirs clean
 
 CXXFLAGS = -Wfatal-errors
-SRC = src/point.h src/two_dimensional_vector.h src/circle.h src/triangle.h src/shape.h src/rectangle.h
-TEST = test/ut_point.h test/ut_two_dimensional_vector.h test/ut_circle.h \
-	test/ut_triangle.h test/ut_rectangle.h
+SRC = $(shell ls src/*.h)
+TEST = $(shell ls test/*.h)
 
 all: dirs bin/ut_all
 
