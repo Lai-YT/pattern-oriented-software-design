@@ -9,15 +9,26 @@ class CircleTest : public ::testing::Test {
   const double DELTA = 0.001;
 
   void SetUp() override {
-    circle_ =
-        new Circle{new TwoDimensionalVector{new Point{1, 2}, new Point{-3, 5}}};
+    underlaying_vector_head_ = new Point{1, 2};
+    underlaying_vector_tail_ = new Point{-3, 5};
+    underlaying_vector_ = new TwoDimensionalVector{underlaying_vector_head_,
+                                                   underlaying_vector_tail_};
+    circle_ = new Circle{underlaying_vector_};
   }
 
   void TearDown() override {
     delete circle_;
+    delete underlaying_vector_;
+    delete underlaying_vector_tail_;
+    delete underlaying_vector_head_;
   }
 
   Circle* circle_;
+
+ private:
+  TwoDimensionalVector* underlaying_vector_;
+  Point* underlaying_vector_head_;
+  Point* underlaying_vector_tail_;
 };
 
 TEST_F(CircleTest, TestRadius) {
@@ -41,15 +52,26 @@ class CirclePolymorphismTest : public ::testing::Test {
   const double DELTA = 0.001;
 
   void SetUp() override {
-    circle_ =
-        new Circle{new TwoDimensionalVector{new Point{1, 2}, new Point{-3, 5}}};
+    underlaying_vector_head_ = new Point{1, 2};
+    underlaying_vector_tail_ = new Point{-3, 5};
+    underlaying_vector_ = new TwoDimensionalVector{underlaying_vector_head_,
+                                                   underlaying_vector_tail_};
+    circle_ = new Circle{underlaying_vector_};
   }
 
   void TearDown() override {
     delete circle_;
+    delete underlaying_vector_;
+    delete underlaying_vector_tail_;
+    delete underlaying_vector_head_;
   }
 
   Shape* circle_;
+
+ private:
+  TwoDimensionalVector* underlaying_vector_;
+  Point* underlaying_vector_head_;
+  Point* underlaying_vector_tail_;
 };
 
 TEST_F(CirclePolymorphismTest, TestArea) {
