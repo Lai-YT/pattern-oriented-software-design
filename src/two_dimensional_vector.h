@@ -71,9 +71,9 @@ bool HasCommonPointWithVector(const Point& point,
   return point == vector.head() || point == vector.tail();
 }
 
-const Point* FindUncommonPointFromVector(const TwoDimensionalVector* vector,
-                                         const Point* common_point) {
-  return *(vector->b()) == *common_point ? vector->a() : vector->b();
+const Point* FindUncommonPointFromVector(const TwoDimensionalVector& vector,
+                                         const Point& common_point) {
+  return vector.tail() == common_point ? vector.a() : vector.b();
 }
 
 /**

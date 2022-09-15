@@ -23,8 +23,8 @@ class Triangle : public Shape {
       throw NoCommonPointException{""};
     }
     side_3_ = std::make_unique<TwoDimensionalVector>(
-        FindUncommonPointFromVector(side_1_.get(), common_point),
-        FindUncommonPointFromVector(side_2_.get(), common_point));
+        FindUncommonPointFromVector(*side_1_, *common_point),
+        FindUncommonPointFromVector(*side_2_, *common_point));
   }
 
   double perimeter() const override {
