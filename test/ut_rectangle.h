@@ -8,17 +8,25 @@ class RectangleTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  void SetUp() override {
-    rectangle_ = new Rectangle{
-        new TwoDimensionalVector{new Point{0, 0}, new Point{3, 0}},
-        new TwoDimensionalVector{new Point{0, 0}, new Point{0, 4}}};
+  RectangleTest()
+      : vector_1_{TwoDimensionalVector(&vector_head_1_, &vector_tail_1_)},
+        vector_2_{TwoDimensionalVector(&vector_head_2_, &vector_tail_2_)} {
+    rectangle_ = new Rectangle{&vector_1_, &vector_2_};
   }
 
-  void TearDown() override {
+  virtual ~RectangleTest() override {
     delete rectangle_;
   }
 
   Rectangle* rectangle_;
+
+ private:
+  const Point vector_head_1_ = Point{0, 0};
+  const Point vector_tail_1_ = Point{3, 0};
+  const TwoDimensionalVector vector_1_;
+  const Point vector_head_2_ = Point{0, 0};
+  const Point vector_tail_2_ = Point{0, 4};
+  const TwoDimensionalVector vector_2_;
 };
 
 TEST_F(RectangleTest, TestLength) {
@@ -45,37 +53,33 @@ TEST_F(RectangleTest, TestPerimeter) {
 }
 
 TEST_F(RectangleTest, PassingNonOrthognalSidesShouldThrowException) {
-  ASSERT_THROW(
-      {
-        const auto rectangle = Rectangle(
-            new TwoDimensionalVector{new Point{0, 0}, new Point{3, 1}},
-            new TwoDimensionalVector{new Point{0, 0}, new Point{0, 4}});
-      },
-      Rectangle::NonOrthogonalSideException);
+  const auto vector_head_1 = Point{0, 0};
+  const auto vector_tail_1 = Point{3, 1};
+  const auto vector_1 = TwoDimensionalVector{&vector_head_1, &vector_tail_1};
+  const auto vector_head_2 = Point{0, 0};
+  const auto vector_tail_2 = Point{0, 4};
+  const auto vector_2 = TwoDimensionalVector{&vector_head_2, &vector_tail_2};
+
+  ASSERT_THROW({ const auto rectangle = Rectangle(&vector_1, &vector_2); },
+               Rectangle::NonOrthogonalSideException);
 }
 
 TEST_F(RectangleTest, PassingSidesWithNoCommonPointShouldThrowException) {
-  ASSERT_THROW(
-      {
-        const auto rectangle = Rectangle(
-            new TwoDimensionalVector{new Point{1, 0}, new Point{3, 0}},
-            new TwoDimensionalVector{new Point{0, 0}, new Point{0, 4}});
-      },
-      Rectangle::NoCommonPointException);
+  const auto vector_head_1 = Point{1, 0};
+  const auto vector_tail_1 = Point{3, 0};
+  const auto vector_1 = TwoDimensionalVector{&vector_head_1, &vector_tail_1};
+  const auto vector_head_2 = Point{0, 0};
+  const auto vector_tail_2 = Point{0, 4};
+  const auto vector_2 = TwoDimensionalVector{&vector_head_2, &vector_tail_2};
+
+  ASSERT_THROW({ const auto rectangle = Rectangle(&vector_1, &vector_2); },
+               Rectangle::NoCommonPointException);
 }
 
-class RectanglePolymorphismTest : public ::testing::Test {
+class RectanglePolymorphismTest : public RectangleTest {
  protected:
-  const double DELTA = 0.001;
-
-  void SetUp() override {
-    rectangle_ = new Rectangle{
-        new TwoDimensionalVector{new Point{0, 0}, new Point{3, 0}},
-        new TwoDimensionalVector{new Point{0, 0}, new Point{0, 4}}};
-  }
-
-  void TearDown() override {
-    delete rectangle_;
+  RectanglePolymorphismTest() : RectangleTest{} {
+    rectangle_ = RectangleTest::rectangle_;
   }
 
   Shape* rectangle_;

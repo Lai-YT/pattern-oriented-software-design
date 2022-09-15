@@ -8,16 +8,20 @@ class CircleTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  void SetUp() override {
-    circle_ =
-        new Circle{new TwoDimensionalVector{new Point{1, 2}, new Point{-3, 5}}};
+  CircleTest() : vector_{TwoDimensionalVector{&vector_head_, &vector_tail_}} {
+    circle_ = new Circle{&vector_};
   }
 
-  void TearDown() override {
+  virtual ~CircleTest() override {
     delete circle_;
   }
 
   Circle* circle_;
+
+ private:
+  const TwoDimensionalVector vector_;
+  const Point vector_head_ = Point{1, 2};
+  const Point vector_tail_ = Point{-3, 5};
 };
 
 TEST_F(CircleTest, TestRadius) {
@@ -36,17 +40,10 @@ TEST_F(CircleTest, TestInfo) {
   ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_->info());
 }
 
-class CirclePolymorphismTest : public ::testing::Test {
+class CirclePolymorphismTest : public CircleTest {
  protected:
-  const double DELTA = 0.001;
-
-  void SetUp() override {
-    circle_ =
-        new Circle{new TwoDimensionalVector{new Point{1, 2}, new Point{-3, 5}}};
-  }
-
-  void TearDown() override {
-    delete circle_;
+  CirclePolymorphismTest() : CircleTest{} {
+    circle_ = CircleTest::circle_;
   }
 
   Shape* circle_;

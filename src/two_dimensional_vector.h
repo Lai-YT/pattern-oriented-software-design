@@ -2,28 +2,22 @@
 #define SRC_TWO_DIMENSIONAL_VECTOR_H_
 
 #include <cmath>
-#include <memory>
+#include <experimental/memory>
 #include <string>
 
 #include "point.h"
 
 class TwoDimensionalVector {
  public:
-  TwoDimensionalVector(Point* head, Point* tail) : head_{head}, tail_{tail} {
-    head = nullptr;
-    tail = nullptr;
-  }
+  TwoDimensionalVector(const Point* const head, const Point* const tail)
+      : head_{head}, tail_{tail} {}
 
   Point head() const {
     return *head_;
   }
 
-  /** Returns head in pointer type.
-   *
-   * WARN: this function doesn't not release the ownership of pointer,
-   * one should not delete it.
-   */
-  Point* a() const {
+  /** Returns head in pointer type. */
+  const Point* a() const {
     return head_.get();
   }
 
@@ -31,12 +25,8 @@ class TwoDimensionalVector {
     return *tail_;
   }
 
-  /** Returns tail in pointer type.
-   *
-   * WARN: this function doesn't not release the ownership of pointer,
-   * one should not delete it.
-   */
-  Point* b() const {
+  /** Returns tail in pointer type. */
+  const Point* b() const {
     return tail_.get();
   }
 
@@ -64,8 +54,8 @@ class TwoDimensionalVector {
   }
 
  private:
-  std::unique_ptr<Point> head_;
-  std::unique_ptr<Point> tail_;
+  std::experimental::observer_ptr<const Point> head_;
+  std::experimental::observer_ptr<const Point> tail_;
 
   double x_offset_() const {
     return tail_->x() - head_->x();
@@ -75,5 +65,31 @@ class TwoDimensionalVector {
     return tail_->y() - head_->y();
   }
 };
+
+bool HasCommonPointWithVector(const Point& point,
+                              const TwoDimensionalVector& vector) {
+  return point == vector.head() || point == vector.tail();
+}
+
+const Point* FindUncommonPointFromVector(const TwoDimensionalVector& vector,
+                                         const Point& common_point) {
+  return vector.tail() == common_point ? vector.a() : vector.b();
+}
+
+/**
+ * @returns the common point of vector_1 and vector_2, nullptr if no common.
+ * Does not guarantee that the point belongs to vector_1 or vector_2.
+ */
+const Point* FindCommonPointOfVectors(const TwoDimensionalVector& vector_1,
+                                      const TwoDimensionalVector& vector_2) {
+  bool is_head_of_vector_1 =
+      HasCommonPointWithVector(vector_1.head(), vector_2);
+  bool is_tail_of_vector_1 =
+      HasCommonPointWithVector(vector_1.tail(), vector_2);
+  if (!is_head_of_vector_1 && !is_tail_of_vector_1) {
+    return nullptr;
+  }
+  return is_head_of_vector_1 ? vector_1.a() : vector_1.b();
+}
 
 #endif /* end of include guard: SRC_TWO_DIMENSIONAL_VECTOR_H_ */

@@ -3,7 +3,7 @@
 #define _USE_MATH_DEFINES
 
 #include <cmath>
-#include <memory>
+#include <experimental/memory>
 #include <string>
 
 #include "shape.h"
@@ -12,8 +12,7 @@
 class Circle : public Shape {
  public:
   /** The length of the vector is the radius of the circle. */
-  Circle(TwoDimensionalVector* vector) : represent_vector_{vector} {
-    vector = nullptr;
+  Circle(const TwoDimensionalVector* const vector) : represent_vector_{vector} {
     radius_ = represent_vector_->length();
   }
 
@@ -34,7 +33,7 @@ class Circle : public Shape {
   }
 
  private:
-  std::unique_ptr<TwoDimensionalVector> represent_vector_;
+  std::experimental::observer_ptr<const TwoDimensionalVector> represent_vector_;
   double radius_;
 };
 
