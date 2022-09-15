@@ -9,8 +9,8 @@
 
 class TwoDimensionalVector {
  public:
-  TwoDimensionalVector(const Point* head, const Point* tail) : head_{head}, tail_{tail} {
-  }
+  TwoDimensionalVector(const Point* head, const Point* tail)
+      : head_{head}, tail_{tail} {}
 
   Point head() const {
     return *head_;
