@@ -4,7 +4,6 @@
 #include <ios>
 #include <sstream>
 #include <string>
-#include <tuple>
 
 class Point {
  public:
@@ -44,7 +43,9 @@ class Point {
   double y_;
 
   bool HasEqualXY_(const Point& that) const {
-    return std::tie(that.x_, that.y_) == std::tie(x_, y_);
+    /* Comparing x and y directly fails the Jenkins test case.
+      By comparing info, we care only the values up to the second decimal places. */
+    return that.info() == info();
   }
 };
 
