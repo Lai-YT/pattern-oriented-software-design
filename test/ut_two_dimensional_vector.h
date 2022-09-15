@@ -59,3 +59,46 @@ TEST_F(TwoDimensionalVectorTest, TestCrossProductAngleOverPi) {
 
   ASSERT_NEAR(-25, vector_1.cross(&vector_2), DELTA);
 }
+
+TEST(VectorHelperTest, HasCommonPointWithVector) {
+  const auto head = Point{4, 5};
+  const auto tail = Point{0, 0};
+  const auto vector = TwoDimensionalVector{&head, &tail};
+
+  ASSERT_TRUE(HasCommonPointWithVector(Point{4, 5}, vector));
+}
+
+TEST(VectorHelperTest, HasNoCommonPointWithVector) {
+  const auto head = Point{4, 5};
+  const auto tail = Point{0, 0};
+  const auto vector = TwoDimensionalVector{&head, &tail};
+
+  ASSERT_FALSE(HasCommonPointWithVector(Point{5, 4}, vector));
+}
+
+TEST(VectorHelperTest, FindCommonPointOfVectors) {
+  const auto head_1 = Point{4, 5};
+  const auto tail_1 = Point{0, 0};
+  const auto vector_1 = TwoDimensionalVector{&head_1, &tail_1};
+  const auto head_2 = Point{0, 0};
+  const auto tail_2 = Point{-3, -10};
+  const auto vector_2 = TwoDimensionalVector{&head_2, &tail_2};
+  const auto expect_common_point = Point{0, 0};
+
+  const auto actual_common_point =
+      *FindCommonPointOfVectors(vector_1, vector_2);
+
+  ASSERT_EQ(expect_common_point, actual_common_point);
+}
+
+TEST(VectorHelperTest,
+     FindCommonPointOfVectorsShouldReturnNullIfNoCommonPoint) {
+  const auto head_1 = Point{1, 2};
+  const auto tail_1 = Point{-3, -4};
+  const auto vector_1 = TwoDimensionalVector{&head_1, &tail_1};
+  const auto head_2 = Point{0, 0};
+  const auto tail_2 = Point{-3, -10};
+  const auto vector_2 = TwoDimensionalVector{&head_2, &tail_2};
+
+  ASSERT_TRUE(FindCommonPointOfVectors(vector_1, vector_2) == nullptr);
+}
