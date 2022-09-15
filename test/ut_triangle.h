@@ -8,17 +8,25 @@ class TriangleTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  void SetUp() override {
-    triangle_ = new Triangle{
-        new TwoDimensionalVector{new Point{0, 0}, new Point{3, 0}},
-        new TwoDimensionalVector{new Point{3, 4}, new Point{3, 0}}};
+  TriangleTest()
+      : vector_1_{TwoDimensionalVector(&vector_head_1_, &vector_tail_1_)},
+        vector_2_{TwoDimensionalVector(&vector_head_2_, &vector_tail_2_)} {
+    triangle_ = new Triangle{&vector_1_, &vector_2_};
   }
 
-  void TearDown() override {
+  virtual ~TriangleTest() override {
     delete triangle_;
   }
 
   Triangle* triangle_;
+
+ private:
+  const Point vector_head_1_ = Point{0, 0};
+  const Point vector_tail_1_ = Point{3, 0};
+  const TwoDimensionalVector vector_1_;
+  const Point vector_head_2_ = Point{3, 4};
+  const Point vector_tail_2_ = Point{3, 0};
+  const TwoDimensionalVector vector_2_;
 };
 
 TEST_F(TriangleTest, TestPerimeter) {
@@ -56,18 +64,10 @@ TEST_F(TriangleTest, PassingParallelVectorsShoudThrowException) {
       Triangle::ParallelSideException);
 }
 
-class TrianglePolymorphismTest : public ::testing::Test {
+class TrianglePolymorphismTest : public TriangleTest {
  protected:
-  const double DELTA = 0.001;
-
-  void SetUp() override {
-    triangle_ = new Triangle{
-        new TwoDimensionalVector{new Point{0, 0}, new Point{3, 0}},
-        new TwoDimensionalVector{new Point{3, 4}, new Point{3, 0}}};
-  }
-
-  void TearDown() override {
-    delete triangle_;
+  TrianglePolymorphismTest() : TriangleTest{} {
+    triangle_ = TriangleTest::triangle_;
   }
 
   Shape* triangle_;
