@@ -11,8 +11,8 @@
 
 class Rectangle : public Shape {
  public:
-  Rectangle(const TwoDimensionalVector* length_side,
-            const TwoDimensionalVector* width_side)
+  Rectangle(const TwoDimensionalVector* const length_side,
+            const TwoDimensionalVector* const width_side)
       : length_side_{length_side}, width_side_{width_side} {
     if (length_side_->dot(width_side_.get())) {
       throw NonOrthogonalSideException{""};

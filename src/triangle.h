@@ -12,8 +12,8 @@
 
 class Triangle : public Shape {
  public:
-  Triangle(const TwoDimensionalVector* side_1,
-           const TwoDimensionalVector* side_2)
+  Triangle(const TwoDimensionalVector* const side_1,
+           const TwoDimensionalVector* const side_2)
       : side_1_{side_1}, side_2_{side_2} {
     if (side_1_->cross(side_2_.get()) == 0) {
       throw ParallelSideException{""};
