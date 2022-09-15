@@ -7,37 +7,27 @@ class TwoDimensionalVectorTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  void SetUp() override {
-    head_ = new Point{2, -3};
-    tail_ = new Point{-3, 2};
-    vector_ = new TwoDimensionalVector{head_, tail_};
-  }
+  TwoDimensionalVectorTest() : vector_{TwoDimensionalVector{&head_, &tail_}} {}
 
-  void TearDown() override {
-    delete vector_;
-    delete tail_;
-    delete head_;
-  }
-
-  TwoDimensionalVector* vector_;
+  const TwoDimensionalVector vector_;
 
  private:
-  Point* head_;
-  Point* tail_;
+  const Point head_ = Point{2, -3};
+  const Point tail_ = Point{-3, 2};
 };
 
 TEST_F(TwoDimensionalVectorTest, CheckHeadTailSetProperlyByConstructor) {
-  EXPECT_EQ(Point(2, -3), vector_->head());
-  EXPECT_EQ(Point(-3, 2), vector_->tail());
+  EXPECT_EQ(Point(2, -3), vector_.head());
+  EXPECT_EQ(Point(-3, 2), vector_.tail());
 }
 
 TEST_F(TwoDimensionalVectorTest, CheckHeadTailAliasSetProperlyByConstructor) {
-  EXPECT_EQ(Point(2, -3), *vector_->a());
-  EXPECT_EQ(Point(-3, 2), *vector_->b());
+  EXPECT_EQ(Point(2, -3), *vector_.a());
+  EXPECT_EQ(Point(-3, 2), *vector_.b());
 }
 
 TEST_F(TwoDimensionalVectorTest, TestInfo) {
-  ASSERT_EQ("Vector ((2.00, -3.00), (-3.00, 2.00))", vector_->info());
+  ASSERT_EQ("Vector ((2.00, -3.00), (-3.00, 2.00))", vector_.info());
 }
 
 TEST_F(TwoDimensionalVectorTest, TestLength) {
