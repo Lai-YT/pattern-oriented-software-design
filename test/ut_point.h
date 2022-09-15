@@ -36,6 +36,13 @@ TEST(PointTest, TestEqualityOnSameXY) {
   ASSERT_TRUE(a == b);
 }
 
+TEST(PointTest, TestEqualityOnSameDoubleXY) {
+  const auto a = Point{3.16, 1.99};
+  const auto b = Point{3.16, 1.99};
+
+  ASSERT_TRUE(a == b);
+}
+
 TEST(PointTest, TestEqualityOnSelfComparison) {
   const auto p = Point{2, -3};
 
