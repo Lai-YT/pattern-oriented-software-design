@@ -74,4 +74,30 @@ class TwoDimensionalVector {
   }
 };
 
+bool HasCommonPointWithVector(const Point& point,
+                              const TwoDimensionalVector& vector) {
+  return point == vector.head() || point == vector.tail();
+}
+
+const Point* FindUncommonPointFromVector(const TwoDimensionalVector* vector,
+                                         const Point* common_point) {
+  return *(vector->b()) == *common_point ? vector->a() : vector->b();
+}
+
+/**
+ * @returns the common point of vector_1 and vector_2, nullptr if no common.
+ * Does not guarantee that the point belongs to vector_1 or vector_2.
+ */
+const Point* FindCommonPointOfVectors(const TwoDimensionalVector& vector_1,
+                                      const TwoDimensionalVector& vector_2) {
+  bool is_head_of_vector_1 =
+      HasCommonPointWithVector(vector_1.head(), vector_2);
+  bool is_tail_of_vector_1 =
+      HasCommonPointWithVector(vector_1.tail(), vector_2);
+  if (!is_head_of_vector_1 && !is_tail_of_vector_1) {
+    return nullptr;
+  }
+  return is_head_of_vector_1 ? vector_1.a() : vector_1.b();
+}
+
 #endif /* end of include guard: SRC_TWO_DIMENSIONAL_VECTOR_H_ */

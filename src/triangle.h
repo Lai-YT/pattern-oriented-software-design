@@ -18,13 +18,13 @@ class Triangle : public Shape {
     if (side_1_->cross(side_2_.get()) == 0) {
       throw ParallelSideException{""};
     }
-    const Point* common_point = FindCommonPoint_();
+    const Point* common_point = FindCommonPointOfVectors(*side_1, *side_2_);
     if (common_point == nullptr) {
       throw NoCommonPointException{""};
     }
     side_3_ = std::make_unique<TwoDimensionalVector>(
-        FindUncommonPoint_(side_1_.get(), common_point),
-        FindUncommonPoint_(side_2_.get(), common_point));
+        FindUncommonPointFromVector(side_1_.get(), common_point),
+        FindUncommonPointFromVector(side_2_.get(), common_point));
   }
 
   double perimeter() const override {
@@ -51,23 +51,6 @@ class Triangle : public Shape {
   std::experimental::observer_ptr<const TwoDimensionalVector> side_1_;
   std::experimental::observer_ptr<const TwoDimensionalVector> side_2_;
   std::unique_ptr<const TwoDimensionalVector> side_3_;
-
-  /* TODO: refactor */
-  const Point* FindCommonPoint_() const {
-    bool head_of_side_1_is_common_point = side_1_->head() == side_2_->head() ||
-                                          side_1_->head() == side_2_->tail();
-    bool tail_of_side_1_is_common_point = side_1_->tail() == side_2_->head() ||
-                                          side_1_->tail() == side_2_->tail();
-    if (!head_of_side_1_is_common_point && !tail_of_side_1_is_common_point) {
-      return nullptr;
-    }
-    return head_of_side_1_is_common_point ? side_1_->a() : side_1_->b();
-  }
-
-  const Point* FindUncommonPoint_(const TwoDimensionalVector* side,
-                                  const Point* common_point) const {
-    return *(side->b()) == *common_point ? side->a() : side->b();
-  }
 };
 
 #endif /* end of include guard: SRC_TRIANGLE_H_ */

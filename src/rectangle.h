@@ -11,20 +11,13 @@
 
 class Rectangle : public Shape {
  public:
-  /* TODO: refactor */
-  Rectangle(const TwoDimensionalVector* length_side, const TwoDimensionalVector* width_side)
+  Rectangle(const TwoDimensionalVector* length_side,
+            const TwoDimensionalVector* width_side)
       : length_side_{length_side}, width_side_{width_side} {
     if (length_side_->dot(width_side_.get())) {
       throw NonOrthogonalSideException{""};
     }
-    bool head_of_length_side_is_common_point =
-        length_side_->head() == width_side_->head() ||
-        length_side_->head() == width_side_->tail();
-    bool tail_of_length_side_is_common_point =
-        length_side_->tail() == width_side_->head() ||
-        length_side_->tail() == width_side_->tail();
-    if (!head_of_length_side_is_common_point &&
-        !tail_of_length_side_is_common_point) {
+    if (FindCommonPointOfVectors(*length_side_, *width_side_) == nullptr) {
       throw NoCommonPointException{""};
     }
   }
