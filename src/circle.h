@@ -13,19 +13,18 @@ class Circle : public Shape {
  public:
   /** The length of the vector is the radius of the circle. */
   Circle(const TwoDimensionalVector* const vector) : represent_vector_{vector} {
-    radius_ = represent_vector_->length();
   }
 
   double area() const override {
-    return M_PI * radius_ * radius_;
+    return M_PI * radius() * radius();
   }
 
   double perimeter() const override {
-    return 2 * M_PI * radius_;
+    return 2 * M_PI * radius();
   }
 
   double radius() const {
-    return radius_;
+    return represent_vector_->length();
   }
 
   std::string info() const override {
@@ -34,7 +33,6 @@ class Circle : public Shape {
 
  private:
   std::experimental::observer_ptr<const TwoDimensionalVector> represent_vector_;
-  double radius_;
 };
 
 #endif /* end of include guard: SRC_CIRCLE_H_ */
