@@ -33,3 +33,12 @@
 
 # IDE configurations
 .vscode/
+
+# Python
+venv/
+
+# Coverages
+*.gcda
+*.gcno
+*.gcov
+coverage.*
