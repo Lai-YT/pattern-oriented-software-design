@@ -14,7 +14,7 @@ test: all
 
 CXXFLAGS += -fprofile-arcs -ftest-coverage -O0 -fno-inline -fno-elide-constructors
 coverage: test
-	gcov test/ut_main.cpp -o bin/ut_all-ut_main --relative-only
+	gcov test/ut_main.cpp -o bin/ut_all-ut_main --relative-only --branch-probabilities
 
 dirs:
 	mkdir -p bin
