@@ -12,6 +12,11 @@ bin/ut_all: test/ut_main.cpp $(TEST) $(SRC)
 test: all
 	bin/ut_all
 
+CXXFLAGS += -fprofile-arcs -ftest-coverage -O0 -fno-inline -fno-elide-constructors
+GCOVR_FLAGS = --exclude-function-lines --sonarqube coverage.xml
+coverage: test
+	gcovr $(GCOVR_FLAGS)
+
 dirs:
 	mkdir -p bin
 
