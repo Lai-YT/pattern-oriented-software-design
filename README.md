@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/Lai-YT/pattern-oriented-software-design/branch/master/graph/badge.svg?token=Z9NOUUOCLT)](https://codecov.io/gh/Lai-YT/pattern-oriented-software-design)
+
 # posd2022f
 
 ## Assignment 1
