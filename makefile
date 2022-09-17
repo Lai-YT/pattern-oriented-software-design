@@ -13,7 +13,7 @@ test: all
 	bin/ut_all
 
 CXXFLAGS += -fprofile-arcs -ftest-coverage -O0 -fno-inline -fno-elide-constructors
-GCOVR_FLAGS = --exclude-function-lines --sonarqube coverage.xml
+GCOVR_FLAGS = --exclude-function-lines --cobertura coverage.xml
 coverage: test
 	gcovr $(GCOVR_FLAGS)
 
