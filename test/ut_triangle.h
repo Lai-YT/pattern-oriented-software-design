@@ -45,23 +45,27 @@ TEST_F(TriangleTest, TestInfo) {
 }
 
 TEST_F(TriangleTest, PassingVectorsWithNoCommonPointShoudThrowException) {
-  ASSERT_THROW(
-      {
-        const auto triangle = Triangle(
-            new TwoDimensionalVector{new Point{0, 0}, new Point{4, 0}},
-            new TwoDimensionalVector{new Point{3, 4}, new Point{3, 0}});
-      },
-      Triangle::NoCommonPointException);
+  const auto vector_head_1 = Point{0, 0};
+  const auto vector_tail_1 = Point{4, 0};
+  const auto vector_1 = TwoDimensionalVector{&vector_head_1, &vector_tail_1};
+  const auto vector_head_2 = Point{3, 4};
+  const auto vector_tail_2 = Point{3, 0};
+  const auto vector_2 = TwoDimensionalVector{&vector_head_2, &vector_tail_2};
+
+  ASSERT_THROW({ const auto triangle = Triangle(&vector_1, &vector_2); },
+               Triangle::NoCommonPointException);
 }
 
 TEST_F(TriangleTest, PassingParallelVectorsShoudThrowException) {
-  ASSERT_THROW(
-      {
-        const auto triangle = Triangle(
-            new TwoDimensionalVector{new Point{0, 0}, new Point{4, 0}},
-            new TwoDimensionalVector{new Point{4, 0}, new Point{5, 0}});
-      },
-      Triangle::ParallelSideException);
+  const auto vector_head_1 = Point{0, 0};
+  const auto vector_tail_1 = Point{4, 0};
+  const auto vector_1 = TwoDimensionalVector{&vector_head_1, &vector_tail_1};
+  const auto vector_head_2 = Point{4, 0};
+  const auto vector_tail_2 = Point{5, 0};
+  const auto vector_2 = TwoDimensionalVector{&vector_head_2, &vector_tail_2};
+
+  ASSERT_THROW({ const auto triangle = Triangle(&vector_1, &vector_2); },
+               Triangle::ParallelSideException);
 }
 
 class TrianglePolymorphismTest : public TriangleTest {
