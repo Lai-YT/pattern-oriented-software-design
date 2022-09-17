@@ -13,9 +13,8 @@ test: all
 	bin/ut_all
 
 CXXFLAGS += -fprofile-arcs -ftest-coverage -O0 -fno-inline -fno-elide-constructors
-GCOVR_FLAGS = --exclude-function-lines --cobertura coverage.xml
 coverage: test
-	gcovr $(GCOVR_FLAGS)
+	gcov test/ut_main.cpp -o bin/ut_all-ut_main --relative-only
 
 dirs:
 	mkdir -p bin
