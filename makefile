@@ -1,4 +1,4 @@
-.PHONY: dirs clean
+.PHONY: dirs clean clean_coverage
 
 CXXFLAGS = -Wfatal-errors
 SRC = $(shell ls src/*.h)
@@ -12,12 +12,17 @@ bin/ut_all: test/ut_main.cpp $(TEST) $(SRC)
 test: all
 	bin/ut_all
 
-CXXFLAGS += -fprofile-arcs -ftest-coverage -O0 -fno-inline -fno-elide-constructors
-coverage: test
-	gcov test/ut_main.cpp -o bin/ut_all-ut_main --relative-only --branch-probabilities
-
 dirs:
 	mkdir -p bin
 
 clean:
 	rm -f bin/*
+
+CXXFLAGS += -fprofile-arcs -ftest-coverage -O0 -fno-inline -fno-elide-constructors
+GCOV_FLAGS = --relative-only --branch-probabilities
+
+coverage: test
+	gcov test/ut_main.cpp -o bin/ut_all-ut_main $(GCOV_FLAGS)
+
+clean_coverage:
+	rm -f *.gcov **/*.gcda **/*.gcno coverage.xml coverage.html
