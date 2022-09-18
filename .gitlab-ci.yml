@@ -1,12 +1,28 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#priority-of-environment-variables
 include:
-- template: Jobs/Code-Quality.gitlab-ci.yml
-- template: Security/SAST.gitlab-ci.yml
-stages:
-- test
-sast:
+  template: Jobs/Code-Quality.gitlab-ci.yml
+  template: Security/SAST.gitlab-ci.yml
+
+image: ubuntu:22.04
+
+build:
+  stage: build
+  before_script:
+    - apt-get update
+    - apt-get install -y g++ make libgtest-dev cmake
+    - cd /usr/src/gtest
+    - cmake CMakeLists.txt
+    - make
+    - cd lib
+    - cp *.a /usr/lib
+  script:
+    - cd /builds/108820026/posd2022f_108820026_hw
+    - make
+  artifacts:
+    paths:
+      - bin
+
+# run tests using the binary built before
+test:
   stage: test
+  script:
+    - bin/ut_all
