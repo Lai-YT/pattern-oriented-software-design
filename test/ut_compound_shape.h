@@ -43,21 +43,18 @@ class CompoundShapeTest : public ::testing::Test {
   const Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
 };
 
-TEST_F(CompoundShapeTest, TestAreaDepthOne) {
+class CompoundShapeDepthOneTest : public CompoundShapeTest {
+ protected:
   /*
    *     compound
    *     /   |   \
    *    cir  rec  tri
    */
-  const auto compound = CompoundShape{{&circle_, &rectangle_, &triangle_}};
+  const CompoundShape compound_{{&circle_, &rectangle_, &triangle_}};
+};
 
-  const double actual = compound.area();
-  const double expected = 96.54;
-
-  ASSERT_NEAR(expected, actual, DELTA);
-}
-
-TEST_F(CompoundShapeTest, TestAreaDepthTwo) {
+class CompoundShapeDepthTwoTest : public CompoundShapeTest {
+ protected:
   /*
    *     compound_1
    *      /    \
@@ -65,82 +62,54 @@ TEST_F(CompoundShapeTest, TestAreaDepthTwo) {
    *    /      /   \
    *  cir     rec  tri
    */
-  const auto level_two_compound = CompoundShape{{&rectangle_, &triangle_}};
-  const auto level_one_compound =
-      CompoundShape{{&circle_, &level_two_compound}};
+  const CompoundShape level_two_compound_{{&rectangle_, &triangle_}};
+  const CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
+};
 
-  const double actual = level_one_compound.area();
+TEST_F(CompoundShapeDepthOneTest, TestArea) {
+  const double actual = compound_.area();
   const double expected = 96.54;
 
   ASSERT_NEAR(expected, actual, DELTA);
 }
 
-TEST_F(CompoundShapeTest, TestPerimeterDepthOne) {
-  /*
-   *     compound
-   *     /   |   \
-   *    cir  rec  tri
-   */
-  const auto compound = CompoundShape{{&circle_, &rectangle_, &triangle_}};
+TEST_F(CompoundShapeDepthTwoTest, TestArea) {
+  const double actual = level_one_compound_.area();
+  const double expected = 96.54;
 
-  const double actual = compound.perimeter();
+  ASSERT_NEAR(expected, actual, DELTA);
+}
+
+TEST_F(CompoundShapeDepthOneTest, TestPerimeter) {
+  const double actual = compound_.perimeter();
   const double expected = 57.416;
 
   ASSERT_NEAR(expected, actual, DELTA);
 }
 
-TEST_F(CompoundShapeTest, TestPerimeterDepthTwo) {
-  /*
-   *     compound_1
-   *      /    \
-   *     /   compound_2
-   *    /      /   \
-   *  cir     rec  tri
-   */
-  const auto level_two_compound = CompoundShape{{&rectangle_, &triangle_}};
-  const auto level_one_compound =
-      CompoundShape{{&circle_, &level_two_compound}};
-
-  const double actual = level_one_compound.perimeter();
+TEST_F(CompoundShapeDepthTwoTest, TestPerimeter) {
+  const double actual = level_one_compound_.perimeter();
   const double expected = 57.416;
 
   ASSERT_NEAR(expected, actual, DELTA);
 }
 
-TEST_F(CompoundShapeTest, TestInfoDepthOne) {
-  /*
-   *     compound
-   *     /   |   \
-   *    cir  rec  tri
-   */
-  const auto compound = CompoundShape{{&circle_, &rectangle_, &triangle_}};
-
-  const std::string actual = compound.info();
+TEST_F(CompoundShapeDepthOneTest, TestInfo) {
+  const std::string actual = compound_.info();
+  /* clang-format off */
   const std::string expected =
       "CompoundShape ("
-      "Circle (Vector ((1.00, 2.00), (-3.00, 5.00))), "
-      "Rectangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((0.00, 0.00), "
-      "(0.00, 4.00))), "
-      "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), "
-      "(3.00, 0.00)))"
+        "Circle (Vector ((1.00, 2.00), (-3.00, 5.00))), "
+        "Rectangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((0.00, 0.00), (0.00, 4.00))), "
+        "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), (3.00, 0.00)))"
       ")";
+  /* clang-format on */
 
   ASSERT_EQ(expected, actual);
 }
 
-TEST_F(CompoundShapeTest, TestInfoDepthTwo) {
-  /*
-   *     compound_1
-   *      /    \
-   *     /   compound_2
-   *    /      /   \
-   *  cir     rec  tri
-   */
-  const auto level_two_compound = CompoundShape{{&rectangle_, &triangle_}};
-  const auto level_one_compound =
-      CompoundShape{{&circle_, &level_two_compound}};
-
-  const std::string actual = level_one_compound.info();
+TEST_F(CompoundShapeDepthTwoTest, TestInfo) {
+  const std::string actual = level_one_compound_.info();
   /* clang-format off */
   const std::string expected =
       "CompoundShape ("
