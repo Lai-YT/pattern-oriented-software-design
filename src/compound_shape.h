@@ -1,29 +1,58 @@
-#pragma once
+#ifndef SRC_COMPOUND_SHAPE_H_
+#define SRC_COMPOUND_SHAPE_H_
 
-#include "shape.h"
-#include "./iterator/dfs_compound_iterator.h"
-#include "./iterator/bfs_compound_iterator.h"
-
+#include <experimental/memory>
 #include <list>
+#include <string>
 
-class CompoundShape : public Shape
-{
-private:
-    std::list<Shape*> _shapes;
-public:
-    ~CompoundShape() {}
+// #include "iterator/bfs_compound_iterator.h"
+// #include "iterator/dfs_compound_iterator.h"
+#include "shape.h"
 
-    double area() const override {}
+class CompoundShape : public Shape {
+ public:
+  CompoundShape(const std::list<const Shape*>& shapes) {
+    for (const auto* const shape : shapes) {
+      shapes_.emplace_back(shape);
+    }
+  }
 
-    double perimeter() const override {}
+  double area() const override {
+    double result = 0;
+    for (const auto& shape : shapes_) {
+      result += shape->area();
+    }
+    return result;
+  }
 
-    std::string info() const override {}
+  double perimeter() const override {
+    double result = 0;
+    for (const auto& shape : shapes_) {
+      result += shape->perimeter();
+    }
+    return result;
+  }
 
-    Iterator* createDFSIterator() override {}
+  std::string info() const override {
+    auto inner_info = std::string{};
+    for (const auto& shape : shapes_) {
+      inner_info += shape->info() + ", ";
+    }
+    /* remove the last ", " */
+    inner_info.pop_back();
+    inner_info.pop_back();
+    return "CompoundShape (" + inner_info + ")";
+  }
 
-    Iterator* createBFSIterator() override {}
+  // Iterator* createDFSIterator() override {}
 
-    void addShape(Shape* shape) override {}
+  // Iterator* createBFSIterator() override {}
 
-    void deleteShape(Shape* shape) override {}
+  // void addShape(Shape* shape) override {}
+
+  // void deleteShape(Shape* shape) override {}
+ private:
+  std::list<std::experimental::observer_ptr<const Shape>> shapes_;
 };
+
+#endif /* end of include guard: SRC_COMPOUND_SHAPE_H_ */
