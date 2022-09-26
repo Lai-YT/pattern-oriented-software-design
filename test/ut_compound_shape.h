@@ -66,6 +66,11 @@ class CompoundShapeDepthTwoTest : public CompoundShapeTest {
   const CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
 };
 
+TEST_F(CompoundShapeTest, TestConstructorTakingCStyleArrayShouldCompile) {
+  const Shape* shapes[] = {&circle_, &rectangle_, &triangle_};
+  const auto compound = CompoundShape{shapes, 3};
+}
+
 TEST_F(CompoundShapeDepthOneTest, TestArea) {
   const double actual = compound_.area();
   const double expected = 96.54;
