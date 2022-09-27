@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "iterator/ut_null_iterator.h"
 #include "ut_circle.h"
 #include "ut_compound_shape.h"
 #include "ut_point.h"

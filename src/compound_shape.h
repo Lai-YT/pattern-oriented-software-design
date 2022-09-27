@@ -12,10 +12,10 @@
 class CompoundShape : public Shape {
  public:
   CompoundShape(const std::list<const Shape*>& shapes)
-      : shapes_(shapes.begin(), shapes.end()) {}
+      : shapes_{shapes.begin(), shapes.end()} {}
 
   CompoundShape(const Shape* const* const shapes, const size_t size)
-      : shapes_(shapes, shapes + size) {}
+      : shapes_{shapes, shapes + size} {}
 
   double area() const override {
     double result = 0;
