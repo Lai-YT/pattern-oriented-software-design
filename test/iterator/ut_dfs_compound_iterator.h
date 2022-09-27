@@ -103,8 +103,7 @@ TEST_F(DFSCompoundIteratorOnArrayTest, CurrentItemShouldThrowExceptionWhenEnd) {
   dfs_itr_.next();
   dfs_itr_.next();
 
-  ASSERT_THROW({ dfs_itr_.currentItem(); },
-               decltype(dfs_itr_)::IteratorDoneException);
+  ASSERT_THROW({ dfs_itr_.currentItem(); }, Iterator::IteratorDoneException);
 }
 
 TEST_F(DFSCompoundIteratorOnArrayTest, NextShouldThrowExceptionWhenEnd) {
@@ -113,5 +112,5 @@ TEST_F(DFSCompoundIteratorOnArrayTest, NextShouldThrowExceptionWhenEnd) {
   dfs_itr_.next();
   dfs_itr_.next(); /* this one already reaches the end */
 
-  ASSERT_THROW({ dfs_itr_.next(); }, decltype(dfs_itr_)::IteratorDoneException);
+  ASSERT_THROW({ dfs_itr_.next(); }, Iterator::IteratorDoneException);
 }

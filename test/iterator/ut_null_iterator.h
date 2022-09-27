@@ -8,15 +8,15 @@ class NullIteratorTest : public ::testing::Test {
 };
 
 TEST_F(NullIteratorTest, FirstShouldThrowException) {
-  ASSERT_THROW({ it.first(); }, NullIterator::IteratorDoneException);
+  ASSERT_THROW({ it.first(); }, Iterator::IteratorDoneException);
 }
 
 TEST_F(NullIteratorTest, CurrentShouldThrowException) {
-  ASSERT_THROW({ it.currentItem(); }, NullIterator::IteratorDoneException);
+  ASSERT_THROW({ it.currentItem(); }, Iterator::IteratorDoneException);
 }
 
 TEST_F(NullIteratorTest, NextShouldThrowException) {
-  ASSERT_THROW({ it.next(); }, NullIterator::IteratorDoneException);
+  ASSERT_THROW({ it.next(); }, Iterator::IteratorDoneException);
 }
 
 TEST_F(NullIteratorTest, IsDoneShouldBeTrue) {

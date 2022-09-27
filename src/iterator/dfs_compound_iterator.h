@@ -3,10 +3,12 @@
 
 #include <stdexcept>
 
+#include "iterator.h"
+
 template <class ForwardIterator>
-class DFSCompoundIterator {
+class DFSCompoundIterator : Iterator {
  public:
- /** Range of iteration: [begin, end). */
+  /** Range of iteration: [begin, end). */
   DFSCompoundIterator(const ForwardIterator& begin, const ForwardIterator& end)
       : begin_{begin}, end_{end} {}
 
@@ -34,10 +36,6 @@ class DFSCompoundIterator {
   bool isDone() const {
     return *current_ == *end_;
   }
-
-  class IteratorDoneException : public std::runtime_error {
-    using std::runtime_error::runtime_error;
-  };
 
  private:
   const ForwardIterator& begin_;
