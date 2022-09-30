@@ -1,6 +1,9 @@
 #ifndef SRC_ITERATOR_DFS_COMPOUND_ITERATOR_H_
 #define SRC_ITERATOR_DFS_COMPOUND_ITERATOR_H_
 
+#include <stack>
+#include <unordered_set>
+
 #include "iterator.h"
 
 template <class ForwardIterator>

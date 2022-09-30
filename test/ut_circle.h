@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "../src/circle.h"
+#include "../src/iterator/iterator.h"
 #include "../src/point.h"
 #include "../src/two_dimensional_vector.h"
 
@@ -40,6 +41,14 @@ TEST_F(CircleTest, TestInfo) {
   ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_->info());
 }
 
+TEST_F(CircleTest, TestCreateDfsIterator) {
+  Iterator* dfs_iter = circle_->createDFSIterator();
+
+  ASSERT_TRUE(dfs_iter->isDone());
+
+  delete dfs_iter;
+}
+
 class CirclePolymorphismTest : public CircleTest {
  protected:
   CirclePolymorphismTest() : CircleTest{} {
@@ -59,4 +68,12 @@ TEST_F(CirclePolymorphismTest, TestPerimeter) {
 
 TEST_F(CirclePolymorphismTest, TestInfo) {
   ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_->info());
+}
+
+TEST_F(CirclePolymorphismTest, TestCreateDfsIterator) {
+  Iterator* dfs_iter = circle_->createDFSIterator();
+
+  ASSERT_TRUE(dfs_iter->isDone());
+
+  delete dfs_iter;
 }

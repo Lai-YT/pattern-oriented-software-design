@@ -68,6 +68,14 @@ TEST_F(TriangleTest, PassingParallelVectorsShoudThrowException) {
                Triangle::ParallelSideException);
 }
 
+TEST_F(TriangleTest, TestCreateDfsIterator) {
+  Iterator* dfs_iter = triangle_->createDFSIterator();
+
+  ASSERT_TRUE(dfs_iter->isDone());
+
+  delete dfs_iter;
+}
+
 class TrianglePolymorphismTest : public TriangleTest {
  protected:
   TrianglePolymorphismTest() : TriangleTest{} {
@@ -90,4 +98,12 @@ TEST_F(TrianglePolymorphismTest, TestInfo) {
       "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), "
       "(3.00, 0.00)))",
       triangle_->info());
+}
+
+TEST_F(TrianglePolymorphismTest, TestCreateDfsIterator) {
+  Iterator* dfs_iter = triangle_->createDFSIterator();
+
+  ASSERT_TRUE(dfs_iter->isDone());
+
+  delete dfs_iter;
 }

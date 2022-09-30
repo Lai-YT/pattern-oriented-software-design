@@ -5,6 +5,7 @@
 #include <memory>
 #include <stdexcept>
 
+#include "iterator/null_iterator.h"
 #include "point.h"
 #include "shape.h"
 #include "two_dimensional_vector.h"
@@ -36,6 +37,10 @@ class Triangle : public Shape {
 
   std::string info() const override {
     return "Triangle (" + side_1_->info() + ", " + side_2_->info() + ")";
+  }
+
+  NullIterator* createDFSIterator() override {
+    return new NullIterator{};
   }
 
   class NoCommonPointException : public std::invalid_argument {

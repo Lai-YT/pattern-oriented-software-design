@@ -1,7 +1,9 @@
-#ifndef SRC_ITERATOR_H_
-#define SRC_ITERATOR_H_
+#ifndef SRC_ITERATOR_ITERATOR_H_
+#define SRC_ITERATOR_ITERATOR_H_
 
 #include <stdexcept>
+
+class Shape;
 
 class Iterator {
  public:
@@ -16,4 +18,4 @@ class Iterator {
   };
 };
 
-#endif /* end of include guard: SRC_ITERATOR_H_ */
+#endif /* end of include guard: SRC_ITERATOR_ITERATOR_H_ */

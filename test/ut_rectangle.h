@@ -76,6 +76,14 @@ TEST_F(RectangleTest, PassingSidesWithNoCommonPointShouldThrowException) {
                Rectangle::NoCommonPointException);
 }
 
+TEST_F(RectangleTest, TestCreateDfsIterator) {
+  Iterator* dfs_iter = rectangle_->createDFSIterator();
+
+  ASSERT_TRUE(dfs_iter->isDone());
+
+  delete dfs_iter;
+}
+
 class RectanglePolymorphismTest : public RectangleTest {
  protected:
   RectanglePolymorphismTest() : RectangleTest{} {
@@ -98,4 +106,12 @@ TEST_F(RectanglePolymorphismTest, TestArea) {
 
 TEST_F(RectanglePolymorphismTest, TestPerimeter) {
   ASSERT_NEAR(14, rectangle_->perimeter(), DELTA);
+}
+
+TEST_F(RectanglePolymorphismTest, TestCreateDfsIterator) {
+  Iterator* dfs_iter = rectangle_->createDFSIterator();
+
+  ASSERT_TRUE(dfs_iter->isDone());
+
+  delete dfs_iter;
 }

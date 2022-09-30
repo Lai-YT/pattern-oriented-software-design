@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "iterator/null_iterator.h"
 #include "point.h"
 #include "shape.h"
 #include "two_dimensional_vector.h"
@@ -40,6 +41,10 @@ class Rectangle : public Shape {
 
   double width() const {
     return width_side_->length();
+  }
+
+  NullIterator* createDFSIterator() override {
+    return new NullIterator{};
   }
 
   class NonOrthogonalSideException : public std::invalid_argument {

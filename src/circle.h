@@ -5,6 +5,7 @@
 #include <cmath>
 #include <string>
 
+#include "iterator/null_iterator.h"
 #include "shape.h"
 #include "two_dimensional_vector.h"
 
@@ -28,6 +29,10 @@ class Circle : public Shape {
 
   std::string info() const override {
     return "Circle (" + represent_vector_->info() + ")";
+  }
+
+  NullIterator* createDFSIterator() override {
+    return new NullIterator{};
   }
 
  private:

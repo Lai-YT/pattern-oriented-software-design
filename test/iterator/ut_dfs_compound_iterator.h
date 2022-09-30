@@ -126,6 +126,13 @@ class DFSCompoundIteratorOnCompoundShapeTest : public DFSCompoundIteratorTest {
     delete dfs_itr_;
   }
 
+  /*
+   *     compound_1
+   *      /    \
+   *     /   compound_2
+   *    /      /   \
+   *  cir     rec  tri
+   */
   CompoundShape level_one_compound_{{&rectangle_, &triangle_}};
   CompoundShape level_two_compound_{{&circle_, &level_one_compound_}};
   Iterator* dfs_itr_{level_two_compound_.createDFSIterator()};
