@@ -11,10 +11,10 @@
 
 class CompoundShape : public Shape {
  public:
-  CompoundShape(const std::list<const Shape*>& shapes)
+  CompoundShape(const std::list<Shape*>& shapes)
       : shapes_{shapes.begin(), shapes.end()} {}
 
-  CompoundShape(const Shape** /* const here makes all shapes in shapes_ point to
+  CompoundShape(Shape** /* const here makes all shapes in shapes_ point to
                                  the first shape */
                     shapes,
                 const size_t size)
@@ -48,9 +48,8 @@ class CompoundShape : public Shape {
   }
 
   Iterator* createDFSIterator() {
-    std::cout << shapes_.size() << '\n';
-    return new DFSCompoundIterator<std::list<const Shape*>::iterator>{
-        shapes_.begin(), shapes_.end()};
+    return new DFSCompoundIterator<std::list<Shape*>::iterator>{shapes_.begin(),
+                                                                shapes_.end()};
   }
 
   // Iterator* createBFSIterator() override {}
@@ -59,7 +58,7 @@ class CompoundShape : public Shape {
 
   // void deleteShape(Shape* shape) override {}
  private:
-  std::list<const Shape*> shapes_;
+  std::list<Shape*> shapes_;
 };
 
 #endif /* end of include guard: SRC_COMPOUND_SHAPE_H_ */

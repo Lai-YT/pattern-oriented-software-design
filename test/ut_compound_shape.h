@@ -38,9 +38,9 @@ class CompoundShapeTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  const Circle circle_{&circle_vector_};
-  const Rectangle rectangle_{&rectangle_vector_1, &rectangle_vector_2};
-  const Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
+  Circle circle_{&circle_vector_};
+  Rectangle rectangle_{&rectangle_vector_1, &rectangle_vector_2};
+  Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
 };
 
 class CompoundShapeDepthOneTest : public CompoundShapeTest {
@@ -62,12 +62,12 @@ class CompoundShapeDepthTwoTest : public CompoundShapeTest {
    *    /      /   \
    *  cir     rec  tri
    */
-  const CompoundShape level_two_compound_{{&rectangle_, &triangle_}};
-  const CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
+  CompoundShape level_two_compound_{{&rectangle_, &triangle_}};
+  CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
 };
 
 TEST_F(CompoundShapeTest, TestConstructorTakingCStyleArrayShouldCompile) {
-  const Shape* shapes[] = {&circle_, &rectangle_, &triangle_};
+  Shape* shapes[] = {&circle_, &rectangle_, &triangle_};
   const auto compound = CompoundShape{shapes, 3};
 }
 

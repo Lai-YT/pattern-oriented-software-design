@@ -14,7 +14,7 @@ class NullIterator : public Iterator {
     throw IteratorDoneException{""};
   }
 
-  const Shape* currentItem() const override {
+  Shape* currentItem() const override {
     throw IteratorDoneException{""};
   }
 

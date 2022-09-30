@@ -1,8 +1,6 @@
 #ifndef SRC_ITERATOR_DFS_COMPOUND_ITERATOR_H_
 #define SRC_ITERATOR_DFS_COMPOUND_ITERATOR_H_
 
-#include <stdexcept>
-
 #include "iterator.h"
 
 template <class ForwardIterator>
@@ -18,7 +16,7 @@ class DFSCompoundIterator : public Iterator {
   }
 
   /** Throws an IteratorDoneException if the iteration reaches the end. */
-  const Shape* currentItem() const override {
+  Shape* currentItem() const override {
     if (isDone()) {
       throw IteratorDoneException{""};
     }
@@ -34,12 +32,12 @@ class DFSCompoundIterator : public Iterator {
   }
 
   bool isDone() const override {
-    return *current_ == *end_;
+    return current_ == end_;
   }
 
  private:
-  const ForwardIterator& begin_;
-  const ForwardIterator& end_;
+  ForwardIterator begin_;
+  ForwardIterator end_;
   ForwardIterator current_;
 };
 
