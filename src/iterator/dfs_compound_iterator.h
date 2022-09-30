@@ -6,19 +6,19 @@
 #include "iterator.h"
 
 template <class ForwardIterator>
-class DFSCompoundIterator : Iterator {
+class DFSCompoundIterator : public Iterator {
  public:
   /** Range of iteration: [begin, end). */
   DFSCompoundIterator(const ForwardIterator& begin, const ForwardIterator& end)
       : begin_{begin}, end_{end} {}
 
   /** Restarts the iteration. */
-  void first() {
+  void first() override {
     current_ = begin_;
   }
 
   /** Throws an IteratorDoneException if the iteration reaches the end. */
-  const Shape* currentItem() const {
+  const Shape* currentItem() const override {
     if (isDone()) {
       throw IteratorDoneException{""};
     }
@@ -26,14 +26,14 @@ class DFSCompoundIterator : Iterator {
   }
 
   /** Throws an IteratorDoneException if the iteration reaches the end. */
-  void next() {
+  void next() override {
     if (isDone()) {
       throw IteratorDoneException{""};
     }
     ++current_;
   }
 
-  bool isDone() const {
+  bool isDone() const override {
     return *current_ == *end_;
   }
 

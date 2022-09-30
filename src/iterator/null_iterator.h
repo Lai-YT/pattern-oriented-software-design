@@ -4,7 +4,7 @@
 #include "../shape.h"
 #include "iterator.h"
 
-class NullIterator : Iterator {
+class NullIterator : public Iterator {
  public:
   void first() override {
     throw IteratorDoneException{""};
@@ -14,7 +14,7 @@ class NullIterator : Iterator {
     throw IteratorDoneException{""};
   }
 
-  Shape* currentItem() const override {
+  const Shape* currentItem() const override {
     throw IteratorDoneException{""};
   }
 
