@@ -3,7 +3,6 @@
 #define _USE_MATH_DEFINES
 
 #include <cmath>
-#include <experimental/memory>
 #include <string>
 
 #include "shape.h"
@@ -32,7 +31,7 @@ class Circle : public Shape {
   }
 
  private:
-  std::experimental::observer_ptr<const TwoDimensionalVector> represent_vector_;
+  const TwoDimensionalVector* represent_vector_;
 };
 
 #endif /* end of include guard: SRC_CIRCLE_H_ */

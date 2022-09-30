@@ -2,7 +2,6 @@
 #define SRC_TRIANGLE_H_
 
 #include <cmath>
-#include <experimental/memory>
 #include <memory>
 #include <stdexcept>
 
@@ -15,16 +14,16 @@ class Triangle : public Shape {
   Triangle(const TwoDimensionalVector* const side_1,
            const TwoDimensionalVector* const side_2)
       : side_1_{side_1}, side_2_{side_2} {
-    if (side_1_->cross(side_2_.get()) == 0) {
+    if (side_1_->cross(side_2_) == 0) {
       throw ParallelSideException{""};
     }
     const Point* common_point = FindCommonPointOfVectors(*side_1, *side_2_);
     if (common_point == nullptr) {
       throw NoCommonPointException{""};
     }
-    side_3_ = std::make_unique<TwoDimensionalVector>(
+    side_3_ = std::unique_ptr<TwoDimensionalVector>{new TwoDimensionalVector{
         FindUncommonPointFromVector(*side_1_, *common_point),
-        FindUncommonPointFromVector(*side_2_, *common_point));
+        FindUncommonPointFromVector(*side_2_, *common_point)}};
   }
 
   double perimeter() const override {
@@ -32,7 +31,7 @@ class Triangle : public Shape {
   }
 
   double area() const override {
-    return std::abs(side_1_->cross(side_2_.get())) / 2;
+    return std::abs(side_1_->cross(side_2_)) / 2;
   }
 
   std::string info() const override {
@@ -48,8 +47,8 @@ class Triangle : public Shape {
   };
 
  private:
-  std::experimental::observer_ptr<const TwoDimensionalVector> side_1_;
-  std::experimental::observer_ptr<const TwoDimensionalVector> side_2_;
+  const TwoDimensionalVector* side_1_;
+  const TwoDimensionalVector* side_2_;
   std::unique_ptr<const TwoDimensionalVector> side_3_;
 };
 

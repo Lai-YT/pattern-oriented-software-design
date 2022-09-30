@@ -1,7 +1,6 @@
 #ifndef SRC_RECTANGLE_H_
 #define SRC_RECTANGLE_H_
 
-#include <experimental/memory>
 #include <stdexcept>
 #include <string>
 
@@ -14,7 +13,7 @@ class Rectangle : public Shape {
   Rectangle(const TwoDimensionalVector* const length_side,
             const TwoDimensionalVector* const width_side)
       : length_side_{length_side}, width_side_{width_side} {
-    if (length_side_->dot(width_side_.get())) {
+    if (length_side_->dot(width_side_)) {
       throw NonOrthogonalSideException{""};
     }
     if (FindCommonPointOfVectors(*length_side_, *width_side_) == nullptr) {
@@ -52,8 +51,8 @@ class Rectangle : public Shape {
   };
 
  private:
-  std::experimental::observer_ptr<const TwoDimensionalVector> length_side_;
-  std::experimental::observer_ptr<const TwoDimensionalVector> width_side_;
+  const TwoDimensionalVector* length_side_;
+  const TwoDimensionalVector* width_side_;
 };
 
 #endif /* end of include guard: SRC_RECTANGLE_H_ */

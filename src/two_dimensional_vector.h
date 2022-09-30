@@ -18,7 +18,7 @@ class TwoDimensionalVector {
 
   /** Returns head in pointer type. */
   const Point* a() const {
-    return head_.get();
+    return head_;
   }
 
   Point tail() const {
@@ -27,7 +27,7 @@ class TwoDimensionalVector {
 
   /** Returns tail in pointer type. */
   const Point* b() const {
-    return tail_.get();
+    return tail_;
   }
 
   std::string info() const {
@@ -54,8 +54,8 @@ class TwoDimensionalVector {
   }
 
  private:
-  std::experimental::observer_ptr<const Point> head_;
-  std::experimental::observer_ptr<const Point> tail_;
+  const Point* head_;
+  const Point* tail_;
 
   double x_offset_() const {
     return tail_->x() - head_->x();
