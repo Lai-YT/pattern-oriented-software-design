@@ -38,6 +38,14 @@ TEST_F(TwoDimensionalVectorTest, TestLength) {
   ASSERT_NEAR(1.414, vector.length(), DELTA);
 }
 
+TEST_F(TwoDimensionalVectorTest, TestDot) {
+  const auto head = Point{3, -1};
+  const auto tail = Point{0, 0};
+  const auto vector = TwoDimensionalVector{&head, &tail};
+
+  ASSERT_NEAR(20, vector.dot(&vector_), DELTA);
+}
+
 TEST_F(TwoDimensionalVectorTest, TestCrossProduct) {
   const auto head_1 = Point{0, 0};
   const auto tail_1 = Point{4, 5};
