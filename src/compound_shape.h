@@ -1,12 +1,12 @@
 #ifndef SRC_COMPOUND_SHAPE_H_
 #define SRC_COMPOUND_SHAPE_H_
 
-#include <experimental/memory>
 #include <list>
 #include <string>
 
+#include "iterator/iterator.h"
 // #include "iterator/bfs_compound_iterator.h"
-// #include "iterator/dfs_compound_iterator.h"
+#include "iterator/dfs_compound_iterator.h"
 #include "shape.h"
 
 class CompoundShape : public Shape {
@@ -14,7 +14,10 @@ class CompoundShape : public Shape {
   CompoundShape(const std::list<const Shape*>& shapes)
       : shapes_{shapes.begin(), shapes.end()} {}
 
-  CompoundShape(const Shape* const* const shapes, const size_t size)
+  CompoundShape(const Shape** /* const here makes all shapes in shapes_ point to
+                                 the first shape */
+                    shapes,
+                const size_t size)
       : shapes_{shapes, shapes + size} {}
 
   double area() const override {
@@ -44,7 +47,11 @@ class CompoundShape : public Shape {
     return "CompoundShape (" + inner_info + ")";
   }
 
-  // Iterator* createDFSIterator() override {}
+  Iterator* createDFSIterator() {
+    std::cout << shapes_.size() << '\n';
+    return new DFSCompoundIterator<std::list<const Shape*>::iterator>{
+        shapes_.begin(), shapes_.end()};
+  }
 
   // Iterator* createBFSIterator() override {}
 
@@ -52,7 +59,7 @@ class CompoundShape : public Shape {
 
   // void deleteShape(Shape* shape) override {}
  private:
-  std::list<std::experimental::observer_ptr<const Shape>> shapes_;
+  std::list<const Shape*> shapes_;
 };
 
 #endif /* end of include guard: SRC_COMPOUND_SHAPE_H_ */

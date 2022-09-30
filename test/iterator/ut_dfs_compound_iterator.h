@@ -42,26 +42,22 @@ class DFSCompoundIteratorTest : public ::testing::Test {
   const Circle circle_{&circle_vector_};
   const Rectangle rectangle_{&rectangle_vector_1, &rectangle_vector_2};
   const Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
-  // const CompoundShape level_one_compound_{{&rectangle_, &triangle_}};
-  // const CompoundShape level_two_compound_{{&circle_, &level_one_compound_}};
-  // const DFSCompoundIterator<Shape*>
-  // dfs_itr_{level_two_compound_.createDFSIterator()};
 };
 
-class DFSCompoundIteratorOnArrayTest : public DFSCompoundIteratorTest {
+class DFSCompoundIteratorOnFlatArrayTest : public DFSCompoundIteratorTest {
  protected:
   std::array<const Shape*, 3> shapes_{&circle_, &rectangle_, &triangle_};
   DFSCompoundIterator<decltype(shapes_)::const_iterator> dfs_itr_{
       shapes_.begin(), shapes_.end()};
 };
 
-TEST_F(DFSCompoundIteratorOnArrayTest, TestFirst) {
+TEST_F(DFSCompoundIteratorOnFlatArrayTest, TestFirst) {
   dfs_itr_.first();
 
   ASSERT_EQ(&circle_, dfs_itr_.currentItem());
 }
 
-TEST_F(DFSCompoundIteratorOnArrayTest, TestNext) {
+TEST_F(DFSCompoundIteratorOnFlatArrayTest, TestNext) {
   dfs_itr_.first();
   dfs_itr_.next();
   ASSERT_EQ(&rectangle_, dfs_itr_.currentItem());
@@ -69,7 +65,7 @@ TEST_F(DFSCompoundIteratorOnArrayTest, TestNext) {
   ASSERT_EQ(&triangle_, dfs_itr_.currentItem());
 }
 
-TEST_F(DFSCompoundIteratorOnArrayTest, FirstShouldRestartIteration) {
+TEST_F(DFSCompoundIteratorOnFlatArrayTest, FirstShouldRestartIteration) {
   dfs_itr_.first();
   dfs_itr_.next();
   dfs_itr_.next();
@@ -79,7 +75,7 @@ TEST_F(DFSCompoundIteratorOnArrayTest, FirstShouldRestartIteration) {
   ASSERT_EQ(&circle_, dfs_itr_.currentItem());
 }
 
-TEST_F(DFSCompoundIteratorOnArrayTest, IsDoneShouldBeFalseWhenNotEnd) {
+TEST_F(DFSCompoundIteratorOnFlatArrayTest, IsDoneShouldBeFalseWhenNotEnd) {
   dfs_itr_.first();
   ASSERT_FALSE(dfs_itr_.isDone());
   dfs_itr_.next();
@@ -88,7 +84,7 @@ TEST_F(DFSCompoundIteratorOnArrayTest, IsDoneShouldBeFalseWhenNotEnd) {
   ASSERT_FALSE(dfs_itr_.isDone());
 }
 
-TEST_F(DFSCompoundIteratorOnArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
+TEST_F(DFSCompoundIteratorOnFlatArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
   dfs_itr_.first();
   dfs_itr_.next();
   dfs_itr_.next();
@@ -97,7 +93,8 @@ TEST_F(DFSCompoundIteratorOnArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
   ASSERT_TRUE(dfs_itr_.isDone());
 }
 
-TEST_F(DFSCompoundIteratorOnArrayTest, CurrentItemShouldThrowExceptionWhenEnd) {
+TEST_F(DFSCompoundIteratorOnFlatArrayTest,
+       CurrentItemShouldThrowExceptionWhenEnd) {
   dfs_itr_.first();
   dfs_itr_.next();
   dfs_itr_.next();
@@ -106,11 +103,28 @@ TEST_F(DFSCompoundIteratorOnArrayTest, CurrentItemShouldThrowExceptionWhenEnd) {
   ASSERT_THROW({ dfs_itr_.currentItem(); }, Iterator::IteratorDoneException);
 }
 
-TEST_F(DFSCompoundIteratorOnArrayTest, NextShouldThrowExceptionWhenEnd) {
+TEST_F(DFSCompoundIteratorOnFlatArrayTest, NextShouldThrowExceptionWhenEnd) {
   dfs_itr_.first();
   dfs_itr_.next();
   dfs_itr_.next();
   dfs_itr_.next(); /* this one already reaches the end */
 
   ASSERT_THROW({ dfs_itr_.next(); }, Iterator::IteratorDoneException);
+}
+
+class DFSCompoundIteratorOnCompoundShapeTest : public DFSCompoundIteratorTest {
+ protected:
+  ~DFSCompoundIteratorOnCompoundShapeTest() override {
+    delete dfs_itr_;
+  }
+
+  CompoundShape level_one_compound_{{&rectangle_, &triangle_}};
+  CompoundShape level_two_compound_{{&circle_, &level_one_compound_}};
+  Iterator* dfs_itr_{level_two_compound_.createDFSIterator()};
+};
+
+TEST_F(DFSCompoundIteratorOnCompoundShapeTest, TestFirst) {
+  dfs_itr_->first();
+
+  ASSERT_EQ(&circle_, dfs_itr_->currentItem());
 }
