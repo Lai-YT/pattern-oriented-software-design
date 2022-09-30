@@ -18,9 +18,9 @@ dirs:
 clean:
 	rm -f bin/*
 
-CXXFLAGS += -fprofile-arcs -ftest-coverage -O0 -fno-inline -fno-elide-constructors
 GCOV_FLAGS = --relative-only --branch-probabilities
 
+coverage: CXXFLAGS += -fprofile-arcs -ftest-coverage -O0 -fno-inline -fno-elide-constructors
 coverage: test
 	gcov test/ut_main.cpp -o bin/ut_all-ut_main $(GCOV_FLAGS)
 
