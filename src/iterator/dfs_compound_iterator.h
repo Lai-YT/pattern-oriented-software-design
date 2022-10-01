@@ -8,11 +8,11 @@
 #include "iterator.h"
 #include "null_iterator.h"
 
+template <class ForwarIterator>
 class DFSCompoundIterator : public Iterator {
  public:
   /** Range of iteration: [begin, end). */
-  DFSCompoundIterator(const std::list<Shape*>::iterator& begin,
-                      const std::list<Shape*>::iterator& end)
+  DFSCompoundIterator(const ForwarIterator& begin, const ForwarIterator& end)
       : begin_{begin}, end_{end} {}
 
   /** Restarts the iteration. */
@@ -64,14 +64,14 @@ class DFSCompoundIterator : public Iterator {
   }
 
  private:
-  std::list<Shape*>::iterator begin_;
-  std::list<Shape*>::iterator end_;
+  ForwarIterator begin_;
+  ForwarIterator end_;
   /*
    * Top-level and normal cursors don't share common types. Our iterator returns
-   * item by calling currentItem, while standard iterator returns by
-   * dereferencing, so we have to handle them separately.
+   * item by calling currentItem, while pointers and standard iterator returns
+   * by dereferencing, so we have to handle them separately.
    */
-  std::list<Shape*>::iterator top_level_cursor_{};
+  ForwarIterator top_level_cursor_{};
   Iterator* cursor_ = &NullIterator::null_iterator;
   Shape* current_item_ = nullptr;
   std::stack<Iterator*> to_visit_{};

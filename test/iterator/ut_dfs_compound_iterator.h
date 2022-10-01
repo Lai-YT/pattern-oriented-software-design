@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <array>
 #include <list>
 
 #include "../../src/circle.h"
@@ -47,7 +48,8 @@ class DFSCompoundIteratorTest : public ::testing::Test {
 class DFSCompoundIteratorOnFlatListTest : public DFSCompoundIteratorTest {
  protected:
   std::list<Shape*> shapes_{&circle_, &rectangle_, &triangle_};
-  DFSCompoundIterator dfs_itr_{shapes_.begin(), shapes_.end()};
+  DFSCompoundIterator<decltype(shapes_)::iterator> dfs_itr_{shapes_.begin(),
+                                                            shapes_.end()};
 };
 
 TEST_F(DFSCompoundIteratorOnFlatListTest, TestFirst) {
@@ -117,6 +119,42 @@ TEST_F(DFSCompoundIteratorOnFlatListTest, NextShouldThrowExceptionWhenEnd) {
   ASSERT_TRUE(dfs_itr_.isDone());
   ASSERT_THROW({ dfs_itr_.next(); }, Iterator::IteratorDoneException)
       << "isDone returns " << dfs_itr_.isDone() << '\n';
+}
+
+class DFSCompoundIteratorOnFlatArrayTest : public DFSCompoundIteratorTest {
+ protected:
+  std::array<Shape*, 3> shapes_{&circle_, &rectangle_, &triangle_};
+  DFSCompoundIterator<decltype(shapes_)::iterator> dfs_itr_{shapes_.begin(),
+                                                            shapes_.end()};
+};
+
+TEST_F(DFSCompoundIteratorOnFlatArrayTest, TestNext) {
+  dfs_itr_.first();
+
+  dfs_itr_.next();
+  ASSERT_EQ(&rectangle_, dfs_itr_.currentItem())
+      << dfs_itr_.currentItem()->info() << '\n';
+  dfs_itr_.next();
+  ASSERT_EQ(&triangle_, dfs_itr_.currentItem())
+      << dfs_itr_.currentItem()->info() << '\n';
+}
+
+TEST_F(DFSCompoundIteratorOnFlatArrayTest, IsDoneShouldBeFalseWhenNotEnd) {
+  dfs_itr_.first();
+  ASSERT_FALSE(dfs_itr_.isDone());
+  dfs_itr_.next();
+  ASSERT_FALSE(dfs_itr_.isDone());
+  dfs_itr_.next();
+  ASSERT_FALSE(dfs_itr_.isDone());
+}
+
+TEST_F(DFSCompoundIteratorOnFlatArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
+  dfs_itr_.first();
+  dfs_itr_.next();
+  dfs_itr_.next();
+
+  dfs_itr_.next(); /* this one reaches the end */
+  ASSERT_TRUE(dfs_itr_.isDone());
 }
 
 class DFSCompoundIteratorOnCompoundShapeTest : public DFSCompoundIteratorTest {
