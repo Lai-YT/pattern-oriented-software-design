@@ -48,8 +48,7 @@ class CompoundShape : public Shape {
   }
 
   Iterator* createDFSIterator() override {
-    return new DFSCompoundIterator<std::list<Shape*>::iterator>{shapes_.begin(),
-                                                                shapes_.end()};
+    return new DFSCompoundIterator{shapes_.begin(), shapes_.end()};
   }
 
   // Iterator* createBFSIterator() override {}
