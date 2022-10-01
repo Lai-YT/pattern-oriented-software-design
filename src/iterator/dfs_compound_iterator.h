@@ -17,12 +17,9 @@ class DFSCompoundIterator : public Iterator {
 
   /** Restarts the iteration. */
   void first() override {
-    stack_ = std::stack<Iterator*>{};
-
+    to_visit_ = std::stack<Iterator*>{};
     top_level_cursor_ = begin_;
-    stack_.push((*top_level_cursor_)->createDFSIterator());
-    SetFirstIfNotDone_(stack_.top());
-    current_item_ = *top_level_cursor_;
+    Visit_(*top_level_cursor_);
   }
 
   /** Throws an IteratorDoneException if the iteration reaches the end. */
@@ -38,26 +35,27 @@ class DFSCompoundIterator : public Iterator {
     if (isDone()) {
       throw IteratorDoneException{""};
     }
+
     if (!cursor_->isDone()) {
       cursor_->next();
     }
-    while (cursor_->isDone() && !stack_.empty()) {
-      cursor_ = stack_.top();
-      stack_.pop();
+
+    /* look for undone parent */
+    while (cursor_->isDone() && !to_visit_.empty()) {
+      cursor_ = to_visit_.top();
+      to_visit_.pop();
     }
-    if (cursor_->isDone() && stack_.empty()) {
+
+    /* found undone parent */
+    if (!cursor_->isDone()) {
+      Visit_(cursor_->currentItem());
+    }
+    /* no undone parent utill top level parent */
+    else if (cursor_->isDone() && to_visit_.empty()) {
       ++top_level_cursor_;
-
       if (!isDone()) {
-        stack_.push((*top_level_cursor_)->createDFSIterator());
-        SetFirstIfNotDone_(stack_.top());
-
-        current_item_ = *top_level_cursor_;
+        Visit_(*top_level_cursor_);
       }
-    } else if (!cursor_->isDone()) {
-      stack_.push(cursor_->currentItem()->createDFSIterator());
-      SetFirstIfNotDone_(stack_.top());
-      current_item_ = cursor_->currentItem();
     }
   }
 
@@ -66,15 +64,27 @@ class DFSCompoundIterator : public Iterator {
   }
 
  private:
-  NullIterator null_{}; /* a singleton null iterator to point to */
-
   std::list<Shape*>::iterator begin_;
   std::list<Shape*>::iterator end_;
-  std::list<Shape*>::iterator top_level_cursor_;
-  Iterator* cursor_ = &null_;
-  Shape* current_item_;
+  /*
+   * Top-level and normal cursors don't share common types. Our iterator returns
+   * item by calling currentItem, while standard iterator returns by
+   * dereferencing, so we have to handle them separately.
+   */
+  std::list<Shape*>::iterator top_level_cursor_{};
+  Iterator* cursor_ = &NullIterator::null_iterator;
+  Shape* current_item_ = nullptr;
+  std::stack<Iterator*> to_visit_{};
 
-  std::stack<Iterator*> stack_{};
+  void Visit_(Shape* shape) {
+    current_item_ = shape;
+    PushChildrenAsToVisit_(shape->createDFSIterator());
+  }
+
+  void PushChildrenAsToVisit_(Iterator* children) {
+    to_visit_.push(children);
+    SetFirstIfNotDone_(children);
+  }
 
   void SetFirstIfNotDone_(Iterator* iterator) {
     if (!iterator->isDone()) {
