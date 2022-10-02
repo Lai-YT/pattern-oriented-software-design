@@ -202,3 +202,27 @@ TEST_F(DFSCompoundIteratorOnCompoundShapeTest, TestNext) {
   ASSERT_EQ(&triangle_, dfs_itr_->currentItem()) << dfs_itr_->currentItem()->info() << '\n';
   /* clang-format on */
 }
+
+TEST_F(DFSCompoundIteratorOnCompoundShapeTest, TestIsDoneShouldBeTrueWhenEnd) {
+  /* 6 inner shapes */
+  dfs_itr_->first();
+  std::cout << dfs_itr_->currentItem()->info() << '\n';
+
+  dfs_itr_->next();
+  std::cout << dfs_itr_->currentItem()->info() << '\n';
+
+  dfs_itr_->next();
+  std::cout << dfs_itr_->currentItem()->info() << '\n';
+
+  dfs_itr_->next();
+  std::cout << dfs_itr_->currentItem()->info() << '\n';
+
+  dfs_itr_->next();
+  std::cout << dfs_itr_->currentItem()->info() << '\n';
+
+  dfs_itr_->next();
+  std::cout << dfs_itr_->currentItem()->info() << '\n';
+
+  dfs_itr_->next(); /* this one reaches the end */
+  ASSERT_TRUE(dfs_itr_->isDone());
+}
