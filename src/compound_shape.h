@@ -56,40 +56,22 @@ class CompoundShape : public Shape {
 
   // Iterator* createBFSIterator() override {}
 
-  void addShape(Shape* const shape) {
+  void addShape(Shape* const shape) override {
     shapes_.push_back(shape);
   }
 
   /** If target appears multiple times, they are all deleted. */
-  void deleteShape(Shape* target) {
-    /* Can't delete while iterating because the deleted iterator becomes
-     * invalid, and ++ causes segmentation fault. */
-    auto targets_found = std::vector<decltype(shapes_)::iterator>{};
-    for (auto it = shapes_.begin(); it != shapes_.cend(); ++it) {
-      if (*it == target) {
-        targets_found.push_back(it);
-      }
-      if (IsCompoundShape_(*it)) {
-        DeleteShapeFromInnerCompoundShape_(dynamic_cast<CompoundShape*>(*it),
-                                           target);
-      }
-    }
-    for (const auto& it : targets_found) {
-      shapes_.erase(it);
+  void deleteShape(Shape* target) override {
+    /* from level one */
+    shapes_.remove(target);
+    /* recursively from all levels */
+    for (auto* s : shapes_) {
+      s->deleteShape(target);
     }
   }
 
  private:
   std::list<Shape*> shapes_;
-
-  bool IsCompoundShape_(Shape* shape) const {
-    return dynamic_cast<CompoundShape*>(shape) != nullptr;
-  }
-
-  void DeleteShapeFromInnerCompoundShape_(CompoundShape* compound,
-                                          Shape* target) {
-    compound->deleteShape(target);
-  }
 };
 
 #endif /* end of include guard: SRC_COMPOUND_SHAPE_H_ */
