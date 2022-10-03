@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "iterator/ut_bfs_compound_iterator.h"
 #include "iterator/ut_dfs_compound_iterator.h"
 #include "iterator/ut_null_iterator.h"
 #include "ut_circle.h"

@@ -1,21 +1,40 @@
-#pragma once
+#ifndef SRC_ITERATOR_BFS_COMPOUND_ITERATOR_H_
+#define SRC_ITERATOR_BFS_COMPOUND_ITERATOR_H_
 
 #include "iterator.h"
-#include "../shape.h"
 
-class CompoundShape;
+template <class ForwardIterator>
+class BFSCompoundIterator : Iterator {
+ public:
+  BFSCompoundIterator(const ForwardIterator& begin, const ForwardIterator& end)
+      : begin_{begin}, end_{end} {}
 
-template<class ForwardIterator>
-class BFSCompoundIterator : public Iterator
-{
-public:
-    BFSCompoundIterator(ForwardIterator begin, ForwardIterator end) {}
+  void first() override {
+    cursor_ = begin_;
+  }
 
-    void first() override {}
+  void next() override {
+    if (isDone()) {
+      throw Iterator::IteratorDoneException{""};
+    }
+    ++cursor_;
+  }
 
-    Shape* currentItem() const override {}
+  Shape* currentItem() const override {
+    if (isDone()) {
+      throw Iterator::IteratorDoneException{""};
+    }
+    return *cursor_;
+  }
 
-    void next() override {}
+  bool isDone() const override {
+    return cursor_ == end_;
+  }
 
-    bool isDone() const override {}
+ private:
+  ForwardIterator begin_;
+  ForwardIterator end_;
+  ForwardIterator cursor_;
 };
+
+#endif /* end of include guard: SRC_ITERATOR_BFS_COMPOUND_ITERATOR_H_ */

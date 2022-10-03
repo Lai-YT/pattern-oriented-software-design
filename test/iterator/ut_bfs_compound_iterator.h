@@ -1,91 +1,232 @@
-#include "../../src/iterator/bfs_compound_iterator.h"
+#include <gtest/gtest.h>
+
+#include <array>
+#include <list>
+
+#include "../../src/circle.h"
 #include "../../src/compound_shape.h"
-#include "../../src/shape.h"
+#include "../../src/iterator/bfs_compound_iterator.h"
+#include "../../src/iterator/iterator.h"
+#include "../../src/point.h"
 #include "../../src/rectangle.h"
+#include "../../src/shape.h"
+#include "../../src/triangle.h"
+#include "../../src/two_dimensional_vector.h"
 
-#include <iostream>
+class BFSCompoundIteratorTest : public ::testing::Test {
+ private:
+  const Point circle_vector_head_{1, 2};
+  const Point circle_vector_tail_{-3, 5};
+  const TwoDimensionalVector circle_vector_{&circle_vector_head_,
+                                            &circle_vector_tail_};
+  const Point rectangle_vector_head_1_{0, 0};
+  const Point rectangle_vector_tail_1_{3, 0};
+  const TwoDimensionalVector rectangle_vector_1{&rectangle_vector_head_1_,
+                                                &rectangle_vector_tail_1_};
+  const Point rectangle_vector_head_2_{0, 0};
+  const Point rectangle_vector_tail_2_{0, 4};
+  const TwoDimensionalVector rectangle_vector_2{&rectangle_vector_head_2_,
+                                                &rectangle_vector_tail_2_};
+  const Point triangle_vector_head_1_{0, 0};
+  const Point triangle_vector_tail_1_{3, 0};
+  const TwoDimensionalVector triangle_vector_1_{&triangle_vector_head_1_,
+                                                &triangle_vector_tail_1_};
+  const Point triangle_vector_head_2_{3, 4};
+  const Point triangle_vector_tail_2_{3, 0};
+  const TwoDimensionalVector triangle_vector_2_{&triangle_vector_head_2_,
+                                                &triangle_vector_tail_2_};
 
-class BFSCompoundIteratorTest : public ::testing::Test
-{
-protected:
-    Point *p1, *p2, *p3, *p4;
-    TwoDimensionalVector *vec1, *vec2, *vec3;
-    CompoundShape *cs1, *cs2;
-    Iterator* it;
+  /* protected after private because non-static data members are initialized in
+   * order of declaration in the class definition. */
+ protected:
+  const double DELTA = 0.001;
 
-    void SetUp() override
-    {
-        p1 = new Point(0, 0);
-        p2 = new Point(0, 5);
-        p3 = new Point(5, 0);
-        p4 = new Point(0, 3);
-
-        vec1 = new TwoDimensionalVector(p1, p2);
-        vec2 = new TwoDimensionalVector(p1, p3);
-        vec3 = new TwoDimensionalVector(p1, p4);
-
-        cs1 = new CompoundShape();
-        cs1->addShape(new Circle(vec1));
-        cs1->addShape(new Rectangle(vec1,vec2));
-
-        cs2 = new CompoundShape();
-        cs2->addShape(new Circle(vec3));
-        cs2->addShape(cs1);
-
-        it = cs2->createBFSIterator();
-    }
-
-    void TearDown() override
-    {
-        delete cs2;
-        delete p1;
-        delete p2;
-        delete p3;
-        delete p4;
-        delete vec1;
-        delete vec2;
-        delete vec3;
-        delete it;
-    }
+  Circle circle_{&circle_vector_};
+  Rectangle rectangle_{&rectangle_vector_1, &rectangle_vector_2};
+  Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
 };
 
-TEST_F(BFSCompoundIteratorTest, CurrentItemShouldBeCorrect)
-{
-    ASSERT_EQ(3 * 3 * M_PI, it->currentItem()->area());
+class BFSCompoundIteratorOnFlatListTest : public BFSCompoundIteratorTest {
+ protected:
+  std::list<Shape*> shapes_{&circle_, &rectangle_, &triangle_};
+  BFSCompoundIterator<decltype(shapes_)::iterator> bfs_itr_{shapes_.begin(),
+                                                            shapes_.end()};
+};
+
+TEST_F(BFSCompoundIteratorOnFlatListTest, TestFirst) {
+  bfs_itr_.first();
+  ASSERT_EQ(&circle_, bfs_itr_.currentItem())
+      << bfs_itr_.currentItem()->info() << '\n';
 }
 
-TEST_F(BFSCompoundIteratorTest, NextShouldBeCorrect)
-{
-    it->next();
-    ASSERT_EQ(5 * 5 * M_PI + 25, it->currentItem()->area());
+TEST_F(BFSCompoundIteratorOnFlatListTest, TestNext) {
+  bfs_itr_.first();
+
+  bfs_itr_.next();
+  ASSERT_EQ(&rectangle_, bfs_itr_.currentItem())
+      << bfs_itr_.currentItem()->info() << '\n';
+  bfs_itr_.next();
+  ASSERT_EQ(&triangle_, bfs_itr_.currentItem())
+      << bfs_itr_.currentItem()->info() << '\n';
 }
 
-TEST_F(BFSCompoundIteratorTest, IsDoneShouldBeCorrect)
-{
-    it->next();
-    it->next();
-    it->next();
-    it->next();
+TEST_F(BFSCompoundIteratorOnFlatListTest, FirstShouldRestartIteration) {
+  bfs_itr_.first();
+  bfs_itr_.next();
+  bfs_itr_.next();
 
-    ASSERT_TRUE(it->isDone());
+  bfs_itr_.first();
+
+  ASSERT_EQ(&circle_, bfs_itr_.currentItem())
+      << bfs_itr_.currentItem()->info() << '\n';
 }
 
-TEST_F(BFSCompoundIteratorTest, CurrentItemShouldThrowExceptionWhenIsDone)
-{
-    it->next();
-    it->next();
-    it->next();
-    it->next();
-
-    ASSERT_ANY_THROW(it->next());
+TEST_F(BFSCompoundIteratorOnFlatListTest, IsDoneShouldBeFalseWhenNotEnd) {
+  bfs_itr_.first();
+  ASSERT_FALSE(bfs_itr_.isDone());
+  bfs_itr_.next();
+  ASSERT_FALSE(bfs_itr_.isDone());
+  bfs_itr_.next();
+  ASSERT_FALSE(bfs_itr_.isDone());
 }
 
-TEST_F(BFSCompoundIteratorTest, NextShouldThrowExceptionWhenIsDone)
-{
-    it->next();
-    it->next();
-    it->next();
-    it->next();
-    
-    ASSERT_ANY_THROW(it->currentItem());
+TEST_F(BFSCompoundIteratorOnFlatListTest, TestIsDoneShouldBeTrueWhenEnd) {
+  bfs_itr_.first();
+  bfs_itr_.next();
+  bfs_itr_.next();
+
+  bfs_itr_.next(); /* this one reaches the end */
+  ASSERT_TRUE(bfs_itr_.isDone());
 }
+
+TEST_F(BFSCompoundIteratorOnFlatListTest,
+       CurrentItemShouldThrowExceptionWhenEnd) {
+  bfs_itr_.first();
+  bfs_itr_.next();
+  bfs_itr_.next();
+  bfs_itr_.next();
+
+  ASSERT_TRUE(bfs_itr_.isDone());
+  ASSERT_THROW({ bfs_itr_.currentItem(); }, Iterator::IteratorDoneException)
+      << "isDone returns " << bfs_itr_.isDone() << '\n';
+}
+
+TEST_F(BFSCompoundIteratorOnFlatListTest, NextShouldThrowExceptionWhenEnd) {
+  bfs_itr_.first();
+  bfs_itr_.next();
+  bfs_itr_.next();
+  bfs_itr_.next(); /* this one already reaches the end */
+
+  ASSERT_TRUE(bfs_itr_.isDone());
+  ASSERT_THROW({ bfs_itr_.next(); }, Iterator::IteratorDoneException)
+      << "isDone returns " << bfs_itr_.isDone() << '\n';
+}
+
+class BFSCompoundIteratorOnFlatArrayTest : public BFSCompoundIteratorTest {
+ protected:
+  std::array<Shape*, 3> shapes_{&circle_, &rectangle_, &triangle_};
+  BFSCompoundIterator<decltype(shapes_)::iterator> bfs_itr_{shapes_.begin(),
+                                                            shapes_.end()};
+};
+
+TEST_F(BFSCompoundIteratorOnFlatArrayTest, TestNext) {
+  bfs_itr_.first();
+
+  bfs_itr_.next();
+  ASSERT_EQ(&rectangle_, bfs_itr_.currentItem())
+      << bfs_itr_.currentItem()->info() << '\n';
+  bfs_itr_.next();
+  ASSERT_EQ(&triangle_, bfs_itr_.currentItem())
+      << bfs_itr_.currentItem()->info() << '\n';
+}
+
+TEST_F(BFSCompoundIteratorOnFlatArrayTest, IsDoneShouldBeFalseWhenNotEnd) {
+  bfs_itr_.first();
+  ASSERT_FALSE(bfs_itr_.isDone());
+  bfs_itr_.next();
+  ASSERT_FALSE(bfs_itr_.isDone());
+  bfs_itr_.next();
+  ASSERT_FALSE(bfs_itr_.isDone());
+}
+
+TEST_F(BFSCompoundIteratorOnFlatArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
+  bfs_itr_.first();
+  bfs_itr_.next();
+  bfs_itr_.next();
+
+  bfs_itr_.next(); /* this one reaches the end */
+  ASSERT_TRUE(bfs_itr_.isDone());
+}
+
+// class BFSCompoundIteratorOnCompoundShapeTest : public BFSCompoundIteratorTest
+// {
+//  protected:
+//   ~BFSCompoundIteratorOnCompoundShapeTest() override {
+//     delete bfs_itr_;
+//   }
+
+//   /*
+//    *     compound_1
+//    *      /      \
+//    *     /     compound_2
+//    *    /    /     |      \
+//    *  cir  rec compound_3 tri
+//    *               |
+//    *              cir
+//    */
+
+//   CompoundShape level_three_compound_{{&circle_}};
+//   CompoundShape level_two_compound_{
+//       {&rectangle_, &level_three_compound_, &triangle_}};
+//   CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
+//   Iterator* bfs_itr_{level_one_compound_.createBFSIterator()};
+// };
+
+// TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestFirst) {
+//   bfs_itr_->first();
+
+//   ASSERT_EQ(&circle_, bfs_itr_->currentItem());
+// }
+
+// TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestNext) {
+//   bfs_itr_->first();
+
+//   /* clang-format off */ /* so can focus on the expected values */
+//   bfs_itr_->next();
+//   ASSERT_EQ(&level_two_compound_, bfs_itr_->currentItem()) <<
+//   bfs_itr_->currentItem()->info() << '\n'; bfs_itr_->next();
+//   ASSERT_EQ(&rectangle_, bfs_itr_->currentItem()) <<
+//   bfs_itr_->currentItem()->info() << '\n'; bfs_itr_->next();
+//   ASSERT_EQ(&level_three_compound_, bfs_itr_->currentItem()) <<
+//   bfs_itr_->currentItem()->info() << '\n'; bfs_itr_->next();
+//   ASSERT_EQ(&circle_, bfs_itr_->currentItem()) <<
+//   bfs_itr_->currentItem()->info() << '\n'; bfs_itr_->next();
+//   ASSERT_EQ(&triangle_, bfs_itr_->currentItem()) <<
+//   bfs_itr_->currentItem()->info() << '\n';
+//   /* clang-format on */
+// }
+
+// TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestIsDoneShouldBeTrueWhenEnd)
+// {
+//   /* 6 inner shapes */
+//   bfs_itr_->first();
+//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+
+//   bfs_itr_->next();
+//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+
+//   bfs_itr_->next();
+//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+
+//   bfs_itr_->next();
+//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+
+//   bfs_itr_->next();
+//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+
+//   bfs_itr_->next();
+//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+
+//   bfs_itr_->next(); /* this one reaches the end */
+//   ASSERT_TRUE(bfs_itr_->isDone());
+// }
