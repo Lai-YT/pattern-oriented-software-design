@@ -1,6 +1,8 @@
 #ifndef SRC_COMPOUND_SHAPE_H_
 #define SRC_COMPOUND_SHAPE_H_
 
+#include <algorithm>
+#include <iostream>
 #include <list>
 #include <string>
 
@@ -54,9 +56,22 @@ class CompoundShape : public Shape {
 
   // Iterator* createBFSIterator() override {}
 
-  // void addShape(Shape* shape) override {}
+  void addShape(Shape* const shape) {
+    shapes_.push_back(shape);
+  }
 
-  // void deleteShape(Shape* shape) override {}
+  void deleteShape(Shape* shape) {
+    for (auto it = shapes_.begin(); it != shapes_.cend(); ++it) {
+      if (*it == shape) {
+        shapes_.erase(it);
+      }
+      auto* s = dynamic_cast<CompoundShape*>(*it);
+      if (s != nullptr) {
+        s->deleteShape(shape);
+      }
+    }
+  }
+
  private:
   std::list<Shape*> shapes_;
 };
