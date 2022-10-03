@@ -2,9 +2,9 @@
 #define SRC_COMPOUND_SHAPE_H_
 
 #include <algorithm>
-#include <iostream>
 #include <list>
 #include <string>
+#include <vector>
 
 #include "iterator/iterator.h"
 // #include "iterator/bfs_compound_iterator.h"
@@ -60,20 +60,36 @@ class CompoundShape : public Shape {
     shapes_.push_back(shape);
   }
 
-  void deleteShape(Shape* shape) {
+  /** If target appears multiple times, they are all deleted. */
+  void deleteShape(Shape* target) {
+    /* Can't delete while iterating because the deleted iterator becomes
+     * invalid, and ++ causes segmentation fault. */
+    auto targets_found = std::vector<decltype(shapes_)::iterator>{};
     for (auto it = shapes_.begin(); it != shapes_.cend(); ++it) {
-      if (*it == shape) {
-        shapes_.erase(it);
+      if (*it == target) {
+        targets_found.push_back(it);
       }
-      auto* s = dynamic_cast<CompoundShape*>(*it);
-      if (s != nullptr) {
-        s->deleteShape(shape);
+      if (IsCompoundShape_(*it)) {
+        DeleteShapeFromInnerCompoundShape_(dynamic_cast<CompoundShape*>(*it),
+                                           target);
       }
+    }
+    for (const auto& it : targets_found) {
+      shapes_.erase(it);
     }
   }
 
  private:
   std::list<Shape*> shapes_;
+
+  bool IsCompoundShape_(Shape* shape) const {
+    return dynamic_cast<CompoundShape*>(shape) != nullptr;
+  }
+
+  void DeleteShapeFromInnerCompoundShape_(CompoundShape* compound,
+                                          Shape* target) {
+    compound->deleteShape(target);
+  }
 };
 
 #endif /* end of include guard: SRC_COMPOUND_SHAPE_H_ */
