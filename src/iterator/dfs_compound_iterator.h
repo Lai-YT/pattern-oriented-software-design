@@ -20,6 +20,7 @@ class DFSCompoundIterator : public Iterator {
     to_visit_ = std::stack<Iterator*>{};
     top_level_cursor_ = begin_;
     Visit_(*top_level_cursor_);
+    PushChildrenAsToVisitIfNotDone_((*top_level_cursor_)->createDFSIterator());
   }
 
   /** Throws an IteratorDoneException if the iteration reaches the end. */
@@ -36,31 +37,33 @@ class DFSCompoundIterator : public Iterator {
       throw IteratorDoneException{""};
     }
 
+    /* Since every level below guaranteed to be depth-first, the overall
+     * traversal is depth-first. */
     if (!cursor_->isDone()) {
       cursor_->next();
     }
-
-    /* look for undone parent */
-    while (cursor_->isDone() && !to_visit_.empty()) {
+    if (cursor_->isDone() && !to_visit_.empty()) {
       cursor_ = to_visit_.top();
       to_visit_.pop();
     }
-
-    /* found undone parent */
     if (!cursor_->isDone()) {
       Visit_(cursor_->currentItem());
     }
-    /* no undone parent utill top level parent */
-    else if (cursor_->isDone() && to_visit_.empty()) {
+
+    /* Since this is DFS,
+     * top level shapes are visited each time a sub-tree is finished. */
+    if (cursor_->isDone() && to_visit_.empty()) {
       ++top_level_cursor_;
       if (!isDone()) {
         Visit_(*top_level_cursor_);
+        PushChildrenAsToVisitIfNotDone_(
+            (*top_level_cursor_)->createDFSIterator());
       }
     }
   }
 
   bool isDone() const override {
-    return top_level_cursor_ == end_;
+    return TopLevelIsDone_() && cursor_->isDone() && to_visit_.empty();
   }
 
  private:
@@ -73,22 +76,21 @@ class DFSCompoundIterator : public Iterator {
    */
   ForwarIterator top_level_cursor_{};
   Iterator* cursor_ = &NullIterator::null_iterator;
-  Shape* current_item_ = nullptr;
   std::stack<Iterator*> to_visit_{};
+  Shape* current_item_ = nullptr;
+
+  bool TopLevelIsDone_() const {
+    return top_level_cursor_ == end_;
+  }
 
   void Visit_(Shape* shape) {
     current_item_ = shape;
-    PushChildrenAsToVisit_(shape->createDFSIterator());
   }
 
-  void PushChildrenAsToVisit_(Iterator* children) {
-    to_visit_.push(children);
-    SetFirstIfNotDone_(children);
-  }
-
-  void SetFirstIfNotDone_(Iterator* iterator) {
-    if (!iterator->isDone()) {
-      iterator->first();
+  void PushChildrenAsToVisitIfNotDone_(Iterator* children) {
+    if (!children->isDone()) {
+      children->first();
+      to_visit_.push(children);
     }
   }
 };
