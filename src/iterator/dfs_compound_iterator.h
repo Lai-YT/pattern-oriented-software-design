@@ -47,16 +47,13 @@ class DFSCompoundIterator : public Iterator {
     if (!cursor_->isDone()) {
       cursor_->next();
     }
-    std::cout << "1\n";
     if (cursor_->isDone() && !to_visit_.empty()) {
       cursor_ = to_visit_.top();
       to_visit_.pop();
     }
-    std::cout << "2\n";
     if (!cursor_->isDone()) {
       Visit_(cursor_->currentItem());
     }
-    std::cout << "3\n";
     /* Since this is DFS,
      * top level shapes are visited each time a sub-tree is finished. */
     if (cursor_->isDone() && to_visit_.empty()) {
@@ -95,7 +92,6 @@ class DFSCompoundIterator : public Iterator {
   }
 
   void PushChildrenAsToVisitIfNotDone_(Iterator* children) {
-    std::cout << "PushChildrenAsToVisitIfNotDone_\n";
     if (!children->isDone()) {
       children->first();
       to_visit_.push(children);
