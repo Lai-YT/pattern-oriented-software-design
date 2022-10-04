@@ -12,6 +12,7 @@ class Shape {
   virtual double perimeter() const = 0;
   virtual std::string info() const = 0;
   virtual Iterator* createDFSIterator() = 0;
+  virtual Iterator* createBFSIterator() = 0;
   virtual void addShape(Shape* shape) {
     /* default for leaf: no effect */
   }

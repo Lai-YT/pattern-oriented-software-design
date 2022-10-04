@@ -43,6 +43,10 @@ class Triangle : public Shape {
     return new NullIterator{};
   }
 
+  NullIterator* createBFSIterator() override {
+    return new NullIterator{};
+  }
+
   class NoCommonPointException : public std::invalid_argument {
     using std::invalid_argument::invalid_argument;
   };

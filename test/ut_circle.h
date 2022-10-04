@@ -70,10 +70,18 @@ TEST_F(CirclePolymorphismTest, TestInfo) {
   ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_->info());
 }
 
-TEST_F(CirclePolymorphismTest, TestCreateDfsIterator) {
+TEST_F(CirclePolymorphismTest, TestCreateDfsIteratorShouldIsDone) {
   Iterator* dfs_iter = circle_->createDFSIterator();
 
   ASSERT_TRUE(dfs_iter->isDone());
 
   delete dfs_iter;
+}
+
+TEST_F(CirclePolymorphismTest, TestCreateBfsIteratorShouldIsDone) {
+  Iterator* bfs_iter = circle_->createBFSIterator();
+
+  ASSERT_TRUE(bfs_iter->isDone());
+
+  delete bfs_iter;
 }

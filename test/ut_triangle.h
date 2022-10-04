@@ -100,10 +100,18 @@ TEST_F(TrianglePolymorphismTest, TestInfo) {
       triangle_->info());
 }
 
-TEST_F(TrianglePolymorphismTest, TestCreateDfsIterator) {
+TEST_F(TrianglePolymorphismTest, TestCreateDfsIteratorShouldIsDone) {
   Iterator* dfs_iter = triangle_->createDFSIterator();
 
   ASSERT_TRUE(dfs_iter->isDone());
 
   delete dfs_iter;
+}
+
+TEST_F(TrianglePolymorphismTest, TestCreateBfsIteratorShouldIsDone) {
+  Iterator* bfs_iter = triangle_->createBFSIterator();
+
+  ASSERT_TRUE(bfs_iter->isDone());
+
+  delete bfs_iter;
 }

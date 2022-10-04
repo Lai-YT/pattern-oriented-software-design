@@ -158,75 +158,77 @@ TEST_F(BFSCompoundIteratorOnFlatArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
   ASSERT_TRUE(bfs_itr_.isDone());
 }
 
-// class BFSCompoundIteratorOnCompoundShapeTest : public BFSCompoundIteratorTest
-// {
-//  protected:
-//   ~BFSCompoundIteratorOnCompoundShapeTest() override {
-//     delete bfs_itr_;
-//   }
+class BFSCompoundIteratorOnCompoundShapeTest : public BFSCompoundIteratorTest {
+ protected:
+  ~BFSCompoundIteratorOnCompoundShapeTest() override {
+    delete bfs_itr_;
+  }
 
-//   /*
-//    *     compound_1
-//    *      /      \
-//    *     /     compound_2
-//    *    /    /     |      \
-//    *  cir  rec compound_3 tri
-//    *               |
-//    *              cir
-//    */
+  /*
+   *     compound_1
+   *      /      \
+   *    cir    compound_2
+   *         /     |      \
+   *       rec compound_3 tri
+   *               |
+   *              cir
+   */
 
-//   CompoundShape level_three_compound_{{&circle_}};
-//   CompoundShape level_two_compound_{
-//       {&rectangle_, &level_three_compound_, &triangle_}};
-//   CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
-//   Iterator* bfs_itr_{level_one_compound_.createBFSIterator()};
-// };
+  CompoundShape level_three_compound_{{&circle_}};
+  CompoundShape level_two_compound_{
+      {&rectangle_, &level_three_compound_, &triangle_}};
+  CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
+  Iterator* bfs_itr_{level_one_compound_.createBFSIterator()};
+};
 
-// TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestFirst) {
-//   bfs_itr_->first();
+TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestFirst) {
+  bfs_itr_->first();
 
-//   ASSERT_EQ(&circle_, bfs_itr_->currentItem());
-// }
+  ASSERT_EQ(&circle_, bfs_itr_->currentItem());
+}
 
-// TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestNext) {
-//   bfs_itr_->first();
+TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestNext) {
+  bfs_itr_->first();
 
-//   /* clang-format off */ /* so can focus on the expected values */
-//   bfs_itr_->next();
-//   ASSERT_EQ(&level_two_compound_, bfs_itr_->currentItem()) <<
-//   bfs_itr_->currentItem()->info() << '\n'; bfs_itr_->next();
-//   ASSERT_EQ(&rectangle_, bfs_itr_->currentItem()) <<
-//   bfs_itr_->currentItem()->info() << '\n'; bfs_itr_->next();
-//   ASSERT_EQ(&level_three_compound_, bfs_itr_->currentItem()) <<
-//   bfs_itr_->currentItem()->info() << '\n'; bfs_itr_->next();
-//   ASSERT_EQ(&circle_, bfs_itr_->currentItem()) <<
-//   bfs_itr_->currentItem()->info() << '\n'; bfs_itr_->next();
-//   ASSERT_EQ(&triangle_, bfs_itr_->currentItem()) <<
-//   bfs_itr_->currentItem()->info() << '\n';
-//   /* clang-format on */
-// }
+  /* clang-format off */ /* so can focus on the expected values */
+  bfs_itr_->next();
+  ASSERT_EQ(&level_two_compound_, bfs_itr_->currentItem()) << bfs_itr_->currentItem()->info() << '\n';
 
-// TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestIsDoneShouldBeTrueWhenEnd)
-// {
-//   /* 6 inner shapes */
-//   bfs_itr_->first();
-//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+  bfs_itr_->next();
+  ASSERT_EQ(&rectangle_, bfs_itr_->currentItem()) << bfs_itr_->currentItem()->info() << '\n';
 
-//   bfs_itr_->next();
-//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+  bfs_itr_->next();
+  ASSERT_EQ(&level_three_compound_, bfs_itr_->currentItem()) << bfs_itr_->currentItem()->info() << '\n';
 
-//   bfs_itr_->next();
-//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+  bfs_itr_->next();
+  ASSERT_EQ(&triangle_, bfs_itr_->currentItem()) << bfs_itr_->currentItem()->info() << '\n';
 
-//   bfs_itr_->next();
-//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+  bfs_itr_->next();
+  ASSERT_EQ(&circle_, bfs_itr_->currentItem()) << bfs_itr_->currentItem()->info() << '\n';
+  /* clang-format on */
+}
 
-//   bfs_itr_->next();
-//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestIsDoneShouldBeTrueWhenEnd) {
+  /* 6 inner shapes */
+  bfs_itr_->first();
+  std::cout << bfs_itr_->currentItem()->info() << '\n';
 
-//   bfs_itr_->next();
-//   std::cout << bfs_itr_->currentItem()->info() << '\n';
+  bfs_itr_->next();
+  std::cout << bfs_itr_->currentItem()->info() << '\n';
 
-//   bfs_itr_->next(); /* this one reaches the end */
-//   ASSERT_TRUE(bfs_itr_->isDone());
-// }
+  bfs_itr_->next();
+  std::cout << bfs_itr_->currentItem()->info() << '\n';
+
+  bfs_itr_->next();
+  std::cout << bfs_itr_->currentItem()->info() << '\n';
+
+  bfs_itr_->next();
+  std::cout << bfs_itr_->currentItem()->info() << '\n';
+
+  bfs_itr_->next();
+  std::cout << bfs_itr_->currentItem()->info() << '\n';
+
+  bfs_itr_->next(); /* this one reaches the end */
+  std::cout << bfs_itr_->currentItem()->info() << '\n';
+  ASSERT_TRUE(bfs_itr_->isDone());
+}

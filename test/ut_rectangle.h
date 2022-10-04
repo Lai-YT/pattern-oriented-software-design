@@ -108,10 +108,18 @@ TEST_F(RectanglePolymorphismTest, TestPerimeter) {
   ASSERT_NEAR(14, rectangle_->perimeter(), DELTA);
 }
 
-TEST_F(RectanglePolymorphismTest, TestCreateDfsIterator) {
+TEST_F(RectanglePolymorphismTest, TestCreateDfsIteratorShoudIsDone) {
   Iterator* dfs_iter = rectangle_->createDFSIterator();
 
   ASSERT_TRUE(dfs_iter->isDone());
 
   delete dfs_iter;
+}
+
+TEST_F(RectanglePolymorphismTest, TestCreateBfsIteratorShoudIsDone) {
+  Iterator* bfs_iter = rectangle_->createBFSIterator();
+
+  ASSERT_TRUE(bfs_iter->isDone());
+
+  delete bfs_iter;
 }

@@ -35,6 +35,10 @@ class Circle : public Shape {
     return new NullIterator{};
   }
 
+  NullIterator* createBFSIterator() override {
+    return new NullIterator{};
+  }
+
  private:
   const TwoDimensionalVector* represent_vector_;
 };
