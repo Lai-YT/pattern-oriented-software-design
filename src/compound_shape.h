@@ -2,6 +2,7 @@
 #define SRC_COMPOUND_SHAPE_H_
 
 #include <algorithm>
+#include <iostream>
 #include <list>
 #include <string>
 #include <vector>
@@ -62,7 +63,10 @@ class CompoundShape : public Shape {
   }
 
   void addShape(Shape* const shape) override {
+    std::cout << "add:\n" << shape->info() << '\n';
+    std::cout << "to:\n" << info() << '\n';
     shapes_.push_back(shape);
+    std::cout << "result:\n" << info() << '\n';
   }
 
   /** If target appears multiple times, they are all deleted. */
