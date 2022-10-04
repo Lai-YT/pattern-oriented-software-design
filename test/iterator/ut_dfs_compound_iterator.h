@@ -2,10 +2,13 @@
 
 #include <array>
 #include <list>
+#include <string>
+#include <vector>
 
 #include "../../src/circle.h"
 #include "../../src/compound_shape.h"
 #include "../../src/iterator/dfs_compound_iterator.h"
+#include "../../src/iterator/iterator.h"
 #include "../../src/point.h"
 #include "../../src/rectangle.h"
 #include "../../src/shape.h"
@@ -166,9 +169,9 @@ class DFSCompoundIteratorOnCompoundShapeTest : public DFSCompoundIteratorTest {
   /*
    *     compound_1
    *      /      \
-   *     /     compound_2
-   *    /    /     |      \
-   *  cir  rec compound_3 tri
+   *    ci     compound_2
+   *         /     |      \
+   *       rec compound_3 tri
    *               |
    *              cir
    */
@@ -178,6 +181,10 @@ class DFSCompoundIteratorOnCompoundShapeTest : public DFSCompoundIteratorTest {
       {&rectangle_, &level_three_compound_, &triangle_}};
   CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
   Iterator* dfs_itr_{level_one_compound_.createDFSIterator()};
+
+  std::string current_info_() const {
+    return dfs_itr_->currentItem()->info();
+  }
 };
 
 TEST_F(DFSCompoundIteratorOnCompoundShapeTest, TestFirst) {
@@ -189,40 +196,23 @@ TEST_F(DFSCompoundIteratorOnCompoundShapeTest, TestFirst) {
 TEST_F(DFSCompoundIteratorOnCompoundShapeTest, TestNext) {
   dfs_itr_->first();
 
-  /* clang-format off */ /* so can focus on the expected values */
-  dfs_itr_->next();
-  ASSERT_EQ(&level_two_compound_, dfs_itr_->currentItem()) << dfs_itr_->currentItem()->info() << '\n';
-  dfs_itr_->next();
-  ASSERT_EQ(&rectangle_, dfs_itr_->currentItem()) << dfs_itr_->currentItem()->info() << '\n';
-  dfs_itr_->next();
-  ASSERT_EQ(&level_three_compound_, dfs_itr_->currentItem()) << dfs_itr_->currentItem()->info() << '\n';
-  dfs_itr_->next();
-  ASSERT_EQ(&circle_, dfs_itr_->currentItem()) << dfs_itr_->currentItem()->info() << '\n';
-  dfs_itr_->next();
-  ASSERT_EQ(&triangle_, dfs_itr_->currentItem()) << dfs_itr_->currentItem()->info() << '\n';
-  /* clang-format on */
+  auto dfs_order =
+      std::vector<Shape*>{&level_two_compound_, &rectangle_,
+                          &level_three_compound_, &circle_, &triangle_};
+  for (Shape* s : dfs_order) {
+    dfs_itr_->next();
+
+    ASSERT_EQ(s, dfs_itr_->currentItem()) << current_info_() << '\n';
+  }
 }
 
 TEST_F(DFSCompoundIteratorOnCompoundShapeTest, TestIsDoneShouldBeTrueWhenEnd) {
-  /* 6 inner shapes */
   dfs_itr_->first();
-  std::cout << dfs_itr_->currentItem()->info() << '\n';
+  for (size_t i = 0; i < 5; i++) {
+    dfs_itr_->next();
+  }
 
   dfs_itr_->next();
-  std::cout << dfs_itr_->currentItem()->info() << '\n';
 
-  dfs_itr_->next();
-  std::cout << dfs_itr_->currentItem()->info() << '\n';
-
-  dfs_itr_->next();
-  std::cout << dfs_itr_->currentItem()->info() << '\n';
-
-  dfs_itr_->next();
-  std::cout << dfs_itr_->currentItem()->info() << '\n';
-
-  dfs_itr_->next();
-  std::cout << dfs_itr_->currentItem()->info() << '\n';
-
-  dfs_itr_->next(); /* this one reaches the end */
   ASSERT_TRUE(dfs_itr_->isDone());
 }

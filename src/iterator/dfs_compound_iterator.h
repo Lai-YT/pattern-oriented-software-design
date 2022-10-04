@@ -1,7 +1,6 @@
 #ifndef SRC_ITERATOR_DFS_COMPOUND_ITERATOR_H_
 #define SRC_ITERATOR_DFS_COMPOUND_ITERATOR_H_
 
-#include <list>
 #include <stack>
 
 #include "../shape.h"
