@@ -84,6 +84,16 @@ TEST_F(RectangleTest, TestCreateDfsIterator) {
   delete dfs_iter;
 }
 
+TEST_F(RectangleTest, AddShapeShouldThrowException) {
+  ASSERT_THROW({ rectangle_->addShape(rectangle_); },
+               Shape::ShapeInaddibleException);
+}
+
+TEST_F(RectangleTest, DeleteShapeShouldThrowException) {
+  ASSERT_THROW({ rectangle_->deleteShape(rectangle_); },
+               Shape::ShapeUndeletableException);
+}
+
 class RectanglePolymorphismTest : public RectangleTest {
  protected:
   RectanglePolymorphismTest() : RectangleTest{} {

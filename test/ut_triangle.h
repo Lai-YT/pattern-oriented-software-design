@@ -76,6 +76,16 @@ TEST_F(TriangleTest, TestCreateDfsIterator) {
   delete dfs_iter;
 }
 
+TEST_F(TriangleTest, AddShapeShouldThrowException) {
+  ASSERT_THROW({ triangle_->addShape(triangle_); },
+               Shape::ShapeInaddibleException);
+}
+
+TEST_F(TriangleTest, DeleteShapeShouldThrowException) {
+  ASSERT_THROW({ triangle_->deleteShape(triangle_); },
+               Shape::ShapeUndeletableException);
+}
+
 class TrianglePolymorphismTest : public TriangleTest {
  protected:
   TrianglePolymorphismTest() : TriangleTest{} {

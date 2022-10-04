@@ -69,7 +69,12 @@ class CompoundShape : public Shape {
     shapes_.remove(target);
     /* recursively from all levels */
     for (auto* s : shapes_) {
-      s->deleteShape(target);
+      try {
+        s->deleteShape(target);
+      } catch (const Shape::ShapeUndeletableException& e) {
+        /* slient exception,
+         * resemble `rm -f`, which ignores the non-existing error */
+      }
     }
   }
 

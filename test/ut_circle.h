@@ -49,6 +49,15 @@ TEST_F(CircleTest, TestCreateDfsIterator) {
   delete dfs_iter;
 }
 
+TEST_F(CircleTest, AddShapeShouldThrowException) {
+  ASSERT_THROW({ circle_->addShape(circle_); }, Shape::ShapeInaddibleException);
+}
+
+TEST_F(CircleTest, DeleteShapeShouldThrowException) {
+  ASSERT_THROW({ circle_->deleteShape(circle_); },
+               Shape::ShapeUndeletableException);
+}
+
 class CirclePolymorphismTest : public CircleTest {
  protected:
   CirclePolymorphismTest() : CircleTest{} {
