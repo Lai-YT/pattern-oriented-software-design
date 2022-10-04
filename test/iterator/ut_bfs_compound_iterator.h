@@ -48,6 +48,15 @@ class BFSCompoundIteratorTest : public ::testing::Test {
   Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
 };
 
+TEST_F(BFSCompoundIteratorTest, CreateIteratorFromEmptyCompoundShapeShouldIsDone) {
+  auto compound = CompoundShape{{}};
+
+  Iterator* itr = compound.createBFSIterator();
+  itr->first();
+
+  ASSERT_TRUE(itr->isDone());
+}
+
 class BFSCompoundIteratorOnFlatListTest : public BFSCompoundIteratorTest {
  protected:
   std::list<Shape*> shapes_{&circle_, &rectangle_, &triangle_};

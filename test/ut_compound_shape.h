@@ -71,6 +71,15 @@ TEST_F(CompoundShapeTest, TestConstructorTakingCStyleArrayShouldCompile) {
   const auto compound = CompoundShape{shapes, 3};
 }
 
+TEST_F(CompoundShapeTest, TestInfoOfEmptyCompoundShape) {
+  auto compound = CompoundShape{{}};
+
+  const std::string actual = compound.info();
+
+  const std::string expected = "CompoundShape ()";
+  ASSERT_EQ(expected, actual);
+}
+
 TEST_F(CompoundShapeDepthOneTest, TestArea) {
   const double actual = compound_.area();
   const double expected = 96.54;
@@ -207,6 +216,21 @@ TEST_F(CompoundShapeDepthTwoTest, TestInfo) {
   ASSERT_EQ(expected, actual);
 }
 
+TEST_F(CompoundShapeDepthTwoTest, TestAddShapeToEmptyCompoundShape) {
+  auto compound = CompoundShape{{}};
+
+  compound.addShape(&circle_);
+
+  const std::string actual = compound.info();
+  /* clang-format off */
+  const std::string expected =
+      "CompoundShape ("
+        "Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))"
+      ")";
+  /* clang-format on */
+  ASSERT_EQ(expected, actual);
+}
+
 TEST_F(CompoundShapeDepthTwoTest, TestAddShape) {
   level_one_compound_.addShape(&circle_);
 
@@ -222,6 +246,16 @@ TEST_F(CompoundShapeDepthTwoTest, TestAddShape) {
         "Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))" /* the shape being added */
       ")";
   /* clang-format on */
+  ASSERT_EQ(expected, actual);
+}
+
+TEST_F(CompoundShapeDepthTwoTest, TestDeleteShapeFromEmptyCompoundShape) {
+  auto compound = CompoundShape{{}};
+
+  compound.deleteShape(&circle_);
+
+  const std::string actual = compound.info();
+  const std::string expected = "CompoundShape ()";
   ASSERT_EQ(expected, actual);
 }
 
@@ -242,7 +276,8 @@ TEST_F(CompoundShapeDepthTwoTest, TestDeleteShapeFromLowLevel) {
 }
 
 TEST_F(CompoundShapeDepthTwoTest, DeleteShapeShouldDeleteAllTargetShapes) {
-  auto level_one_compound = CompoundShape{{&circle_, &level_two_compound_, &circle_}};
+  auto level_one_compound =
+      CompoundShape{{&circle_, &level_two_compound_, &circle_}};
 
   level_one_compound.deleteShape(&circle_);
 

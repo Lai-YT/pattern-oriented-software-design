@@ -40,12 +40,14 @@ class CompoundShape : public Shape {
 
   std::string info() const override {
     auto inner_info = std::string{};
-    for (const auto& shape : shapes_) {
-      inner_info += shape->info() + ", ";
+    if (!shapes_.empty()) {
+      for (const auto& shape : shapes_) {
+        inner_info += shape->info() + ", ";
+      }
+      /* remove the last ", " */
+      inner_info.pop_back();
+      inner_info.pop_back();
     }
-    /* remove the last ", " */
-    inner_info.pop_back();
-    inner_info.pop_back();
     return "CompoundShape (" + inner_info + ")";
   }
 
