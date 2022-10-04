@@ -2,6 +2,7 @@
 
 #include <array>
 #include <list>
+#include <string>
 
 #include "../../src/circle.h"
 #include "../../src/compound_shape.h"
@@ -165,70 +166,60 @@ class BFSCompoundIteratorOnCompoundShapeTest : public BFSCompoundIteratorTest {
   }
 
   /*
-   *     compound_1
-   *      /      \
-   *    cir    compound_2
-   *         /     |      \
-   *       rec compound_3 tri
-   *               |
-   *              cir
+   *         com_1
+   *      /         \
+   *  com_2_1      com_2_2
+   *     |      /     |     \
+   *    tri com_3_1 com_3_2  tri
+   *           |     /   \
+   *          rec  cir   rec
    */
 
-  CompoundShape level_three_compound_{{&circle_}};
-  CompoundShape level_two_compound_{
-      {&rectangle_, &level_three_compound_, &triangle_}};
-  CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
+  CompoundShape level_three_compound_1_{{&rectangle_}};
+  CompoundShape level_three_compound_2_{{&circle_, &rectangle_}};
+  CompoundShape level_two_compound_1_{{&triangle_}};
+  CompoundShape level_two_compound_2_{
+      {&level_three_compound_1_, &level_three_compound_2_, &triangle_}};
+  CompoundShape level_one_compound_{
+      {&level_two_compound_1_, &level_two_compound_2_}};
   Iterator* bfs_itr_{level_one_compound_.createBFSIterator()};
+
+  std::string current_info_() const {
+    return bfs_itr_->currentItem()->info();
+  }
 };
 
 TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestFirst) {
   bfs_itr_->first();
 
-  ASSERT_EQ(&circle_, bfs_itr_->currentItem());
+  ASSERT_EQ(&level_two_compound_1_, bfs_itr_->currentItem());
 }
 
 TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestNext) {
   bfs_itr_->first();
 
-  /* clang-format off */ /* so can focus on the expected values */
-  bfs_itr_->next();
-  ASSERT_EQ(&level_two_compound_, bfs_itr_->currentItem()) << bfs_itr_->currentItem()->info() << '\n';
+  auto bfs_order = std::vector<Shape*>{&level_two_compound_2_,
+                                       &triangle_,
+                                       &level_three_compound_1_,
+                                       &level_three_compound_2_,
+                                       &triangle_,
+                                       &rectangle_,
+                                       &circle_,
+                                       &rectangle_};
+  for (Shape* s : bfs_order) {
+    bfs_itr_->next();
 
-  bfs_itr_->next();
-  ASSERT_EQ(&rectangle_, bfs_itr_->currentItem()) << bfs_itr_->currentItem()->info() << '\n';
-
-  bfs_itr_->next();
-  ASSERT_EQ(&level_three_compound_, bfs_itr_->currentItem()) << bfs_itr_->currentItem()->info() << '\n';
-
-  bfs_itr_->next();
-  ASSERT_EQ(&triangle_, bfs_itr_->currentItem()) << bfs_itr_->currentItem()->info() << '\n';
-
-  bfs_itr_->next();
-  ASSERT_EQ(&circle_, bfs_itr_->currentItem()) << bfs_itr_->currentItem()->info() << '\n';
-  /* clang-format on */
+    ASSERT_EQ(s, bfs_itr_->currentItem()) << current_info_() << '\n';
+  }
 }
 
 TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestIsDoneShouldBeTrueWhenEnd) {
-  /* 6 inner shapes */
   bfs_itr_->first();
-  std::cout << bfs_itr_->currentItem()->info() << '\n';
+  for (size_t i = 0; i < 8; i++) {
+    bfs_itr_->next();
+  }
 
   bfs_itr_->next();
-  std::cout << bfs_itr_->currentItem()->info() << '\n';
 
-  bfs_itr_->next();
-  std::cout << bfs_itr_->currentItem()->info() << '\n';
-
-  bfs_itr_->next();
-  std::cout << bfs_itr_->currentItem()->info() << '\n';
-
-  bfs_itr_->next();
-  std::cout << bfs_itr_->currentItem()->info() << '\n';
-
-  bfs_itr_->next();
-  std::cout << bfs_itr_->currentItem()->info() << '\n';
-
-  bfs_itr_->next(); /* this one reaches the end */
-  std::cout << bfs_itr_->currentItem()->info() << '\n';
-  ASSERT_TRUE(bfs_itr_->isDone());
+  ASSERT_TRUE(bfs_itr_->isDone()) << current_info_() << '\n';
 }
