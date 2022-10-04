@@ -55,6 +55,20 @@ class DFSCompoundIteratorOnFlatListTest : public DFSCompoundIteratorTest {
                                                             shapes_.end()};
 };
 
+TEST_F(DFSCompoundIteratorTest,
+       IteratingWithEmptyCompoundShapeChildShouldBeCorrect) {
+  auto compound_child = CompoundShape{{}};
+  auto compound = CompoundShape{{&compound_child}};
+
+  Iterator* itr = compound.createDFSIterator();
+  itr->first();
+
+  ASSERT_EQ(&compound_child, itr->currentItem());
+  itr->next();
+  ASSERT_TRUE(itr->isDone());
+  delete itr;
+}
+
 TEST_F(DFSCompoundIteratorOnFlatListTest, TestFirst) {
   dfs_itr_.first();
   ASSERT_EQ(&circle_, dfs_itr_.currentItem())

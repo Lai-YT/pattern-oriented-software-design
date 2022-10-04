@@ -56,6 +56,22 @@ TEST_F(BFSCompoundIteratorTest,
   itr->first();
 
   ASSERT_TRUE(itr->isDone());
+  delete itr;
+}
+
+TEST_F(BFSCompoundIteratorTest,
+       IteratingWithEmptyCompoundShapeChildShouldBeCorrect) {
+  auto compound_child = CompoundShape{{}};
+  auto compound = CompoundShape{{&compound_child}};
+
+  Iterator* itr = compound.createBFSIterator();
+  itr->first();
+
+  ASSERT_EQ(&compound_child, itr->currentItem());
+  itr->next();
+  ASSERT_TRUE(itr->isDone());
+
+  delete itr;
 }
 
 class BFSCompoundIteratorOnFlatListTest : public BFSCompoundIteratorTest {
