@@ -48,7 +48,8 @@ class BFSCompoundIteratorTest : public ::testing::Test {
   Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
 };
 
-TEST_F(BFSCompoundIteratorTest, CreateIteratorFromEmptyCompoundShapeShouldIsDone) {
+TEST_F(BFSCompoundIteratorTest,
+       CreateIteratorFromEmptyCompoundShapeShouldIsDone) {
   auto compound = CompoundShape{{}};
 
   Iterator* itr = compound.createBFSIterator();
@@ -66,6 +67,12 @@ class BFSCompoundIteratorOnFlatListTest : public BFSCompoundIteratorTest {
 
 TEST_F(BFSCompoundIteratorOnFlatListTest, TestFirst) {
   bfs_itr_.first();
+  ASSERT_EQ(&circle_, bfs_itr_.currentItem())
+      << bfs_itr_.currentItem()->info() << '\n';
+}
+
+TEST_F(BFSCompoundIteratorOnFlatListTest,
+       FirstShouldBeCalledInitiallyByConstructor) {
   ASSERT_EQ(&circle_, bfs_itr_.currentItem())
       << bfs_itr_.currentItem()->info() << '\n';
 }

@@ -11,7 +11,9 @@ template <class ForwardIterator>
 class BFSCompoundIterator : public Iterator {
  public:
   BFSCompoundIterator(const ForwardIterator& begin, const ForwardIterator& end)
-      : begin_{begin}, end_{end} {}
+      : begin_{begin}, end_{end} {
+    first();
+  }
 
   void first() override {
     to_visit_ = std::queue<Iterator*>{};

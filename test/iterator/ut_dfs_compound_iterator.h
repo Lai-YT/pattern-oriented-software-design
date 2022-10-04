@@ -61,6 +61,12 @@ TEST_F(DFSCompoundIteratorOnFlatListTest, TestFirst) {
       << dfs_itr_.currentItem()->info() << '\n';
 }
 
+TEST_F(DFSCompoundIteratorOnFlatListTest,
+       FirstShouldBeCalledInitiallyByConstructor) {
+  ASSERT_EQ(&circle_, dfs_itr_.currentItem())
+      << dfs_itr_.currentItem()->info() << '\n';
+}
+
 TEST_F(DFSCompoundIteratorOnFlatListTest, TestNext) {
   dfs_itr_.first();
 

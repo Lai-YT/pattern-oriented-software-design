@@ -12,7 +12,9 @@ class DFSCompoundIterator : public Iterator {
  public:
   /** Range of iteration: [begin, end). */
   DFSCompoundIterator(const ForwarIterator& begin, const ForwarIterator& end)
-      : begin_{begin}, end_{end} {}
+      : begin_{begin}, end_{end} {
+    first();
+  }
 
   /** Restarts the iteration. */
   void first() override {
