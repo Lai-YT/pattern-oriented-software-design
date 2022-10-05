@@ -6,9 +6,6 @@
 
 class NullIterator : public Iterator {
  public:
-  /* a singleton null iterator */
-  static NullIterator null_iterator;
-
   void first() override {
     throw IteratorDoneException{""};
   }
@@ -25,7 +22,5 @@ class NullIterator : public Iterator {
     return true;
   }
 };
-
-NullIterator NullIterator::null_iterator = NullIterator{};
 
 #endif /* end of include guard: SRC_ITERATOR_NULL_ITERATOR_H_ */

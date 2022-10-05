@@ -1,6 +1,7 @@
 #ifndef SRC_ITERATOR_BFS_COMPOUND_ITERATOR_H_
 #define SRC_ITERATOR_BFS_COMPOUND_ITERATOR_H_
 
+#include <memory>
 #include <queue>
 
 #include "../shape.h"
@@ -13,6 +14,10 @@ class BFSCompoundIterator : public Iterator {
   BFSCompoundIterator(const ForwardIterator& begin, const ForwardIterator& end)
       : begin_{begin}, end_{end} {
     first();
+  }
+
+  ~BFSCompoundIterator() {
+    delete cursor_;
   }
 
   void first() override {
@@ -30,7 +35,12 @@ class BFSCompoundIterator : public Iterator {
       throw Iterator::IteratorDoneException{
           "can't call next on a done iterator"};
     }
-    /* since this is BFS, top level shapes are the first to visit */
+    /*
+     * The composite property:
+     *  Use recursion, which means to only care about the top level.
+     *  Since every level below are guaranteed to be breath-first, the overall
+     *  traversal is breath-first.
+     */
     if (!TopLevelIsDone_()) {
       ++top_level_cursor_;
       if (!TopLevelIsDone_()) {
@@ -41,12 +51,11 @@ class BFSCompoundIterator : public Iterator {
       }
     }
 
-    /* Since every level below guaranteed to be breath-first, the overall
-     * traversal is breath-first. */
     if (!cursor_->isDone()) {
       cursor_->next();
     }
     if (cursor_->isDone() && !to_visit_.empty()) {
+      delete cursor_;
       cursor_ = to_visit_.front();
       to_visit_.pop();
     }
@@ -71,7 +80,7 @@ class BFSCompoundIterator : public Iterator {
   ForwardIterator begin_;
   ForwardIterator end_;
   ForwardIterator top_level_cursor_;
-  Iterator* cursor_ = &NullIterator::null_iterator;
+  Iterator* cursor_ = new NullIterator{};
   std::queue<Iterator*> to_visit_{};
   Shape* current_item_ = nullptr;
 

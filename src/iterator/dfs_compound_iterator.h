@@ -16,6 +16,10 @@ class DFSCompoundIterator : public Iterator {
     first();
   }
 
+  ~DFSCompoundIterator() {
+    delete cursor_;
+  }
+
   /** Restarts the iteration. */
   void first() override {
     to_visit_ = std::stack<Iterator*>{};
@@ -42,20 +46,24 @@ class DFSCompoundIterator : public Iterator {
       throw IteratorDoneException{""};
     }
 
-    /* Since every level below guaranteed to be depth-first, the overall
-     * traversal is depth-first. */
+    /*
+     * The composite property:
+     *  Use recursion, which means to only care about the top level.
+     *  Since every level below are guaranteed to be depth-first, the overall
+     *  traversal is depth-first.
+     */
     if (!cursor_->isDone()) {
       cursor_->next();
     }
     if (cursor_->isDone() && !to_visit_.empty()) {
+      delete cursor_;
       cursor_ = to_visit_.top();
       to_visit_.pop();
     }
     if (!cursor_->isDone()) {
       Visit_(cursor_->currentItem());
     }
-    /* Since this is DFS,
-     * top level shapes are visited each time a sub-tree is finished. */
+    /* Top level shapes are visited each time a sub-tree is finished. */
     if (cursor_->isDone() && to_visit_.empty()) {
       ++top_level_cursor_;
       if (!isDone()) {
@@ -79,7 +87,7 @@ class DFSCompoundIterator : public Iterator {
    * by dereferencing, so we have to handle them separately.
    */
   ForwarIterator top_level_cursor_{};
-  Iterator* cursor_ = &NullIterator::null_iterator;
+  Iterator* cursor_ = new NullIterator{};
   std::stack<Iterator*> to_visit_{};
   Shape* current_item_ = nullptr;
 
