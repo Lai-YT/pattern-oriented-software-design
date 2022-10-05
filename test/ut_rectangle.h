@@ -5,51 +5,41 @@
 #include "../src/two_dimensional_vector.h"
 
 class RectangleTest : public ::testing::Test {
- protected:
-  const double DELTA = 0.001;
-
-  RectangleTest()
-      : vector_1_{TwoDimensionalVector(&vector_head_1_, &vector_tail_1_)},
-        vector_2_{TwoDimensionalVector(&vector_head_2_, &vector_tail_2_)} {
-    rectangle_ = new Rectangle{&vector_1_, &vector_2_};
-  }
-
-  virtual ~RectangleTest() override {
-    delete rectangle_;
-  }
-
-  Rectangle* rectangle_;
-
  private:
   const Point vector_head_1_ = Point{0, 0};
   const Point vector_tail_1_ = Point{3, 0};
-  const TwoDimensionalVector vector_1_;
+  const TwoDimensionalVector vector_1_{&vector_head_1_, &vector_tail_1_};
   const Point vector_head_2_ = Point{0, 0};
   const Point vector_tail_2_ = Point{0, 4};
-  const TwoDimensionalVector vector_2_;
+  const TwoDimensionalVector vector_2_{&vector_head_2_, &vector_tail_2_};
+
+ protected:
+  const double DELTA = 0.001;
+
+  Rectangle rectangle_{&vector_1_, &vector_2_};
 };
 
 TEST_F(RectangleTest, TestLength) {
-  ASSERT_NEAR(3, rectangle_->length(), DELTA);
+  ASSERT_NEAR(3, rectangle_.length(), DELTA);
 }
 
 TEST_F(RectangleTest, TestWidth) {
-  ASSERT_NEAR(4, rectangle_->width(), DELTA);
+  ASSERT_NEAR(4, rectangle_.width(), DELTA);
 }
 
 TEST_F(RectangleTest, TestInfo) {
   ASSERT_EQ(
       "Rectangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((0.00, 0.00), "
       "(0.00, 4.00)))",
-      rectangle_->info());
+      rectangle_.info());
 }
 
 TEST_F(RectangleTest, TestArea) {
-  ASSERT_NEAR(12, rectangle_->area(), DELTA);
+  ASSERT_NEAR(12, rectangle_.area(), DELTA);
 }
 
 TEST_F(RectangleTest, TestPerimeter) {
-  ASSERT_NEAR(14, rectangle_->perimeter(), DELTA);
+  ASSERT_NEAR(14, rectangle_.perimeter(), DELTA);
 }
 
 TEST_F(RectangleTest, PassingNonOrthognalSidesShouldThrowException) {
@@ -77,7 +67,7 @@ TEST_F(RectangleTest, PassingSidesWithNoCommonPointShouldThrowException) {
 }
 
 TEST_F(RectangleTest, TestCreateDfsIterator) {
-  Iterator* dfs_iter = rectangle_->createDFSIterator();
+  Iterator* dfs_iter = rectangle_.createDFSIterator();
 
   ASSERT_TRUE(dfs_iter->isDone());
 
@@ -85,41 +75,37 @@ TEST_F(RectangleTest, TestCreateDfsIterator) {
 }
 
 TEST_F(RectangleTest, AddShapeShouldThrowException) {
-  ASSERT_THROW({ rectangle_->addShape(rectangle_); },
+  ASSERT_THROW({ rectangle_.addShape(&rectangle_); },
                Shape::ShapeInaddibleException);
 }
 
 TEST_F(RectangleTest, DeleteShapeShouldThrowException) {
-  ASSERT_THROW({ rectangle_->deleteShape(rectangle_); },
+  ASSERT_THROW({ rectangle_.deleteShape(&rectangle_); },
                Shape::ShapeUndeletableException);
 }
 
 class RectanglePolymorphismTest : public RectangleTest {
  protected:
-  RectanglePolymorphismTest() : RectangleTest{} {
-    rectangle_ = RectangleTest::rectangle_;
-  }
-
-  Shape* rectangle_;
+  Shape& rectangle_{RectangleTest::rectangle_};
 };
 
 TEST_F(RectanglePolymorphismTest, TestInfo) {
   ASSERT_EQ(
       "Rectangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((0.00, 0.00), "
       "(0.00, 4.00)))",
-      rectangle_->info());
+      rectangle_.info());
 }
 
 TEST_F(RectanglePolymorphismTest, TestArea) {
-  ASSERT_NEAR(12, rectangle_->area(), DELTA);
+  ASSERT_NEAR(12, rectangle_.area(), DELTA);
 }
 
 TEST_F(RectanglePolymorphismTest, TestPerimeter) {
-  ASSERT_NEAR(14, rectangle_->perimeter(), DELTA);
+  ASSERT_NEAR(14, rectangle_.perimeter(), DELTA);
 }
 
 TEST_F(RectanglePolymorphismTest, TestCreateDfsIteratorShoudIsDone) {
-  Iterator* dfs_iter = rectangle_->createDFSIterator();
+  Iterator* dfs_iter = rectangle_.createDFSIterator();
 
   ASSERT_TRUE(dfs_iter->isDone());
 
@@ -127,7 +113,7 @@ TEST_F(RectanglePolymorphismTest, TestCreateDfsIteratorShoudIsDone) {
 }
 
 TEST_F(RectanglePolymorphismTest, TestCreateBfsIteratorShoudIsDone) {
-  Iterator* bfs_iter = rectangle_->createBFSIterator();
+  Iterator* bfs_iter = rectangle_.createBFSIterator();
 
   ASSERT_TRUE(bfs_iter->isDone());
 

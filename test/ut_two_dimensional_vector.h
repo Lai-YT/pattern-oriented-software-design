@@ -4,16 +4,14 @@
 #include "../src/two_dimensional_vector.h"
 
 class TwoDimensionalVectorTest : public ::testing::Test {
- protected:
-  const double DELTA = 0.001;
-
-  TwoDimensionalVectorTest() : vector_{TwoDimensionalVector{&head_, &tail_}} {}
-
-  const TwoDimensionalVector vector_;
-
  private:
   const Point head_ = Point{2, -3};
   const Point tail_ = Point{-3, 2};
+
+ protected:
+  const double DELTA = 0.001;
+
+  const TwoDimensionalVector vector_{&head_, &tail_};
 };
 
 TEST_F(TwoDimensionalVectorTest, CheckHeadTailSetProperlyByConstructor) {

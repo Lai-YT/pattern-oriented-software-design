@@ -5,43 +5,33 @@
 #include "../src/two_dimensional_vector.h"
 
 class TriangleTest : public ::testing::Test {
- protected:
-  const double DELTA = 0.001;
-
-  TriangleTest()
-      : vector_1_{TwoDimensionalVector(&vector_head_1_, &vector_tail_1_)},
-        vector_2_{TwoDimensionalVector(&vector_head_2_, &vector_tail_2_)} {
-    triangle_ = new Triangle{&vector_1_, &vector_2_};
-  }
-
-  virtual ~TriangleTest() override {
-    delete triangle_;
-  }
-
-  Triangle* triangle_;
-
  private:
   const Point vector_head_1_ = Point{0, 0};
   const Point vector_tail_1_ = Point{3, 0};
-  const TwoDimensionalVector vector_1_;
+  const TwoDimensionalVector vector_1_{&vector_head_1_, &vector_tail_1_};
   const Point vector_head_2_ = Point{3, 4};
   const Point vector_tail_2_ = Point{3, 0};
-  const TwoDimensionalVector vector_2_;
+  const TwoDimensionalVector vector_2_{&vector_head_2_, &vector_tail_2_};
+
+ protected:
+  const double DELTA = 0.001;
+
+  Triangle triangle_{&vector_1_, &vector_2_};
 };
 
 TEST_F(TriangleTest, TestPerimeter) {
-  ASSERT_NEAR(12, triangle_->perimeter(), DELTA);
+  ASSERT_NEAR(12, triangle_.perimeter(), DELTA);
 }
 
 TEST_F(TriangleTest, TestArea) {
-  ASSERT_NEAR(6, triangle_->area(), DELTA);
+  ASSERT_NEAR(6, triangle_.area(), DELTA);
 }
 
 TEST_F(TriangleTest, TestInfo) {
   ASSERT_EQ(
       "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), "
       "(3.00, 0.00)))",
-      triangle_->info());
+      triangle_.info());
 }
 
 TEST_F(TriangleTest, PassingVectorsWithNoCommonPointShoudThrowException) {
@@ -69,49 +59,44 @@ TEST_F(TriangleTest, PassingParallelVectorsShoudThrowException) {
 }
 
 TEST_F(TriangleTest, TestCreateDfsIterator) {
-  Iterator* dfs_iter = triangle_->createDFSIterator();
-
+  Iterator* dfs_iter = triangle_.createDFSIterator();
   ASSERT_TRUE(dfs_iter->isDone());
 
   delete dfs_iter;
 }
 
 TEST_F(TriangleTest, AddShapeShouldThrowException) {
-  ASSERT_THROW({ triangle_->addShape(triangle_); },
+  ASSERT_THROW({ triangle_.addShape(&triangle_); },
                Shape::ShapeInaddibleException);
 }
 
 TEST_F(TriangleTest, DeleteShapeShouldThrowException) {
-  ASSERT_THROW({ triangle_->deleteShape(triangle_); },
+  ASSERT_THROW({ triangle_.deleteShape(&triangle_); },
                Shape::ShapeUndeletableException);
 }
 
 class TrianglePolymorphismTest : public TriangleTest {
  protected:
-  TrianglePolymorphismTest() : TriangleTest{} {
-    triangle_ = TriangleTest::triangle_;
-  }
-
-  Shape* triangle_;
+  Shape& triangle_{TriangleTest::triangle_};
 };
 
 TEST_F(TrianglePolymorphismTest, TestPerimeter) {
-  ASSERT_NEAR(12, triangle_->perimeter(), DELTA);
+  ASSERT_NEAR(12, triangle_.perimeter(), DELTA);
 }
 
 TEST_F(TrianglePolymorphismTest, TestArea) {
-  ASSERT_NEAR(6, triangle_->area(), DELTA);
+  ASSERT_NEAR(6, triangle_.area(), DELTA);
 }
 
 TEST_F(TrianglePolymorphismTest, TestInfo) {
   ASSERT_EQ(
       "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), "
       "(3.00, 0.00)))",
-      triangle_->info());
+      triangle_.info());
 }
 
 TEST_F(TrianglePolymorphismTest, TestCreateDfsIteratorShouldIsDone) {
-  Iterator* dfs_iter = triangle_->createDFSIterator();
+  Iterator* dfs_iter = triangle_.createDFSIterator();
 
   ASSERT_TRUE(dfs_iter->isDone());
 
@@ -119,7 +104,7 @@ TEST_F(TrianglePolymorphismTest, TestCreateDfsIteratorShouldIsDone) {
 }
 
 TEST_F(TrianglePolymorphismTest, TestCreateBfsIteratorShouldIsDone) {
-  Iterator* bfs_iter = triangle_->createBFSIterator();
+  Iterator* bfs_iter = triangle_.createBFSIterator();
 
   ASSERT_TRUE(bfs_iter->isDone());
 
