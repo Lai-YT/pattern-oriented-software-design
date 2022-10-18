@@ -1,8 +1,8 @@
 .PHONY: dirs clean clean_coverage
 
 CXXFLAGS = -Wfatal-errors
-SRC = $(shell ls src/*.h)
-TEST = $(shell ls test/*.h)
+SRC = $(shell ls src/*.h src/**/*.h)
+TEST = $(shell ls test/*.h test/**/*.h)
 
 all: dirs bin/ut_all
 
