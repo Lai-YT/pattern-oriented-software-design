@@ -1,24 +1,28 @@
 [![codecov](https://codecov.io/gh/Lai-YT/pattern-oriented-software-design/branch/master/graph/badge.svg?token=Z9NOUUOCLT)](https://codecov.io/gh/Lai-YT/pattern-oriented-software-design)
 
-# posd2022f
+# Pattern Oriented Software Design 2022 Fall Assignment
 
-## Assignment 2
+## Assignment 3
 
-#### Deadline: 10/03 Tue. 23:59
+#### Deadline: 10/24 Tue. 23:59
 
 ### Introduction
 
-In this assignment, you are required to implement `Composite pattern` and `Iterator pattern` with TDD. The deadline is at 23:59, 10/03(Mon.).
+In this assignment, you are required to implement a simple algorithm of collision detection by using the `Visitor` and `Abstract Factory` patterns. The deadline is at 23:59, 10/24(Mon.).
 
 ### Problem statement
 
-We have implemented various shapes such as `Triangle`, `Rectangle`, and `Circle`. Now we have a new type of shape called `CompoundShape`, which is composed of multiple shapes. For example, two upside-down triangles of the same angles and length can compose a composed shape that looks like a parallelogram or a rectangle, or several rectangles can compose the compound shapes that look like tetrominoes in Tetris. A compound shape can be composed of other compound shapes to make a more complicated shape. To carry out this idea, we need to implement `Composite pattern` with shapes.
+Collision detection is an important issue for many field such as game engine or physics simulation. There are many algorithms can be used in either 2D or 3D space. A simple way to implement collision detection in 2D is called **Axis-aligned minimum bounding box (AABB)**. AABB is an rectangle enclosing the objects that should be detected. By comparing the coordinates of AABBs, we can easily know which objects have collided.
 
-![Compound shape examples](CompoundShapeExample.png)
+![Compound shape examples](assets/CollisionExample.png)
 
-For a compound shape, we would like to traverse its tree structure. Since we implement `Composite pattern`, the internal structure of the compound shape will be a nested tree-like structure. Instead of having a getter method from the compound shape interface, we adopt `Iterator pattern`. By iterator, we can traverse the shapes in a compound shape in different ways, such as [BFS](https://www.wikiwand.com/en/Breadth-first_search) or [DFS](https://www.wikiwand.com/en/Depth-first_search), without knowing its internal structure.
+As shown above, the AABB of a shape surrounds the shape itself and is not rotated no matter what a shape look like. An AABB is made by two coordinates, the upper right and the lower left ones. The x and y of the upper right coordinate are the the maximum x/y of all vertices of the shape; the lower left, the minimum. For `CompoundShape`, its AABB encloses all AABBs it contains.
 
-This assignment asks you to implement adding and deleting a shape to/from a compound shape. It also asks you to implement and test various iterators and traversal strategies including BFS and DFS.
+This assignment asks you to identify the shapes that collide with a target shape. The shapes are grouped in a tree structure using `CompoundShape`, which is also called *AABB-tree*, and the target shape is put into the tree to do the collision detection. Taking the advantage of the tree structure, the target shape should be compared with the shapes in tree layer by layer. The shape only goes through the branches that have collided with it, meaning that if a compound shape does not collide with it, it will not compare with the shapes in that compound shape.
+
+We will implement the process described above by using the `Visitor` and `Abstract Factory` patterns. The detection process is implemented in a visitor called `CollisionDetector`, in which each shape will be *visited* to produce their corresponding AABBs and to compare with the AABB of the shape put in. The collided shapes will be stored in a list in the visitor. We implement the detection process in `Visitor` not in `Shape` because collision detection does not belong to the nature of shape. In addition, to traverse the AABB tree, we need to implement a new iterator: *ListCompoundIterator*, which only returns the child shapes of a compound shape but not the grandchild shapes. We will use the `Abstract Factory` pattern to bring this new iterator on `Shape` along with other existing iterators.
+
+This assignment asks you to implement the `Visitor` pattern to carry out the detection process and the `Abstract Factory` pattern to bring in a new iterator that only returns the child shapes of a compound shape.
 
 ### File structure
 
@@ -28,25 +32,41 @@ The file structure is as followed. The project has two parts: `src` and `test`. 
  ├── bin
  │   └── ut_all
  ├── src
-+│   ├── iterator
-+│   │   ├──bfs_compound_iterator.h
-+│   │   ├──dfs_compound_iterator.h
-+│   │   ├──iterator.h
-+│   │   └──null_iterator.h
+ │   ├── iterator
++|   |   ├── factory
++|   |   |   ├── iterator_factory.h
++|   |   |   ├── bfs_iterator_factory.h
++|   |   |   ├── bfs_iterator_factory.cpp
++|   |   |   ├── dfs_iterator_factory.h
++|   |   |   ├── dfs_iterator_factory.cpp
++|   |   |   └── list_iterator_factory.h
+ │   │   ├── bfs_compound_iterator.h
+ │   │   ├── dfs_compound_iterator.h
++|   |   ├── list_compound_iterator.h
+ │   │   ├── iterator.h
+ │   │   └── null_iterator.h
++│   ├── visitor
++│   │   ├── shape_visitor.h
++│   │   └── collision_detector.h
++│   ├── bounding_box.h
  │   ├── circle.h
-+│   ├── compound_shape.h
+ │   ├── compound_shape.h
  │   ├── point.h
  │   ├── rectangle.h
  │   ├── shape.h
  │   ├── triangle.h
  │   └── two_dimensional_vector.h
  ├── test
-+│   ├── iterator
-+│   │   ├──ut_bfs_compound_iterator.h
-+│   │   ├──ut_dfs_compound_iterator.h
-+│   │   └──ut_null_iterator.h
+ │   ├── iterator
+ │   │   ├── ut_bfs_compound_iterator.h
+ │   │   ├── ut_dfs_compound_iterator.h
++│   │   ├── ut_list_compound_iterator.h
+ │   │   └── ut_null_iterator.h
++│   ├── visitor
++│   │   └── ut_collision_detector.h
++│   ├── ut_bounding_box.h
  │   ├── ut_circle.h
-+│   ├── ut_compound_shape.h
+ │   ├── ut_compound_shape.h
  │   ├── ut_main.cpp
  │   ├── ut_point.h
  │   ├── ut_rectangle.h
@@ -57,69 +77,66 @@ The file structure is as followed. The project has two parts: `src` and `test`. 
 
 ### Implementation
 
-<span style="color:red">This section describes all implementation conditions that you should abide by. Please read them carefully.</span>.
+**This section describes all implementation conditions that you should abide by. Please read them carefully.**
 
-`CompoundShape`: a class that can be composed of multiple shapes, including other compound shapes. When initializing a `CompoundShape`, we give it a list of shapes and we do not care whether these shapes are close to each other or not. If two shapes are far apart, they can be composed as well.
+`Shape`: There are three changes on `Shape` class:
 
-A compound shape is also a `Shape`, meaning that this class should inherit `Shape` class and implement the methods (`area`, `perimeter`, and `info`). To make life easier, the area and perimeter of a compound shape is the sum of the shapes it contains. It does not matter whether shapes overlap or not. The `info` of a compound should follow the format:
+1. A new method: `accept` is added. The `accept` method takes a `ShapeVisitor` as an argument. Each subclass of `Shape` overrides this method to call the visitor operations corresponding to the subclass.
+For example, in `Circle`, the `accept` calls `visitCircle` from the visitor, in `Rectangle`, it calls `visitRectangle`, and so on.
+
+2. Another new method: `getPoints` is added, which returns all vertices of the shape. This method is used to produce the AABB, because the AABB needs the vertices of the shape to calculate the maximum and minimum coordinates.
+    * For `Triangle`, the method overriding just returns all vertices the triangle has.
+    * For `Rectangle`, since a rectangle has only three vertices at the beginning, the method overriding should calculate the fourth vertex before returning all vertices. [To get the fourth vertex](https://stackoverflow.com/a/53392548), given two vertical vectors v1(A, B) and v2(B, C), the fourth vertex D will be A + C - B, regardless of the rotation of rectangle.
+    * For `Circle`, since a circle only has the center, the method overriding should directly calculate and return the upper right and lower right coordinates of the AABB of the circle.
+    * For `CompoundShape`, the method overriding returns all vertices of all shapes that the compound shape contains.
+
+3. `createDFSIterator` and `createBFSIterator` are replaced with `createIterator`. The `createIterator` method takes a `IteratorFactory` as an argument. The shape calls the `createIterator` of `IteratorFactory` to create an iterator. Shapes now have no way of knowing which iterator is going to be created. This depends on how the client wants to traverse the shapes. By using the `IteratorFactory` interface, if there is a new iterator in the future, the `Shape` class won't be modified again.
+
+`ShapeVisitor`: a class representing the visitor that can be applied to the `Shape` family. This class declares *visit* methods for all shapes. Each method corresponds to a shape type, such as `visitCircle` or `visitCompoundShape`. These methods take the corresponding shape class as their argument, in order to access the shape to perform the task of visitor.
+
+`CollisionDetector`: a class inherited from `ShapeVisitor`. This visitor implements the collision detection algorithm with AABB. When initialized, it takes and stores a shape that needs to be detected. To start the detection, it should be accepted by a compound shape, which is the tree root.
+
 ```c++
-std::list<Shape*> shapes = {
-    new Circle(
-        new TwoDimensionalVector(
-            Point(1.3449, -1.999),
-            Point(6.0, 7)
-        )
-    ),
-    new Rectangle(
-        new TwoDimensionalVector(
-            Point(-3, 3), Point(-1, 3)
-        ),
-        new TwoDimensionalVector(
-            Point(-1, 3), Point(-1, -1)
-        )
-    )
-};
-(new CompoundShape(&shapes))->info();
-> "CompoundShape (Circle (Vector (1.34, -2.00)), Rectangle (Vector ((-3.00, 3.00), (-1.00, 3.00)), Vector ((-1.00, 3.00), (-1.00, -1.00))))"
+Shape *dart = new Triangle(...); // the target shape
+Shape *bullseyes = new CompoundShape(...); // the shapes composed of a tree structure
+CollisionDetector visitor = new CollisionDetector(dart);
+bullseyes->accept(visitor);
+std::list<Shape *> scores = visitor->collidedShapes();
 ```
 
-`CompoundShape` is also a flexible shape. It can be added more shapes or can remove some shapes after it is initialized, corresponding to `addShape` and `deleteShape` methods respectively. When adding a shape into a compound shape that has other compound shapes, we just add it to the current compound shape directly (attach this shape to the tail of the list). We don't specify which position the shape should be placed in. On the other hand, when deleting a shape from a compound shape, *we delete its instance*. Be careful when you implement `deleteShape`, the target shape should be removed even if it is at a deep position in the tree structure.
+In the visitor, there are four methods: `visitCircle`, `visitTriangle`, `visitRectangle`, and `visitCompoundShape`. When `visitCircle`, `visitTriangle`, and `visitRectangle` get called from the shapes, the visitor produces the corresponding AABB by invoking `getPoints` on the calling shape. Then it compares whether the produced AABB collides with the AABB of the shape put in. If they collide, the visitor store the calling shape in a list. When `visitCompoundShape` gets called, the visitor also produces the AABB of the compound shape and compares with the AABB of the shape put in. If they collides, the visitor *do not store* this compound shape; instead, it creates a `ListCompoundIterator` for the compound shape and let the child shapes accept the visitor itself. Therefore, the visitor can keep comparing the shapes in the compound shape collided. After the whole process finishes, The client can call `collidedShapes` to get the result.
 
-`Iterator`: a class declaring methods for traveling the internal structure of `CompoundShape`. By subclassing `Iterator`, we can implement different traveling strategies. An iterator is created by the object that the iterator is going to traverse to, so it is able to track the shapes in a compound shape.
+`BoundingBox`: a class representing the axis-aligned minimum bounding box(AABB). When initialized, it takes a set of coordinates(points) as an argument to calculate the maximum and minimum coordinates. At least one coordinate is required; an exception should otherwise be threw.
 
-The usage of iterator:
+To check whether two bounding boxes collide, we can first think in reverse—what are the conditions for two boxes *NOT* to collide? Here are the conditions:
+1. the X_max of the box1 is smaller than the X_min of the box2; or
+2. the X_min of the box1 is greater than the X_max of the box2; or
+3. the Y_max of the box1 is smaller than the Y_min of the box2; or
+4. the Y_min of the box1 is greater than the Y_max of the box2.
+
+So, if *non* of these conditions is met, we can say two boxes collide. You can use other conditions. Just make sure the result is correct.
+
+The `BoundingBox` does not inherit from `Shape`, even it looks like a rectangle, because we say the collision detection does not belong to the nature of shape. We do not want to mount any stuff related to collision detection on the `Shape` family.
+
+`IteratorFactory`: a class declaring methods for creating `Iterator`. It has two methods, one has no arguments and another has. This is because we have two types of iterator: the iterator for *Leaf*, which is `NullIterator`, and the iterators for *Composite*, which are `DFS/BFSCompoundIterator` and `ListCompoundIterator`. The iterator for *Leaf* does not need any arguments, but the ones for *Composite* need. Therefore, the *Leaf* calls the creating method without argument to create `NullIterator`, and the *Composite* calls the creating method with arguments to create `DFS/BFSCompoundIterator` or `ListCompoundIterator`.
+
 ```c++
-Iterator *it = compoundShape->createDFSIterator();
-for(it->first(); it->isDone(); it->next()) {
-    Shape *shape = it->current();
-    // ...
-}
-```
-The `first` method is used to initialize the iterator state. It can be called either on the for loop initialization or in the iterator constructor. The `isDone` is to check if the iterator has gone through all elements (shapes). The `next` tells the iterator to move to the next element. The `current` returns the current element that the iterator steps on.
+Shape *cir = new Circle(...);
+Iterator *cit1 = cir->createIterator(new DFSIteratorFactory());
+// cit1 is a NullIterator.
+Iterator *cit2 = cir->createIterator(new BFSIteratorFactory());
+// cit2 is also a NullIterator.
 
-Notice that an iterator can know it has gone through all elements only after the last `next` is called. For example, there is a compound shape contains two shapes: a triangle and a rectangle. The order of iterator methods and the expected output should be as below:
-```c++
-// compoundShape contains two shapes: a triangle and a rectangle.
-Iterator *it = compoundShape->createDFSIterator();
-it->first();   // no return
-it->isDone();  // false
-it->current(); // the triangle
-it->next();    // no return
-
-it->isDone();  // false
-it->current(); // the rectangle
-it->current(); // still the rectangle
-it->isDone();  // false!
-it->next();    // no return (the last call on `next`)
-
-it->current(); // an exception threw
-it->isDone();  // true!
-it->next();    // an exception threw
+Shape *cs = new CompoundShape(...);
+Iterator *csit1 = cs->createIterator(new DFSIteratorFactory());
+// csit1 is a DFSCompoundIterator.
+Iterator *csit2 = cs->createIterator(new BFSIteratorFactory());
+// csit2 is a BFSCompoundIterator.
 ```
 
-As we mentioned above, we can implement different iterators for different traveling strategies. In this assignment, we need to build three kinds of iterator: `DFSIterator`, `BFSIterator`, and `NullIterator`.
+Note that `DFSCompoundIterator` calls `DFSIteratorFactory` to create an iterator for the next level, and `DFSIteratorFactory` also calls the `DFSCompoundIterator` constructor. There is a circular dependency. We need to separate the factory into the header and cpp files, just like we did on the class. The same goes for `BFSCompoundIterator` and `BFSIteratorFactory`.
 
-`DFSIterator` and `BFSIterator` are created by `CompoundShape`. As their names, one is for [Depth-First Search](https://www.wikiwand.com/en/Depth-first_search), another is for [Breadth-First Search](https://www.wikiwand.com/en/Breadth-first_search). Taking `DFSIterator` as an example, if we have a compound shape having a structure like:
+`ListCompoundIterator`: a class inherited from `Iterator`. This iterator only traverses the child shapes of a compound shape. Taking the tree below as an example, if we create a list iterator from C1, we can only get C2 and C3 from the iterator.
 ```
      C1
     /   \
@@ -127,17 +144,9 @@ As we mentioned above, we can implement different iterators for different travel
   /   /  |  \
 Tri Rect Cir1 Cir2
 ```
-The DFS order of the DFS iterator from C1 should be:
-*C2, Tri, C3, Rect, Cir1, and then Cir2*. **Note that the iterator does not return the shape that creates it.** In this example, C2 and C3 are returned by C1's iterator but not by their own iterators.
-
-For the same case, the BFS order should be: *Tri, C2, C3, Tri, Rect, Cir1, and Cir2*.
-
-`NullIterator` is created by *leaves*, i.e., `Triangle`, `Rectangle`, and `Circle`. This iterator is used for boundary cases. When we traverse the tree in a compound shape, this iterator can be helpful for us to check if the current shape is a *Leaf*, where no more shapes are at the next level. A null iterator does not return any shapes. It is empty. Its `isDone` always returns true without calling `next`; `next` and `current` throw an exception once get called.
-
-Since `DFSIterator`, `BFSIterator`, and `NullIterator` inherit from the `Iterator` class, we can treat them *uniformly*, which let us easier to deal with iterators from different kinds of shapes.
-
 
 - **Each class method declared in header files must be implemented and have at least one test case.**
+- **For `createIterator` and `IteratorFactory`, we can reuse the tests for `createDFSIterator` and `createBFSIterator` before, so no additional tests are required. Other than that, the rest of new methods should have at least one test cases.**
 - For all classes above, an exception should raise if we give any illegal input to the constructor. The exception type is not specified, which can be as simple as `string`.
 - If the type of returned value is `double`, your assertion should compare the value with the error not greater than `0.001`.
 - All `double` values should be rounded to two decimal place and be padded with 0 when turned into `string`, e.g., `-1.999` will be `"-2.00"`.
