@@ -1,5 +1,10 @@
 #include <gtest/gtest.h>
 
+#include <array>
+#include <list>
+#include <string>
+#include <vector>
+
 #include "../../src/circle.h"
 #include "../../src/compound_shape.h"
 #include "../../src/iterator/list_compound_iterator.h"
