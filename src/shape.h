@@ -14,6 +14,7 @@ class Shape {
   virtual std::string info() const = 0;
   virtual Iterator* createDFSIterator() = 0;
   virtual Iterator* createBFSIterator() = 0;
+  virtual Iterator* createListIterator() = 0;
 
   /**
    * Throws ShapeInaddibleException.

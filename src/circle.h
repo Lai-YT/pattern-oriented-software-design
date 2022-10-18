@@ -39,6 +39,10 @@ class Circle : public Shape {
     return new NullIterator{};
   }
 
+  NullIterator* createListIterator() override {
+    return new NullIterator{};
+  }
+
  private:
   const TwoDimensionalVector* represent_vector_;
 };

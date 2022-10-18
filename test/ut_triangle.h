@@ -110,3 +110,11 @@ TEST_F(TrianglePolymorphismTest, TestCreateBfsIteratorShouldIsDone) {
 
   delete bfs_iter;
 }
+
+TEST_F(TrianglePolymorphismTest, TestCreateListIteratorShouldIsDone) {
+  Iterator* list_iter = triangle_.createListIterator();
+
+  ASSERT_TRUE(list_iter->isDone());
+
+  delete list_iter;
+}

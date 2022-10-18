@@ -9,6 +9,7 @@
 #include "iterator/bfs_compound_iterator.h"
 #include "iterator/dfs_compound_iterator.h"
 #include "iterator/iterator.h"
+#include "iterator/list_compound_iterator.h"
 #include "shape.h"
 
 class CompoundShape : public Shape {
@@ -59,6 +60,11 @@ class CompoundShape : public Shape {
   Iterator* createBFSIterator() {
     return new BFSCompoundIterator<decltype(shapes_)::iterator>{shapes_.begin(),
                                                                 shapes_.end()};
+  }
+
+  Iterator* createListIterator() {
+    return new ListCompoundIterator<decltype(shapes_)::iterator>{
+        shapes_.begin(), shapes_.end()};
   }
 
   void addShape(Shape* const shape) override {

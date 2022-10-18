@@ -119,3 +119,11 @@ TEST_F(RectanglePolymorphismTest, TestCreateBfsIteratorShoudIsDone) {
 
   delete bfs_iter;
 }
+
+TEST_F(RectanglePolymorphismTest, TestCreateListIteratorShoudIsDone) {
+  Iterator* list_iter = rectangle_.createListIterator();
+
+  ASSERT_TRUE(list_iter->isDone());
+
+  delete list_iter;
+}

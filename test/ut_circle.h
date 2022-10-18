@@ -82,3 +82,11 @@ TEST_F(CirclePolymorphismTest, TestCreateBfsIteratorShouldIsDone) {
 
   delete bfs_iter;
 }
+
+TEST_F(CirclePolymorphismTest, TestCreateListIteratorShouldIsDone) {
+  Iterator* list_iter = circle_.createListIterator();
+
+  ASSERT_TRUE(list_iter->isDone());
+
+  delete list_iter;
+}
