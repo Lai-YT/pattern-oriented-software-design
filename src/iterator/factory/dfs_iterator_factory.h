@@ -9,9 +9,10 @@
 
 class DFSIteratorFactory : public IteratorFactory {
  public:
-  virtual Iterator* createIterator(const std::list<Shape*>::iterator& begin,
-                                   const std::list<Shape*>::iterator& end) {
-    return new DFSCompoundIterator<std::list<Shape*>::iterator>{begin, end};
+  virtual Iterator* createIterator(
+      const std::list<Shape*>::const_iterator& begin,
+      const std::list<Shape*>::const_iterator& end) const override {
+    return new DFSCompoundIterator<std::list<Shape*>::const_iterator>{begin, end};
   };
 };
 

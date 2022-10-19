@@ -13,8 +13,9 @@ class IteratorFactory {
     return new NullIterator{};
   };
 
-  Iterator* createIterator(const std::list<Shape*>::iterator& begin,
-                           const std::list<Shape*>::iterator& end) {
+  virtual Iterator* createIterator(
+      const std::list<Shape*>::const_iterator& begin,
+      const std::list<Shape*>::const_iterator& end) const {
     return new NullIterator{};
   };
 };
