@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "../src/iterator/factory/bfs_iterator_factory.h"
+#include "../src/iterator/factory/dfs_iterator_factory.h"
 #include "../src/iterator/iterator.h"
 #include "../src/point.h"
 #include "../src/rectangle.h"
@@ -86,8 +87,20 @@ TEST_F(RectangleTest, DeleteShapeShouldThrowException) {
                Shape::ShapeUndeletableException);
 }
 
-TEST_F(RectangleTest, CreateIteratorWithBfsIteratorFactory) {
+TEST_F(RectangleTest,
+       CreateIteratorWithBfsIteratorFactoryShouldGetNullIterator) {
   const auto factory = BFSIteratorFactory{};
+
+  Iterator* it = rectangle_.createIterator(&factory);
+
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
+}
+
+TEST_F(RectangleTest,
+       CreateIteratorWithDfsIteratorFactoryShouldGetNullIterator) {
+  const auto factory = DFSIteratorFactory{};
 
   Iterator* it = rectangle_.createIterator(&factory);
 

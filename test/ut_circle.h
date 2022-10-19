@@ -1,10 +1,11 @@
 #include <gtest/gtest.h>
 
 #include "../src/circle.h"
+#include "../src/iterator/factory/bfs_iterator_factory.h"
+#include "../src/iterator/factory/dfs_iterator_factory.h"
 #include "../src/iterator/iterator.h"
 #include "../src/point.h"
 #include "../src/two_dimensional_vector.h"
-#include "../src/iterator/factory/bfs_iterator_factory.h"
 
 class CircleTest : public ::testing::Test {
  private:
@@ -51,8 +52,18 @@ TEST_F(CircleTest, DeleteShapeShouldThrowException) {
                Shape::ShapeUndeletableException);
 }
 
-TEST_F(CircleTest, CreateIteratorWithBfsIteratorFactory) {
+TEST_F(CircleTest, CreateIteratorWithBfsIteratorFactoryShouldgetNullIterator) {
   const auto factory = BFSIteratorFactory{};
+
+  Iterator* it = circle_.createIterator(&factory);
+
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
+}
+
+TEST_F(CircleTest, CreateIteratorWithDfsIteratorFactoryShouldGetNullIterator) {
+  const auto factory = DFSIteratorFactory{};
 
   Iterator* it = circle_.createIterator(&factory);
 
