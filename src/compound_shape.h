@@ -50,7 +50,7 @@ class CompoundShape : public Shape {
     return "CompoundShape (" + inner_info + ")";
   }
 
-  Iterator* createIterator(const IteratorFactory* const factory) const {
+  Iterator* createIterator(const IteratorFactory* const factory) override {
     return factory->createIterator(shapes_.begin(), shapes_.end());
   }
 
