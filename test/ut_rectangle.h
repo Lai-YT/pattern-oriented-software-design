@@ -2,6 +2,7 @@
 
 #include "../src/iterator/factory/bfs_iterator_factory.h"
 #include "../src/iterator/factory/dfs_iterator_factory.h"
+#include "../src/iterator/factory/list_iterator_factory.h"
 #include "../src/iterator/iterator.h"
 #include "../src/point.h"
 #include "../src/rectangle.h"
@@ -101,6 +102,17 @@ TEST_F(RectangleTest,
 TEST_F(RectangleTest,
        CreateIteratorWithDfsIteratorFactoryShouldGetNullIterator) {
   const auto factory = DFSIteratorFactory{};
+
+  Iterator* it = rectangle_.createIterator(&factory);
+
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
+}
+
+TEST_F(RectangleTest,
+       CreateIteratorWithListIteratorFactoryShouldGetNullIterator) {
+  const auto factory = ListIteratorFactory{};
 
   Iterator* it = rectangle_.createIterator(&factory);
 

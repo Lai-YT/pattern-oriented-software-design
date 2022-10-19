@@ -3,6 +3,7 @@
 #include "../src/circle.h"
 #include "../src/iterator/factory/bfs_iterator_factory.h"
 #include "../src/iterator/factory/dfs_iterator_factory.h"
+#include "../src/iterator/factory/list_iterator_factory.h"
 #include "../src/iterator/iterator.h"
 #include "../src/point.h"
 #include "../src/two_dimensional_vector.h"
@@ -64,6 +65,16 @@ TEST_F(CircleTest, CreateIteratorWithBfsIteratorFactoryShouldgetNullIterator) {
 
 TEST_F(CircleTest, CreateIteratorWithDfsIteratorFactoryShouldGetNullIterator) {
   const auto factory = DFSIteratorFactory{};
+
+  Iterator* it = circle_.createIterator(&factory);
+
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
+}
+
+TEST_F(CircleTest, CreateIteratorWithListIteratorFactoryShouldGetNullIterator) {
+  const auto factory = ListIteratorFactory{};
 
   Iterator* it = circle_.createIterator(&factory);
 
