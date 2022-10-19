@@ -8,6 +8,7 @@
 #include "../../src/circle.h"
 #include "../../src/compound_shape.h"
 #include "../../src/iterator/factory/list_iterator_factory.h"
+#include "../../src/iterator/list_compound_iterator.h"
 #include "../../src/point.h"
 #include "../../src/rectangle.h"
 #include "../../src/shape.h"

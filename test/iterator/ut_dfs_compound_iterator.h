@@ -7,6 +7,7 @@
 
 #include "../../src/circle.h"
 #include "../../src/compound_shape.h"
+#include "../../src/iterator/dfs_compound_iterator.h"
 #include "../../src/iterator/factory/dfs_iterator_factory.h"
 #include "../../src/iterator/iterator.h"
 #include "../../src/point.h"
