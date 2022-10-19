@@ -1,7 +1,6 @@
 #ifndef SRC_ITERATOR_BFS_COMPOUND_ITERATOR_H_
 #define SRC_ITERATOR_BFS_COMPOUND_ITERATOR_H_
 
-#include <memory>
 #include <queue>
 
 #include "../shape.h"

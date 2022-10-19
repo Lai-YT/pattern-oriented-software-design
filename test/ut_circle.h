@@ -4,6 +4,7 @@
 #include "../src/iterator/iterator.h"
 #include "../src/point.h"
 #include "../src/two_dimensional_vector.h"
+#include "../src/iterator/factory/bfs_iterator_factory.h"
 
 class CircleTest : public ::testing::Test {
  private:
@@ -48,6 +49,16 @@ TEST_F(CircleTest, AddShapeShouldThrowException) {
 TEST_F(CircleTest, DeleteShapeShouldThrowException) {
   ASSERT_THROW({ circle_.deleteShape(&circle_); },
                Shape::ShapeUndeletableException);
+}
+
+TEST_F(CircleTest, CreateIteratorWithBfsIteratorFactory) {
+  const auto factory = BFSIteratorFactory{};
+
+  Iterator* it = circle_.createIterator(&factory);
+
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }
 
 class CirclePolymorphismTest : public CircleTest {

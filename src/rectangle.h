@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "iterator/factory/iterator_factory.h"
 #include "iterator/null_iterator.h"
 #include "point.h"
 #include "shape.h"
@@ -53,6 +54,10 @@ class Rectangle : public Shape {
 
   NullIterator* createListIterator() override {
     return new NullIterator{};
+  }
+
+  Iterator* createIterator(const IteratorFactory* const factory) {
+    return factory->createIterator();
   }
 
   class NonOrthogonalSideException : public std::invalid_argument {

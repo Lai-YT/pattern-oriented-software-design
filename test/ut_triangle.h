@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include "../src/iterator/factory/bfs_iterator_factory.h"
+#include "../src/iterator/iterator.h"
 #include "../src/point.h"
 #include "../src/triangle.h"
 #include "../src/two_dimensional_vector.h"
@@ -73,6 +75,16 @@ TEST_F(TriangleTest, AddShapeShouldThrowException) {
 TEST_F(TriangleTest, DeleteShapeShouldThrowException) {
   ASSERT_THROW({ triangle_.deleteShape(&triangle_); },
                Shape::ShapeUndeletableException);
+}
+
+TEST_F(TriangleTest, CreateIteratorWithBfsIteratorFactory) {
+  const auto factory = BFSIteratorFactory{};
+
+  Iterator* it = triangle_.createIterator(&factory);
+
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }
 
 class TrianglePolymorphismTest : public TriangleTest {

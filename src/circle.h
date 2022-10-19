@@ -5,6 +5,7 @@
 #include <cmath>
 #include <string>
 
+#include "iterator/factory/iterator_factory.h"
 #include "iterator/null_iterator.h"
 #include "shape.h"
 #include "two_dimensional_vector.h"
@@ -41,6 +42,10 @@ class Circle : public Shape {
 
   NullIterator* createListIterator() override {
     return new NullIterator{};
+  }
+
+  Iterator* createIterator(const IteratorFactory* const factory) {
+    return factory->createIterator();
   }
 
  private:
