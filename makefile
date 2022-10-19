@@ -25,8 +25,8 @@ clean:
 GCOV_FLAGS = --relative-only --branch-probabilities
 
 coverage: CXXFLAGS += -fprofile-arcs -ftest-coverage -O0 -fno-inline -fno-elide-constructors
-coverage: test
+coverage: clean test
 	gcov test/ut_main.cpp -o ut_main $(GCOV_FLAGS)
 
 clean_coverage:
-	rm -f *.gcov **/*.gcda **/*.gcno coverage.xml coverage.html
+	rm -f *.gcov *.gcda *.gcno coverage.xml coverage.html
