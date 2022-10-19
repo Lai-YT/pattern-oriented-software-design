@@ -62,13 +62,6 @@ TEST_F(TriangleTest, PassingParallelVectorsShoudThrowException) {
                Triangle::ParallelSideException);
 }
 
-TEST_F(TriangleTest, TestCreateDfsIterator) {
-  Iterator* dfs_iter = triangle_.createDFSIterator();
-  ASSERT_TRUE(dfs_iter->isDone());
-
-  delete dfs_iter;
-}
-
 TEST_F(TriangleTest, AddShapeShouldThrowException) {
   ASSERT_THROW({ triangle_.addShape(&triangle_); },
                Shape::ShapeInaddibleException);

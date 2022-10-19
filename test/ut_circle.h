@@ -36,14 +36,6 @@ TEST_F(CircleTest, TestInfo) {
   ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_.info());
 }
 
-TEST_F(CircleTest, TestCreateDfsIterator) {
-  Iterator* dfs_iter = circle_.createDFSIterator();
-
-  ASSERT_TRUE(dfs_iter->isDone());
-
-  delete dfs_iter;
-}
-
 TEST_F(CircleTest, AddShapeShouldThrowException) {
   ASSERT_THROW({ circle_.addShape(&circle_); }, Shape::ShapeInaddibleException);
 }

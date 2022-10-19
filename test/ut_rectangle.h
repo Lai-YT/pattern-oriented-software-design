@@ -70,14 +70,6 @@ TEST_F(RectangleTest, PassingSidesWithNoCommonPointShouldThrowException) {
                Rectangle::NoCommonPointException);
 }
 
-TEST_F(RectangleTest, TestCreateDfsIterator) {
-  Iterator* dfs_iter = rectangle_.createDFSIterator();
-
-  ASSERT_TRUE(dfs_iter->isDone());
-
-  delete dfs_iter;
-}
-
 TEST_F(RectangleTest, AddShapeShouldThrowException) {
   ASSERT_THROW({ rectangle_.addShape(&rectangle_); },
                Shape::ShapeInaddibleException);
