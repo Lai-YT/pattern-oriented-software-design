@@ -3,21 +3,16 @@
 
 #include <list>
 
-// #include "../../shape.h"
-#include "../iterator.h"
-#include "../null_iterator.h"
+class Iterator;
+class Shape;
 
 class IteratorFactory {
  public:
-  virtual Iterator* createIterator() const {
-    return new NullIterator{};
-  };
+  virtual Iterator* createIterator() const;
 
   virtual Iterator* createIterator(
       const std::list<Shape*>::const_iterator& begin,
-      const std::list<Shape*>::const_iterator& end) const {
-    return new NullIterator{};
-  };
+      const std::list<Shape*>::const_iterator& end) const;
 };
 
 #endif /* end of include guard: SRC_ITERATOR_FACTORY_ITERATOR_FACTORY_H_ */

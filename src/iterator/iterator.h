@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 
-class Shape;
+#include "../shape.h"
 
 class Iterator {
  public:
