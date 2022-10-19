@@ -7,7 +7,7 @@
 
 #include "../../src/circle.h"
 #include "../../src/compound_shape.h"
-#include "../../src/iterator/dfs_compound_iterator.h"
+#include "../../src/iterator/factory/dfs_iterator_factory.h"
 #include "../../src/iterator/iterator.h"
 #include "../../src/point.h"
 #include "../../src/rectangle.h"
@@ -46,6 +46,7 @@ class DFSCompoundIteratorTest : public ::testing::Test {
   Circle circle_{&circle_vector_};
   Rectangle rectangle_{&rectangle_vector_1, &rectangle_vector_2};
   Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
+  DFSIteratorFactory dfs_factory_{};
 };
 
 class DFSCompoundIteratorOnFlatListTest : public DFSCompoundIteratorTest {
@@ -60,7 +61,7 @@ TEST_F(DFSCompoundIteratorTest,
   auto compound_child = CompoundShape{{}};
   auto compound = CompoundShape{{&compound_child}};
 
-  Iterator* itr = compound.createDFSIterator();
+  Iterator* itr = compound.createIterator(&dfs_factory_);
   itr->first();
 
   ASSERT_EQ(&compound_child, itr->currentItem());
@@ -200,7 +201,7 @@ class DFSCompoundIteratorOnCompoundShapeTest : public DFSCompoundIteratorTest {
   CompoundShape level_two_compound_{
       {&rectangle_, &level_three_compound_, &triangle_}};
   CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
-  Iterator* dfs_itr_{level_one_compound_.createDFSIterator()};
+  Iterator* dfs_itr_{level_one_compound_.createIterator(&dfs_factory_)};
 
   std::string current_info_() const {
     return dfs_itr_->currentItem()->info();
