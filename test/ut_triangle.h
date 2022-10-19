@@ -72,39 +72,6 @@ TEST_F(TriangleTest, DeleteShapeShouldThrowException) {
                Shape::ShapeUndeletableException);
 }
 
-TEST_F(TriangleTest,
-       CreateIteratorWithBfsIteratorFactoryShouldGetNullIterator) {
-  const auto factory = BFSIteratorFactory{};
-
-  Iterator* it = triangle_.createIterator(&factory);
-
-  ASSERT_TRUE(it->isDone());
-
-  delete it;
-}
-
-TEST_F(TriangleTest,
-       CreateIteratorWithDfsIteratorFactoryShouldGetNullIterator) {
-  const auto factory = DFSIteratorFactory{};
-
-  Iterator* it = triangle_.createIterator(&factory);
-
-  ASSERT_TRUE(it->isDone());
-
-  delete it;
-}
-
-TEST_F(TriangleTest,
-       CreateIteratorWithListIteratorFactoryShouldGetNullIterator) {
-  const auto factory = ListIteratorFactory{};
-
-  Iterator* it = triangle_.createIterator(&factory);
-
-  ASSERT_TRUE(it->isDone());
-
-  delete it;
-}
-
 class TrianglePolymorphismTest : public TriangleTest {
  protected:
   Shape& triangle_{TriangleTest::triangle_};
@@ -125,26 +92,35 @@ TEST_F(TrianglePolymorphismTest, TestInfo) {
       triangle_.info());
 }
 
-TEST_F(TrianglePolymorphismTest, TestCreateDfsIteratorShouldIsDone) {
-  Iterator* dfs_iter = triangle_.createDFSIterator();
+TEST_F(TrianglePolymorphismTest,
+       CreateIteratorWithBfsIteratorFactoryShouldIsDone) {
+  const auto factory = BFSIteratorFactory{};
 
-  ASSERT_TRUE(dfs_iter->isDone());
+  Iterator* it = triangle_.createIterator(&factory);
 
-  delete dfs_iter;
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }
 
-TEST_F(TrianglePolymorphismTest, TestCreateBfsIteratorShouldIsDone) {
-  Iterator* bfs_iter = triangle_.createBFSIterator();
+TEST_F(TrianglePolymorphismTest,
+       CreateIteratorWithDfsIteratorFactoryShouldIsDone) {
+  const auto factory = DFSIteratorFactory{};
 
-  ASSERT_TRUE(bfs_iter->isDone());
+  Iterator* it = triangle_.createIterator(&factory);
 
-  delete bfs_iter;
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }
 
-TEST_F(TrianglePolymorphismTest, TestCreateListIteratorShouldIsDone) {
-  Iterator* list_iter = triangle_.createListIterator();
+TEST_F(TrianglePolymorphismTest,
+       CreateIteratorWithListIteratorFactoryShouldIsDone) {
+  const auto factory = ListIteratorFactory{};
 
-  ASSERT_TRUE(list_iter->isDone());
+  Iterator* it = triangle_.createIterator(&factory);
 
-  delete list_iter;
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }

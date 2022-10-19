@@ -6,11 +6,8 @@
 #include <string>
 #include <vector>
 
-#include "iterator/bfs_compound_iterator.h"
-#include "iterator/dfs_compound_iterator.h"
 #include "iterator/factory/iterator_factory.h"
 #include "iterator/iterator.h"
-#include "iterator/list_compound_iterator.h"
 #include "shape.h"
 
 class CompoundShape : public Shape {
@@ -51,21 +48,6 @@ class CompoundShape : public Shape {
       inner_info.pop_back();
     }
     return "CompoundShape (" + inner_info + ")";
-  }
-
-  Iterator* createDFSIterator() override {
-    return new DFSCompoundIterator<decltype(shapes_)::iterator>{shapes_.begin(),
-                                                                shapes_.end()};
-  }
-
-  Iterator* createBFSIterator() {
-    return new BFSCompoundIterator<decltype(shapes_)::iterator>{shapes_.begin(),
-                                                                shapes_.end()};
-  }
-
-  Iterator* createListIterator() {
-    return new ListCompoundIterator<decltype(shapes_)::iterator>{
-        shapes_.begin(), shapes_.end()};
   }
 
   Iterator* createIterator(const IteratorFactory* const factory) const {

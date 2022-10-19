@@ -45,36 +45,6 @@ TEST_F(CircleTest, DeleteShapeShouldThrowException) {
                Shape::ShapeUndeletableException);
 }
 
-TEST_F(CircleTest, CreateIteratorWithBfsIteratorFactoryShouldgetNullIterator) {
-  const auto factory = BFSIteratorFactory{};
-
-  Iterator* it = circle_.createIterator(&factory);
-
-  ASSERT_TRUE(it->isDone());
-
-  delete it;
-}
-
-TEST_F(CircleTest, CreateIteratorWithDfsIteratorFactoryShouldGetNullIterator) {
-  const auto factory = DFSIteratorFactory{};
-
-  Iterator* it = circle_.createIterator(&factory);
-
-  ASSERT_TRUE(it->isDone());
-
-  delete it;
-}
-
-TEST_F(CircleTest, CreateIteratorWithListIteratorFactoryShouldGetNullIterator) {
-  const auto factory = ListIteratorFactory{};
-
-  Iterator* it = circle_.createIterator(&factory);
-
-  ASSERT_TRUE(it->isDone());
-
-  delete it;
-}
-
 class CirclePolymorphismTest : public CircleTest {
  protected:
   Shape& circle_{CircleTest::circle_};
@@ -92,26 +62,32 @@ TEST_F(CirclePolymorphismTest, TestInfo) {
   ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_.info());
 }
 
-TEST_F(CirclePolymorphismTest, TestCreateDfsIteratorShouldIsDone) {
-  Iterator* dfs_iter = circle_.createDFSIterator();
+TEST_F(CirclePolymorphismTest, CreateIteratorWithBfsIteratorFactoryShouldIsDone) {
+  const auto factory = BFSIteratorFactory{};
 
-  ASSERT_TRUE(dfs_iter->isDone());
+  Iterator* it = circle_.createIterator(&factory);
 
-  delete dfs_iter;
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }
 
-TEST_F(CirclePolymorphismTest, TestCreateBfsIteratorShouldIsDone) {
-  Iterator* bfs_iter = circle_.createBFSIterator();
+TEST_F(CirclePolymorphismTest, CreateIteratorWithDfsIteratorFactoryShouldIsDone) {
+  const auto factory = DFSIteratorFactory{};
 
-  ASSERT_TRUE(bfs_iter->isDone());
+  Iterator* it = circle_.createIterator(&factory);
 
-  delete bfs_iter;
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }
 
-TEST_F(CirclePolymorphismTest, TestCreateListIteratorShouldIsDone) {
-  Iterator* list_iter = circle_.createListIterator();
+TEST_F(CirclePolymorphismTest, CreateIteratorWithListIteratorFactoryShouldIsDone) {
+  const auto factory = ListIteratorFactory{};
 
-  ASSERT_TRUE(list_iter->isDone());
+  Iterator* it = circle_.createIterator(&factory);
 
-  delete list_iter;
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }

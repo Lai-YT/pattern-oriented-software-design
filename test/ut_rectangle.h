@@ -80,39 +80,6 @@ TEST_F(RectangleTest, DeleteShapeShouldThrowException) {
                Shape::ShapeUndeletableException);
 }
 
-TEST_F(RectangleTest,
-       CreateIteratorWithBfsIteratorFactoryShouldGetNullIterator) {
-  const auto factory = BFSIteratorFactory{};
-
-  Iterator* it = rectangle_.createIterator(&factory);
-
-  ASSERT_TRUE(it->isDone());
-
-  delete it;
-}
-
-TEST_F(RectangleTest,
-       CreateIteratorWithDfsIteratorFactoryShouldGetNullIterator) {
-  const auto factory = DFSIteratorFactory{};
-
-  Iterator* it = rectangle_.createIterator(&factory);
-
-  ASSERT_TRUE(it->isDone());
-
-  delete it;
-}
-
-TEST_F(RectangleTest,
-       CreateIteratorWithListIteratorFactoryShouldGetNullIterator) {
-  const auto factory = ListIteratorFactory{};
-
-  Iterator* it = rectangle_.createIterator(&factory);
-
-  ASSERT_TRUE(it->isDone());
-
-  delete it;
-}
-
 class RectanglePolymorphismTest : public RectangleTest {
  protected:
   Shape& rectangle_{RectangleTest::rectangle_};
@@ -133,26 +100,35 @@ TEST_F(RectanglePolymorphismTest, TestPerimeter) {
   ASSERT_NEAR(14, rectangle_.perimeter(), DELTA);
 }
 
-TEST_F(RectanglePolymorphismTest, TestCreateDfsIteratorShoudIsDone) {
-  Iterator* dfs_iter = rectangle_.createDFSIterator();
+TEST_F(RectanglePolymorphismTest,
+       CreateIteratorWithBfsIteratorFactoryShouldIsDone) {
+  const auto factory = BFSIteratorFactory{};
 
-  ASSERT_TRUE(dfs_iter->isDone());
+  Iterator* it = rectangle_.createIterator(&factory);
 
-  delete dfs_iter;
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }
 
-TEST_F(RectanglePolymorphismTest, TestCreateBfsIteratorShoudIsDone) {
-  Iterator* bfs_iter = rectangle_.createBFSIterator();
+TEST_F(RectanglePolymorphismTest,
+       CreateIteratorWithDfsIteratorFactoryShouldIsDone) {
+  const auto factory = DFSIteratorFactory{};
 
-  ASSERT_TRUE(bfs_iter->isDone());
+  Iterator* it = rectangle_.createIterator(&factory);
 
-  delete bfs_iter;
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }
 
-TEST_F(RectanglePolymorphismTest, TestCreateListIteratorShoudIsDone) {
-  Iterator* list_iter = rectangle_.createListIterator();
+TEST_F(RectanglePolymorphismTest,
+       CreateIteratorWithListIteratorFactoryShouldIsDone) {
+  const auto factory = ListIteratorFactory{};
 
-  ASSERT_TRUE(list_iter->isDone());
+  Iterator* it = rectangle_.createIterator(&factory);
 
-  delete list_iter;
+  ASSERT_TRUE(it->isDone());
+
+  delete it;
 }

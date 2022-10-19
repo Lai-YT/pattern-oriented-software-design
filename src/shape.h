@@ -4,6 +4,7 @@
 #include <exception>
 #include <string>
 
+#include "iterator/factory/iterator_factory.h"
 #include "iterator/iterator.h"
 
 class Shape {
@@ -12,9 +13,7 @@ class Shape {
   virtual double area() const = 0;
   virtual double perimeter() const = 0;
   virtual std::string info() const = 0;
-  virtual Iterator* createDFSIterator() = 0;
-  virtual Iterator* createBFSIterator() = 0;
-  virtual Iterator* createListIterator() = 0;
+  virtual Iterator* createIterator(const IteratorFactory* const factory) = 0;
 
   /**
    * Throws ShapeInaddibleException.

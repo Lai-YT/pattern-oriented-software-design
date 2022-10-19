@@ -6,7 +6,6 @@
 #include <string>
 
 #include "iterator/factory/iterator_factory.h"
-#include "iterator/null_iterator.h"
 #include "shape.h"
 #include "two_dimensional_vector.h"
 
@@ -32,19 +31,7 @@ class Circle : public Shape {
     return "Circle (" + represent_vector_->info() + ")";
   }
 
-  NullIterator* createDFSIterator() override {
-    return new NullIterator{};
-  }
-
-  NullIterator* createBFSIterator() override {
-    return new NullIterator{};
-  }
-
-  NullIterator* createListIterator() override {
-    return new NullIterator{};
-  }
-
-  Iterator* createIterator(const IteratorFactory* const factory) {
+  Iterator* createIterator(const IteratorFactory* const factory) override {
     return factory->createIterator();
   }
 

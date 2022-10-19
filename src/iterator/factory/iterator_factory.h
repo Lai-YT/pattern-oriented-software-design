@@ -3,7 +3,7 @@
 
 #include <list>
 
-#include "../../shape.h"
+// #include "../../shape.h"
 #include "../iterator.h"
 #include "../null_iterator.h"
 

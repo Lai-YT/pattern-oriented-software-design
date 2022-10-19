@@ -4,6 +4,7 @@
 #include <stack>
 
 #include "../shape.h"
+#include "factory/dfs_iterator_factory.h"
 #include "iterator.h"
 #include "null_iterator.h"
 
@@ -28,7 +29,7 @@ class DFSCompoundIterator : public Iterator {
     if (!TopLevelIsDone_()) {
       Visit_(*top_level_cursor_);
       PushChildrenAsToVisitIfNotDone_(
-          (*top_level_cursor_)->createDFSIterator());
+          (*top_level_cursor_)->createIterator(&dfs_factory_));
     }
   }
 
@@ -69,7 +70,7 @@ class DFSCompoundIterator : public Iterator {
       if (!isDone()) {
         Visit_(*top_level_cursor_);
         PushChildrenAsToVisitIfNotDone_(
-            (*top_level_cursor_)->createDFSIterator());
+            (*top_level_cursor_)->createIterator(&dfs_factory_));
       }
     }
   }
@@ -90,6 +91,7 @@ class DFSCompoundIterator : public Iterator {
   Iterator* cursor_ = new NullIterator{};
   std::stack<Iterator*> to_visit_{};
   Shape* current_item_ = nullptr;
+  DFSIteratorFactory dfs_factory_{};
 
   bool TopLevelIsDone_() const {
     return top_level_cursor_ == end_;

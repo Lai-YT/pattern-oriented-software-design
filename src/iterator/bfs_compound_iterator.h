@@ -4,6 +4,7 @@
 #include <queue>
 
 #include "../shape.h"
+#include "factory/bfs_iterator_factory.h"
 #include "iterator.h"
 #include "null_iterator.h"
 
@@ -25,7 +26,7 @@ class BFSCompoundIterator : public Iterator {
     if (!TopLevelIsDone_()) {
       Visit_(*top_level_cursor_);
       PushChildrenAsToVisitIfNotDone_(
-          (*top_level_cursor_)->createBFSIterator());
+          (*top_level_cursor_)->createIterator(&bfs_factory_));
     }
   }
 
@@ -45,7 +46,7 @@ class BFSCompoundIterator : public Iterator {
       if (!TopLevelIsDone_()) {
         Visit_(*top_level_cursor_);
         PushChildrenAsToVisitIfNotDone_(
-            (*top_level_cursor_)->createBFSIterator());
+            (*top_level_cursor_)->createIterator(&bfs_factory_));
         return;
       }
     }
@@ -82,6 +83,7 @@ class BFSCompoundIterator : public Iterator {
   Iterator* cursor_ = new NullIterator{};
   std::queue<Iterator*> to_visit_{};
   Shape* current_item_ = nullptr;
+  BFSIteratorFactory bfs_factory_{};
 
   bool TopLevelIsDone_() const {
     return top_level_cursor_ == end_;
