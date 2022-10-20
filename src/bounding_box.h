@@ -35,43 +35,31 @@ class BoundingBox {
   Point lower_left_;
 
   double CalculateMaxX_(const std::set<Point*>& points) const {
-    double max_x = (*points.begin())->x();
-    for (const auto* const point : points) {
-      if (point->x() > max_x) {
-        max_x = point->x();
-      }
-    }
-    return max_x;
+    Point* point_with_max_x =
+        *std::max_element(points.begin(), points.end(),
+                          [](Point* a, Point* b) { return a->x() < b->x(); });
+    return point_with_max_x->x();
   }
 
   double CalculateMinX_(const std::set<Point*>& points) const {
-    double min_x = (*points.begin())->x();
-    for (const auto* const point : points) {
-      if (point->x() < min_x) {
-        min_x = point->x();
-      }
-    }
-    return min_x;
+    Point* point_with_min_x =
+        *std::min_element(points.begin(), points.end(),
+                          [](Point* a, Point* b) { return a->x() < b->x(); });
+    return point_with_min_x->x();
   }
 
   double CalculateMaxY_(const std::set<Point*>& points) const {
-    double max_y = (*points.begin())->y();
-    for (const auto* const point : points) {
-      if (point->y() > max_y) {
-        max_y = point->y();
-      }
-    }
-    return max_y;
+    Point* point_with_max_y =
+        *std::max_element(points.begin(), points.end(),
+                          [](Point* a, Point* b) { return a->y() < b->y(); });
+    return point_with_max_y->y();
   }
 
   double CalculateMinY_(const std::set<Point*>& points) const {
-    double min_y = (*points.begin())->y();
-    for (const auto* const point : points) {
-      if (point->y() < min_y) {
-        min_y = point->y();
-      }
-    }
-    return min_y;
+    Point* point_with_min_y =
+        *std::min_element(points.begin(), points.end(),
+                          [](Point* a, Point* b) { return a->y() < b->y(); });
+    return point_with_min_y->y();
   }
 
   bool AtRight_(const BoundingBox* const box) const {
