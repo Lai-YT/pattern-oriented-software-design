@@ -313,9 +313,6 @@ TEST_F(CompoundShapeDepthTwoTest,
       {0, 0}, {3, 0},   {0, 4}, {3, 4}, /* rectangle */
       {0, 0}, {3, 0},   {3, 4},         /* triangle */
   };
-  for (Point* vertex : vertices) {
-    std::cout << vertex->info() << '\n';
-  }
   ASSERT_EQ(6, vertices.size()); /* no duplicates */
   for (Point& vertex : expected_vertices) {
     ASSERT_TRUE(vertices_with_value_as_compare.find(&vertex) !=

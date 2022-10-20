@@ -4,6 +4,7 @@
 #include "iterator/ut_dfs_compound_iterator.h"
 #include "iterator/ut_list_compound_iterator.h"
 #include "iterator/ut_null_iterator.h"
+#include "ut_bounding_box.h"
 #include "ut_circle.h"
 #include "ut_compound_shape.h"
 #include "ut_point.h"
