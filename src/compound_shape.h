@@ -6,7 +6,6 @@
 #include <list>
 #include <set>
 #include <string>
-#include <utility> /* move*/
 #include <vector>
 
 #include "iterator/factory/iterator_factory.h"
@@ -67,6 +66,7 @@ class CompoundShape : public Shape {
       vertices_with_value_as_compare.insert(sub_vertices.begin(),
                                             sub_vertices.end());
     }
+    /* FIXME: should delete those duplicate points but how? */
 
     /* So bad that the return type is restricted to compare with pointer. */
     return std::set<Point*>{vertices_with_value_as_compare.begin(),
