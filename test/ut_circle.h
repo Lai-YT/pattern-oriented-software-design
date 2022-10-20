@@ -53,8 +53,8 @@ TEST_F(CircleTest, GetPointsShouldReturnUpperRightAndLowerLeft) {
 
   /* the key comparison used by set are the memory positions.
    * Our comparison can't relay on that since we don't know where the points
-   * should be. A workaround is to traverse the set and dump the value of points
-   * into another set. */
+   * should be. A workaround is to traverse the set and dump the points
+   * into another set which compares with value. */
   const auto bounding_points_with_value_as_compare =
       std::set<Point*, std::function<bool(Point*, Point*)>>{
           bounding_points.begin(), bounding_points.end(),
