@@ -2,10 +2,12 @@
 #define SRC_SHAPE_H_
 
 #include <exception>
+#include <set>
 #include <string>
 
 #include "iterator/factory/iterator_factory.h"
 #include "iterator/iterator.h"
+#include "point.h"
 
 class Shape {
  public:
@@ -13,6 +15,7 @@ class Shape {
   virtual double area() const = 0;
   virtual double perimeter() const = 0;
   virtual std::string info() const = 0;
+  virtual std::set<Point*> getPoints() const = 0;
   virtual Iterator* createIterator(const IteratorFactory* const factory) = 0;
 
   /**

@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <set>
 #include <string>
+#include <vector>
 
 #include "../src/circle.h"
 #include "../src/compound_shape.h"
@@ -292,4 +294,34 @@ TEST_F(CompoundShapeDepthTwoTest, DeleteShapeShouldDeleteAllTargetShapes) {
       ")";
   /* clang-format on */
   ASSERT_EQ(expected, actual);
+}
+
+TEST_F(CompoundShapeDepthTwoTest,
+       GetPointsShouldReturnAllVerticesShapesThatContains) {
+  const std::set<Point*> vertices = level_one_compound_.getPoints();
+
+  /* the key comparison used by set are the memory positions.
+   * Our comparison can't relay on that since we don't know where the points
+   * should be. A workaround is to traverse the set and dump the points
+   * into another set which compares with value. */
+  const auto vertices_with_value_as_compare =
+      std::set<Point*, std::function<bool(Point*, Point*)>>{
+          vertices.begin(), vertices.end(),
+          [](Point* p1, Point* p2) { return p1->info() < p2->info(); }};
+  auto expected_vertices = std::vector<Point>{
+      {6, 7}, {-4, -3},                 /* circle */
+      {0, 0}, {3, 0},   {0, 4}, {3, 4}, /* rectangle */
+      {0, 0}, {3, 0},   {3, 4},         /* triangle */
+  };
+  for (Point* vertex : vertices) {
+    std::cout << vertex->info() << '\n';
+  }
+  ASSERT_EQ(6, vertices.size()); /* no duplicates */
+  for (Point& vertex : expected_vertices) {
+    ASSERT_TRUE(vertices_with_value_as_compare.find(&vertex) !=
+                vertices_with_value_as_compare.end());
+  }
+  for (Point* p : vertices) {
+    delete p;
+  }
 }
