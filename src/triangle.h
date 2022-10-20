@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <memory>
+#include <set>
 #include <stdexcept>
 
 #include "iterator/factory/iterator_factory.h"
@@ -37,6 +38,13 @@ class Triangle : public Shape {
 
   std::string info() const override {
     return "Triangle (" + side_1_->info() + ", " + side_2_->info() + ")";
+  }
+
+  /** Returns the three vertices of the triangle. */
+  std::set<Point*> getPoints() const {
+    return {new Point{side_1_->head()}, new Point{side_1_->tail()},
+            new Point{*FindUncommonPointFromVector(
+                *side_2_, *FindCommonPointOfVectors(*side_1_, *side_2_))}};
   }
 
   Iterator* createIterator(const IteratorFactory* const factory) {

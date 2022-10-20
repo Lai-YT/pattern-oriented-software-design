@@ -1,5 +1,9 @@
 #include <gtest/gtest.h>
 
+#include <functional>
+#include <set>
+#include <vector>
+
 #include "../src/iterator/factory/bfs_iterator_factory.h"
 #include "../src/iterator/factory/dfs_iterator_factory.h"
 #include "../src/iterator/factory/list_iterator_factory.h"
@@ -70,6 +74,28 @@ TEST_F(TriangleTest, AddShapeShouldThrowException) {
 TEST_F(TriangleTest, DeleteShapeShouldThrowException) {
   ASSERT_THROW({ triangle_.deleteShape(&triangle_); },
                Shape::ShapeUndeletableException);
+}
+
+TEST_F(TriangleTest, GetPointsShouldReturnTheThreeVerices) {
+  const std::set<Point*> bounding_points = triangle_.getPoints();
+
+  /* the key comparison used by set are the memory positions.
+   * Our comparison can't relay on that since we don't know where the points
+   * should be. A workaround is to traverse the set and dump the value of points
+   * into another set. */
+  const auto bounding_points_with_value_as_compare =
+      std::set<Point*, std::function<bool(Point*, Point*)>>{
+          bounding_points.begin(), bounding_points.end(),
+          [](Point* p1, Point* p2) { return p1->info() < p2->info(); }};
+  auto vertices = std::vector<Point>{{0, 0}, {3, 0}, {3, 4}};
+  ASSERT_EQ(3, bounding_points.size());
+  for (Point& vertex : vertices) {
+    ASSERT_TRUE(bounding_points_with_value_as_compare.find(&vertex) !=
+                bounding_points_with_value_as_compare.end());
+  }
+  for (Point* p : bounding_points) {
+    delete p;
+  }
 }
 
 class TrianglePolymorphismTest : public TriangleTest {
