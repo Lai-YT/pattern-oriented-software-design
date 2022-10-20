@@ -46,7 +46,7 @@ class Triangle : public Shape {
    * The caller takes the ownership of the points returned, which are the copies
    * that aren't actually used internally by triangle itself.
    */
-  std::set<Point*> getPoints() const {
+  std::set<Point*> getPoints() const override {
     Point common_between_side_1_and_2 =
         *FindCommonPointOfVectors(*side_1_, *side_2_);
     Point uncommon_in_side_2_with_side_1 =

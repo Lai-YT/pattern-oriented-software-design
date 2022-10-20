@@ -55,7 +55,7 @@ class CompoundShape : public Shape {
   }
 
   /** Returns all vertices of the shapes contained by compound shape. */
-  std::set<Point*> getPoints() const {
+  std::set<Point*> getPoints() const override {
     /* two points might have same (x, y) but different memory positions,
      * but they should be treated as equal, which means we should not relay on
      * comparing the pointers. */

@@ -50,7 +50,7 @@ class Rectangle : public Shape {
    * The caller takes the ownership of the points returned, which are the copies
    * that aren't actually used internally by rectangle itself.
    */
-  std::set<Point*> getPoints() const {
+  std::set<Point*> getPoints() const override {
     /* Three of the vertices are held by the underlaying vectors
        while the forth has to be derived. */
     Point common = *FindCommonPointOfVectors(*length_side_, *width_side_);
