@@ -55,17 +55,20 @@ TEST_F(CircleTest, GetPointsShouldReturnUpperRightAndLowerLeft) {
    * Our comparison can't relay on that since we don't know where the points
    * should be. A workaround is to traverse the set and dump the value of points
    * into another set. */
-  auto upper_right = Point{6, 7};
-  auto lower_left = Point{-4, -3};
-  auto bounding_points_with_value_as_compare =
+  const auto bounding_points_with_value_as_compare =
       std::set<Point*, std::function<bool(Point*, Point*)>>{
           bounding_points.begin(), bounding_points.end(),
           [](Point* p1, Point* p2) { return p1->info() < p2->info(); }};
+  auto upper_right = Point{6, 7};
+  auto lower_left = Point{-4, -3};
   ASSERT_EQ(2, bounding_points.size());
   ASSERT_TRUE(bounding_points_with_value_as_compare.find(&upper_right) !=
               bounding_points_with_value_as_compare.end());
   ASSERT_TRUE(bounding_points_with_value_as_compare.find(&lower_left) !=
               bounding_points_with_value_as_compare.end());
+  for (Point* p : bounding_points) {
+    delete p;
+  }
 }
 
 class CirclePolymorphismTest : public CircleTest {

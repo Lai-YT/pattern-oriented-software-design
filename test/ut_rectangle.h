@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <functional>
+#include <set>
+
 #include "../src/iterator/factory/bfs_iterator_factory.h"
 #include "../src/iterator/factory/dfs_iterator_factory.h"
 #include "../src/iterator/factory/list_iterator_factory.h"
@@ -78,6 +81,62 @@ TEST_F(RectangleTest, AddShapeShouldThrowException) {
 TEST_F(RectangleTest, DeleteShapeShouldThrowException) {
   ASSERT_THROW({ rectangle_.deleteShape(&rectangle_); },
                Shape::ShapeUndeletableException);
+}
+
+TEST_F(RectangleTest, GetPointsShouldReturnTheFourVertices) {
+  const std::set<Point*> bounding_points = rectangle_.getPoints();
+
+  /* the key comparison used by set are the memory positions.
+   * Our comparison can't relay on that since we don't know where the points
+   * should be. A workaround is to traverse the set and dump the value of points
+   * into another set. */
+  const auto bounding_points_with_value_as_compare =
+      std::set<Point*, std::function<bool(Point*, Point*)>>{
+          bounding_points.begin(), bounding_points.end(),
+          [](Point* p1, Point* p2) { return p1->info() < p2->info(); }};
+  auto vertices_carried_by_vector =
+      std::vector<Point>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
+  auto derived_vertex = Point{3, 4};
+  ASSERT_EQ(4, bounding_points.size());
+  for (Point& vertex : vertices_carried_by_vector) {
+    ASSERT_TRUE(bounding_points_with_value_as_compare.find(&vertex) !=
+                bounding_points_with_value_as_compare.end());
+  }
+  ASSERT_TRUE(bounding_points_with_value_as_compare.find(&derived_vertex) !=
+              bounding_points_with_value_as_compare.end());
+  for (Point* p : bounding_points) {
+    delete p;
+  }
+}
+
+TEST_F(RectangleTest, GetPointsFromRotatedShouldReturnTheFourVertices) {
+  const Point vector_head_1 = Point{4, 0};
+  const Point vector_tail_1 = Point{0, 3};
+  const TwoDimensionalVector vector_1{&vector_head_1, &vector_tail_1};
+  const Point vector_head_2 = Point{7, 4};
+  const Point vector_tail_2 = Point{4, 0};
+  const TwoDimensionalVector vector_2{&vector_head_2, &vector_tail_2};
+  const Rectangle rectangle_{&vector_1, &vector_2};
+
+  const std::set<Point*> bounding_points = rectangle_.getPoints();
+
+  auto bounding_points_with_value_as_compare =
+      std::set<Point*, std::function<bool(Point*, Point*)>>{
+          bounding_points.begin(), bounding_points.end(),
+          [](Point* p1, Point* p2) { return p1->info() < p2->info(); }};
+  auto vertices_carried_by_vector =
+      std::vector<Point>{Point{4, 0}, Point{0, 3}, Point{7, 4}};
+  auto derived_vertex = Point{3, 7};
+  ASSERT_EQ(4, bounding_points.size());
+  for (Point& vertex : vertices_carried_by_vector) {
+    ASSERT_TRUE(bounding_points_with_value_as_compare.find(&vertex) !=
+                bounding_points_with_value_as_compare.end());
+  }
+  ASSERT_TRUE(bounding_points_with_value_as_compare.find(&derived_vertex) !=
+              bounding_points_with_value_as_compare.end());
+  for (Point* p : bounding_points) {
+    delete p;
+  }
 }
 
 class RectanglePolymorphismTest : public RectangleTest {
