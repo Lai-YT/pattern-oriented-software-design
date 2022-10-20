@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <set>
+#include <vector>
 
 #include "../src/iterator/factory/bfs_iterator_factory.h"
 #include "../src/iterator/factory/dfs_iterator_factory.h"
@@ -94,8 +95,7 @@ TEST_F(RectangleTest, GetPointsShouldReturnTheFourVertices) {
       std::set<Point*, std::function<bool(Point*, Point*)>>{
           bounding_points.begin(), bounding_points.end(),
           [](Point* p1, Point* p2) { return p1->info() < p2->info(); }};
-  auto vertices_carried_by_vector =
-      std::vector<Point>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
+  auto vertices_carried_by_vector = std::vector<Point>{{0, 0}, {3, 0}, {0, 4}};
   auto derived_vertex = Point{3, 4};
   ASSERT_EQ(4, bounding_points.size());
   for (Point& vertex : vertices_carried_by_vector) {
@@ -124,8 +124,7 @@ TEST_F(RectangleTest, GetPointsFromRotatedShouldReturnTheFourVertices) {
       std::set<Point*, std::function<bool(Point*, Point*)>>{
           bounding_points.begin(), bounding_points.end(),
           [](Point* p1, Point* p2) { return p1->info() < p2->info(); }};
-  auto vertices_carried_by_vector =
-      std::vector<Point>{Point{4, 0}, Point{0, 3}, Point{7, 4}};
+  auto vertices_carried_by_vector = std::vector<Point>{{4, 0}, {0, 3}, {7, 4}};
   auto derived_vertex = Point{3, 7};
   ASSERT_EQ(4, bounding_points.size());
   for (Point& vertex : vertices_carried_by_vector) {

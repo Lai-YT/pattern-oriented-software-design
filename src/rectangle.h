@@ -44,7 +44,12 @@ class Rectangle : public Shape {
     return width_side_->length();
   }
 
-  /** Returns the four vetices of the rectangle. */
+  /**
+   * Returns the four vetices of the rectangle.
+   *
+   * The caller takes the ownership of the points returned, which are the copies
+   * that aren't actually used internally by rectangle itself.
+   */
   std::set<Point*> getPoints() const {
     /* Three of the vertices are held by the underlaying vectors
        while the forth has to be derived. */
