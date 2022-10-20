@@ -1,6 +1,6 @@
 .PHONY: dirs clean clean_coverage
 
-CXXFLAGS = -Wfatal-errors
+CXXFLAGS = #-Wfatal-errors
 SRC = $(shell ls src/*.h src/**/*.h)
 TEST = $(shell ls test/*.h test/**/*.h)
 OBJ = obj/iterator_factory.o obj/bfs_iterator_factory.o obj/dfs_iterator_factory.o obj/list_iterator_factory.o

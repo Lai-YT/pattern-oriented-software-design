@@ -3,6 +3,7 @@
 #define _USE_MATH_DEFINES
 
 #include <cmath>
+#include <set>
 #include <string>
 
 #include "iterator/factory/iterator_factory.h"
@@ -31,12 +32,33 @@ class Circle : public Shape {
     return "Circle (" + represent_vector_->info() + ")";
   }
 
+  /**
+   * Returns the upper right and lower left points which represent the bounding
+   * box of the circle.
+   *
+   * The caller takes the ownership of the points returned.
+   * NOTE: So bad that the value type is in pointer since memory spaces they
+   * pointed to are not used by circle itself.
+   */
+  std::set<Point*> getPoints() const {
+    auto* upper_right =
+        new Point{center_().x() + radius(), center_().y() + radius()};
+    auto* lower_left =
+        new Point{center_().x() - radius(), center_().y() - radius()};
+
+    return {upper_right, lower_left};
+  }
+
   Iterator* createIterator(const IteratorFactory* const factory) override {
     return factory->createIterator();
   }
 
  private:
   const TwoDimensionalVector* represent_vector_;
+
+  Point center_() const {
+    return represent_vector_->head();
+  }
 };
 
 #endif /* end of include guard: SRC_CIRCLE_H_ */
