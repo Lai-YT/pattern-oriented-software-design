@@ -1,8 +1,9 @@
 #ifndef SRC_ITERATOR_NULL_ITERATOR_H_
 #define SRC_ITERATOR_NULL_ITERATOR_H_
 
-#include "../shape.h"
 #include "iterator.h"
+
+class Shape;
 
 class NullIterator : public Iterator {
  public:

@@ -5,10 +5,10 @@
 #include <set>
 #include <string>
 
-#include "iterator/factory/iterator_factory.h"
-#include "iterator/iterator.h"
-#include "point.h"
-#include "visitor/shape_visitor.h"
+class IteratorFactory;
+class Iterator;
+class Point;
+class ShapeVisitor;
 
 class Shape {
  public:

@@ -3,7 +3,7 @@
 CXXFLAGS = #-Wfatal-errors
 SRC = $(shell ls src/*.h src/**/*.h)
 TEST = $(shell ls test/*.h test/**/*.h)
-OBJ = obj/iterator_factory.o obj/bfs_iterator_factory.o obj/dfs_iterator_factory.o obj/list_iterator_factory.o
+OBJ = obj/bfs_iterator_factory.o obj/dfs_iterator_factory.o
 
 all: dirs bin/ut_all
 

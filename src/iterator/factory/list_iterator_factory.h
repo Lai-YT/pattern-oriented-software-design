@@ -3,16 +3,19 @@
 
 #include <list>
 
+#include "../../shape.h"
+#include "../iterator.h"
+#include "../list_compound_iterator.h"
 #include "iterator_factory.h"
-
-class Iterator;
-class Shape;
 
 class ListIteratorFactory : public IteratorFactory {
  public:
-  virtual Iterator* createIterator(
+  Iterator* createIterator(
       const std::list<Shape*>::const_iterator& begin,
-      const std::list<Shape*>::const_iterator& end) const override;
+      const std::list<Shape*>::const_iterator& end) const override {
+    return new ListCompoundIterator<std::list<Shape*>::const_iterator>{begin,
+                                                                       end};
+  };
 };
 
 #endif /* end of include guard: SRC_ITERATOR_FACTORY_LIST_ITERATOR_FACTORY_H_ \
