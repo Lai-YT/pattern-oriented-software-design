@@ -77,23 +77,25 @@ TEST_F(TriangleTest, DeleteShapeShouldThrowException) {
 }
 
 TEST_F(TriangleTest, GetPointsShouldReturnTheThreeVerices) {
-  const std::set<Point*> vertices = triangle_.getPoints();
+  const std::set<const Point*> vertices = triangle_.getPoints();
 
   /* the key comparison used by set are the memory positions.
    * Our comparison can't relay on that since we don't know where the points
    * should be. A workaround is to traverse the set and dump the points
    * into another set which compares with value. */
   const auto vertices_with_value_as_compare =
-      std::set<Point*, std::function<bool(Point*, Point*)>>{
+      std::set<const Point*, std::function<bool(const Point*, const Point*)>>{
           vertices.begin(), vertices.end(),
-          [](Point* p1, Point* p2) { return p1->info() < p2->info(); }};
-  auto expected_vertices = std::vector<Point>{{0, 0}, {3, 0}, {3, 4}};
+          [](const Point* p1, const Point* p2) {
+            return p1->info() < p2->info();
+          }};
+  const auto expected_vertices = std::vector<Point>{{0, 0}, {3, 0}, {3, 4}};
   ASSERT_EQ(3, vertices.size());
-  for (Point& vertex : expected_vertices) {
+  for (const Point& vertex : expected_vertices) {
     ASSERT_TRUE(vertices_with_value_as_compare.find(&vertex) !=
                 vertices_with_value_as_compare.end());
   }
-  for (Point* p : vertices) {
+  for (const Point* p : vertices) {
     delete p;
   }
 }

@@ -41,10 +41,10 @@ class Circle : public Shape {
    * NOTE: So bad that the value type is in pointer since memory spaces they
    * pointed to are not used by circle itself.
    */
-  std::set<Point*> getPoints() const override {
-    auto* upper_right =
+  std::set<const Point*> getPoints() const override {
+    const auto* upper_right =
         new Point{center_().x() + radius(), center_().y() + radius()};
-    auto* lower_left =
+    const auto* lower_left =
         new Point{center_().x() - radius(), center_().y() - radius()};
 
     return {upper_right, lower_left};

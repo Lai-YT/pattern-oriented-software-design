@@ -8,7 +8,7 @@
 
 class BoundingBox {
  public:
-  BoundingBox(const std::set<Point*>& points)
+  BoundingBox(const std::set<const Point*>& points)
       : upper_right_{0, 0}, lower_left_{0, 0} /* placeholding values */ {
     if (points.empty()) {
       throw;
@@ -34,31 +34,31 @@ class BoundingBox {
   Point upper_right_;
   Point lower_left_;
 
-  double CalculateMaxX_(const std::set<Point*>& points) const {
-    Point* point_with_max_x =
-        *std::max_element(points.begin(), points.end(),
-                          [](Point* a, Point* b) { return a->x() < b->x(); });
+  double CalculateMaxX_(const std::set<const Point*>& points) const {
+    const Point* point_with_max_x = *std::max_element(
+        points.begin(), points.end(),
+        [](const Point* a, const Point* b) { return a->x() < b->x(); });
     return point_with_max_x->x();
   }
 
-  double CalculateMinX_(const std::set<Point*>& points) const {
-    Point* point_with_min_x =
-        *std::min_element(points.begin(), points.end(),
-                          [](Point* a, Point* b) { return a->x() < b->x(); });
+  double CalculateMinX_(const std::set<const Point*>& points) const {
+    const Point* point_with_min_x = *std::min_element(
+        points.begin(), points.end(),
+        [](const Point* a, const Point* b) { return a->x() < b->x(); });
     return point_with_min_x->x();
   }
 
-  double CalculateMaxY_(const std::set<Point*>& points) const {
-    Point* point_with_max_y =
-        *std::max_element(points.begin(), points.end(),
-                          [](Point* a, Point* b) { return a->y() < b->y(); });
+  double CalculateMaxY_(const std::set<const Point*>& points) const {
+    const Point* point_with_max_y = *std::max_element(
+        points.begin(), points.end(),
+        [](const Point* a, const Point* b) { return a->y() < b->y(); });
     return point_with_max_y->y();
   }
 
-  double CalculateMinY_(const std::set<Point*>& points) const {
-    Point* point_with_min_y =
-        *std::min_element(points.begin(), points.end(),
-                          [](Point* a, Point* b) { return a->y() < b->y(); });
+  double CalculateMinY_(const std::set<const Point*>& points) const {
+    const Point* point_with_min_y = *std::min_element(
+        points.begin(), points.end(),
+        [](const Point* a, const Point* b) { return a->y() < b->y(); });
     return point_with_min_y->y();
   }
 

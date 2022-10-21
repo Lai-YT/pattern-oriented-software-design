@@ -55,23 +55,25 @@ class CompoundShape : public Shape {
   }
 
   /** Returns all vertices of the shapes contained by compound shape. */
-  std::set<Point*> getPoints() const override {
+  std::set<const Point*> getPoints() const override {
     /* two points might have same (x, y) but different memory positions,
      * but they should be treated as equal, which means we should not relay on
      * comparing the pointers. */
     auto vertices_with_value_as_compare =
-        std::set<Point*, std::function<bool(Point*, Point*)>>{
-            [](Point* p1, Point* p2) { return p1->info() < p2->info(); }};
-    for (auto* shape : shapes_) {
-      std::set<Point*> sub_vertices = shape->getPoints();
-      vertices_with_value_as_compare.insert(sub_vertices.begin(),
-                                            sub_vertices.end());
+        std::set<const Point*, std::function<bool(const Point*, const Point*)>>{
+            [](const Point* p1, const Point* p2) {
+              return p1->info() < p2->info();
+            }};
+    for (const auto* shape : shapes_) {
+      std::set<const Point*> sub_vertices = shape->getPoints();
+      vertices_with_value_as_compare.insert(sub_vertices.cbegin(),
+                                            sub_vertices.cend());
     }
     /* FIXME: should delete those duplicate points but how? */
 
     /* So bad that the return type is restricted to compare with pointer. */
-    return std::set<Point*>{vertices_with_value_as_compare.begin(),
-                            vertices_with_value_as_compare.end()};
+    return std::set<const Point*>{vertices_with_value_as_compare.begin(),
+                                  vertices_with_value_as_compare.end()};
   }
 
   Iterator* createIterator(const IteratorFactory* const factory) override {
