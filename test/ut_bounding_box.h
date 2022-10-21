@@ -50,16 +50,16 @@ TEST_F(BoundingBoxTest, TestCollideShouldBeTrueIfOverlapped) {
   DeletePoints_(points);
 }
 
-TEST_F(BoundingBoxTest, TestCollideShouldBeShouldFalseIfAlignedOutside) {
+TEST_F(BoundingBoxTest, TestCollideShouldBeShouldTrueIfAdjacentOutside) {
   auto points =
       std::set<const Point*>{new Point{190, 170}, new Point{210, 300}};
   auto bb = BoundingBox{points};
 
-  ASSERT_FALSE(bounding_box_.collide(&bb));
+  ASSERT_TRUE(bounding_box_.collide(&bb));
   DeletePoints_(points);
 }
 
-TEST_F(BoundingBoxTest, TestCollideShouldBeShouldTrueIfAlignedInside) {
+TEST_F(BoundingBoxTest, TestCollideShouldBeShouldTrueIfAdjacentInside) {
   auto points =
       std::set<const Point*>{new Point{180, 196}, new Point{130, 130}};
   auto bb = BoundingBox{points};

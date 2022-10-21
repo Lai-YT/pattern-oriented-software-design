@@ -73,19 +73,19 @@ class BoundingBox {
   }
 
   bool AtRight_(const BoundingBox* const box) const {
-    return box->lower_left().x() >= this->upper_right().x();
+    return box->lower_left().x() > this->upper_right().x();
   }
 
   bool AtLeft_(const BoundingBox* const box) const {
-    return box->upper_right().x() <= this->lower_left().x();
+    return box->upper_right().x() < this->lower_left().x();
   }
 
   bool AtTop_(const BoundingBox* const box) const {
-    return box->lower_left().y() >= this->upper_right().y();
+    return box->lower_left().y() > this->upper_right().y();
   }
 
   bool AtBottom_(const BoundingBox* const box) const {
-    return box->upper_right().y() <= this->lower_left().y();
+    return box->upper_right().y() < this->lower_left().y();
   }
 };
 
