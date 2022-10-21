@@ -13,8 +13,8 @@
 
 class CircleTest : public ::testing::Test {
  private:
-  const Point vector_head_ = Point{1, 2};
-  const Point vector_tail_ = Point{-3, 5};
+  const Point vector_head_{1, 2};
+  const Point vector_tail_{-3, 5};
   const TwoDimensionalVector vector_{&vector_head_, &vector_tail_};
 
  protected:

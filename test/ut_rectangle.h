@@ -14,11 +14,11 @@
 
 class RectangleTest : public ::testing::Test {
  private:
-  const Point vector_head_1_ = Point{0, 0};
-  const Point vector_tail_1_ = Point{3, 0};
+  const Point vector_head_1_{0, 0};
+  const Point vector_tail_1_{3, 0};
   const TwoDimensionalVector vector_1_{&vector_head_1_, &vector_tail_1_};
-  const Point vector_head_2_ = Point{0, 0};
-  const Point vector_tail_2_ = Point{0, 4};
+  const Point vector_head_2_{0, 0};
+  const Point vector_tail_2_{0, 4};
   const TwoDimensionalVector vector_2_{&vector_head_2_, &vector_tail_2_};
 
  protected:
