@@ -21,8 +21,18 @@ class BoundingBox {
     return upper_right_;
   }
 
+  /** Returns upper_right in pointer type. */
+  const Point* max() {
+    return &upper_right_;
+  }
+
   Point lower_left() const {
     return lower_left_;
+  }
+
+  /** Returns lower_left in pointer type. */
+  const Point* min() {
+    return &lower_left_;
   }
 
   bool collide(const BoundingBox* const box) const {

@@ -29,8 +29,16 @@ TEST_F(BoundingBoxTest, TestUpperRight) {
   ASSERT_EQ(Point(190, 196), bounding_box_.upper_right());
 }
 
+TEST_F(BoundingBoxTest, TestUpperRightPointerAliasMax) {
+  ASSERT_EQ(Point(190, 196), *bounding_box_.max());
+}
+
 TEST_F(BoundingBoxTest, TestLowerLeft) {
   ASSERT_EQ(Point(108, 120), bounding_box_.lower_left());
+}
+
+TEST_F(BoundingBoxTest, TestLowerLeftPointerAliasMin) {
+  ASSERT_EQ(Point(108, 120), *bounding_box_.min());
 }
 
 TEST_F(BoundingBoxTest, TestCollideShouldBeTrueIfOverlapped) {
