@@ -16,6 +16,16 @@ class CollisionDetectorTest : public ::testing::Test {
  private:
   Point upper_right_{1, 5};
   Point lower_left_{-3, 2};
+  const Point to_detect_with_vector_head_1_{1, 2};
+  const Point to_detect_with_vector_tail_1_{upper_right_};
+  const TwoDimensionalVector to_detect_with_vector_1_{
+      &to_detect_with_vector_head_1_, &to_detect_with_vector_tail_1_};
+  const Point to_detect_with_vector_head_2_{1, 2};
+  const Point to_detect_with_vector_tail_2_{lower_left_};
+  const TwoDimensionalVector to_detect_with_vector_2_{
+      &to_detect_with_vector_head_2_, &to_detect_with_vector_tail_2_};
+  const Triangle shape_to_detect_with_{&to_detect_with_vector_1_,
+                                       &to_detect_with_vector_2_};
 
   const Point collided_circle_vector_head_{1, 2};
   const Point collided_circle_vector_tail_{-3, 5};
@@ -66,7 +76,7 @@ class CollisionDetectorTest : public ::testing::Test {
       &uncollided_rectangle_vector_tail_2_};
 
  protected:
-  CollisionDetector detector_{{&upper_right_, &lower_left_}};
+  CollisionDetector detector_{&shape_to_detect_with_};
   Circle collided_circle_{&collided_circle_vector_};
   Circle uncollided_circle_{&uncollided_circle_vector_};
   Triangle collided_triangle_{&collided_triangle_vector_1_,
