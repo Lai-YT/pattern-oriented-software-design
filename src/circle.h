@@ -9,6 +9,7 @@
 #include "iterator/factory/iterator_factory.h"
 #include "shape.h"
 #include "two_dimensional_vector.h"
+#include "visitor/shape_visitor.h"
 
 class Circle : public Shape {
  public:
@@ -51,6 +52,10 @@ class Circle : public Shape {
 
   Iterator* createIterator(const IteratorFactory* const factory) override {
     return factory->createIterator();
+  }
+
+  void accept(ShapeVisitor* const visitor) override {
+    visitor->visitCircle(this);
   }
 
  private:

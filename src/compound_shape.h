@@ -12,6 +12,7 @@
 #include "iterator/iterator.h"
 #include "point.h"
 #include "shape.h"
+#include "visitor/shape_visitor.h"
 
 class CompoundShape : public Shape {
  public:
@@ -75,6 +76,10 @@ class CompoundShape : public Shape {
 
   Iterator* createIterator(const IteratorFactory* const factory) override {
     return factory->createIterator(shapes_.begin(), shapes_.end());
+  }
+
+  void accept(ShapeVisitor* const visitor) override {
+    visitor->visitCompoundShape(this);
   }
 
   void addShape(Shape* const shape) override {

@@ -8,6 +8,7 @@
 #include "iterator/factory/iterator_factory.h"
 #include "iterator/iterator.h"
 #include "point.h"
+#include "visitor/shape_visitor.h"
 
 class Shape {
  public:
@@ -17,6 +18,7 @@ class Shape {
   virtual std::string info() const = 0;
   virtual std::set<Point*> getPoints() const = 0;
   virtual Iterator* createIterator(const IteratorFactory* const factory) = 0;
+  virtual void accept(ShapeVisitor* const visitor) {}
 
   /**
    * Throws ShapeInaddibleException.

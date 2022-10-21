@@ -11,6 +11,7 @@
 #include "ut_rectangle.h"
 #include "ut_triangle.h"
 #include "ut_two_dimensional_vector.h"
+#include "visitor/ut_collision_detector.h"
 
 int main(int argc, char /* can't be const */ *argv[]) {
   testing::InitGoogleTest(&argc, argv);

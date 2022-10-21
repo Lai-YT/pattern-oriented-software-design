@@ -9,6 +9,7 @@
 #include "point.h"
 #include "shape.h"
 #include "two_dimensional_vector.h"
+#include "visitor/shape_visitor.h"
 
 class Rectangle : public Shape {
  public:
@@ -66,6 +67,10 @@ class Rectangle : public Shape {
 
   Iterator* createIterator(const IteratorFactory* const factory) {
     return factory->createIterator();
+  }
+
+  void accept(ShapeVisitor* const visitor) override {
+    visitor->visitRectangle(this);
   }
 
   class NonOrthogonalSideException : public std::invalid_argument {

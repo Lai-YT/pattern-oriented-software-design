@@ -10,6 +10,7 @@
 #include "point.h"
 #include "shape.h"
 #include "two_dimensional_vector.h"
+#include "visitor/shape_visitor.h"
 
 class Triangle : public Shape {
  public:
@@ -57,6 +58,10 @@ class Triangle : public Shape {
 
   Iterator* createIterator(const IteratorFactory* const factory) {
     return factory->createIterator();
+  }
+
+  void accept(ShapeVisitor* const visitor) override {
+    visitor->visitTriangle(this);
   }
 
   class NoCommonPointException : public std::invalid_argument {
