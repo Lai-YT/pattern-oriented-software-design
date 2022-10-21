@@ -15,24 +15,15 @@ class CollisionDetector : public ShapeVisitor {
   CollisionDetector(const std::set<Point*>& points) : bounding_box_{points} {}
 
   void visitCircle(Circle* circle) override {
-    auto bounding_box_to_detect = BoundingBox{circle->getPoints()};
-    if (bounding_box_.collide(&bounding_box_to_detect)) {
-      collided_shapes_.push_back(circle);
-    }
+    VisitNonCompoundShape_(circle);
   }
 
   virtual void visitTriangle(Triangle* triangle) override {
-    auto bounding_box_to_detect = BoundingBox{triangle->getPoints()};
-    if (bounding_box_.collide(&bounding_box_to_detect)) {
-      collided_shapes_.push_back(triangle);
-    }
+    VisitNonCompoundShape_(triangle);
   }
 
   virtual void visitRectangle(Rectangle* rectangle) override {
-    auto bounding_box_to_detect = BoundingBox{rectangle->getPoints()};
-    if (bounding_box_.collide(&bounding_box_to_detect)) {
-      collided_shapes_.push_back(rectangle);
-    }
+    VisitNonCompoundShape_(rectangle);
   }
 
   virtual void visitCompoundShape(CompoundShape* compound) override {
@@ -53,6 +44,13 @@ class CollisionDetector : public ShapeVisitor {
  private:
   BoundingBox bounding_box_;
   std::vector<Shape*> collided_shapes_{};
+
+  void VisitNonCompoundShape_(Shape* non_compound_shape) {
+    auto bounding_box_to_detect = BoundingBox{non_compound_shape->getPoints()};
+    if (bounding_box_.collide(&bounding_box_to_detect)) {
+      collided_shapes_.push_back(non_compound_shape);
+    }
+  }
 };
 
 #endif /* end of include guard: SRC_VISITOR_COLLISION_DETECTOR_H_ */
