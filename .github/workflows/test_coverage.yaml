@@ -1,11 +1,11 @@
-name: test coverage
+name: Unit Test
 
 on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-22.04
-    name: Test coverage
+    name: Test With Coverage
     steps:
     - name: Install gtest manually
       run: |
