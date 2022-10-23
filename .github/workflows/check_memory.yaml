@@ -21,7 +21,7 @@ jobs:
         sudo cp *.a /usr/lib
     - name: Install Valgrind
       run: |
-        apt-get install -y valgrind
+        sudo apt-get install -y valgrind
     - name: Checkout
       uses: actions/checkout@v3
     - name: Run tests and check memory
