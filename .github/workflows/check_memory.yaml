@@ -1,0 +1,29 @@
+name: Memory Management
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    name: Check Memory Leak
+    steps:
+    - name: Install gtest manually
+      run: |
+        sudo apt-get update
+        sudo apt-get install g++
+        sudo apt-get install make
+        sudo apt-get install libgtest-dev
+        sudo apt-get install cmake
+        cd /usr/src/gtest
+        sudo cmake CMakeLists.txt
+        sudo make
+        cd lib
+        sudo cp *.a /usr/lib
+    - name: Install Valgrind
+      run: |
+        sudo apt-get install -y valgrind
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Run tests and check memory
+      run: |
+        make valgrind
