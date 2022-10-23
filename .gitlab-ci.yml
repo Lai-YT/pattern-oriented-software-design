@@ -3,25 +3,27 @@ include:
 
 image: ubuntu:22.04
 
-build:
-  stage: build
-  before_script:
-    - apt-get update
-    - apt-get install -y g++ make libgtest-dev cmake
-    - cd /usr/src/gtest
-    - cmake CMakeLists.txt
-    - make
-    - cd lib
-    - cp *.a /usr/lib
-  script:
-    - cd /builds/108820026/posd2022f_108820026_hw
-    - make
-  artifacts:
-    paths:
-      - bin
+before_script:
+  - apt update
+  - apt install -y g++ make libgtest-dev cmake
+  - cd /usr/src/gtest
+  - cmake CMakeLists.txt
+  - make
+  - cd lib
+  - cp *.a /usr/lib
+  - cd /builds/108820026/posd2022f_108820026_hw
 
-# run tests using the binary built before
-test:
+stages:
+  - test
+  - analysis
+
+Run test with GoogleTest:
   stage: test
   script:
-    - bin/ut_all
+    - make
+
+Check memory leak with Valgrind:
+  stage: analysis
+  script:
+    - apt install -y valgrind
+    - make valgrind

@@ -30,3 +30,10 @@ coverage: clean test
 
 clean_coverage:
 	rm -f *.gcov **/*.gcda **/*.gcno coverage.xml coverage.html
+
+valgrind: CXXFLAGS += -O0 -g
+valgrind: clean all
+	valgrind \
+	--tool=memcheck --error-exitcode=1 --track-origins=yes --leak-check=full --leak-resolution=high \
+	--num-callers=50 --show-leak-kinds=definite,possible --show-error-list=yes \
+	bin/ut_all
