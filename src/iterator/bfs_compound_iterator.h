@@ -17,6 +17,7 @@ class BFSCompoundIterator : public Iterator {
   }
 
   ~BFSCompoundIterator() {
+    ClearToVisit_();
     delete cursor_;
   }
 

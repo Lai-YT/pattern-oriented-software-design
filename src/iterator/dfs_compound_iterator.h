@@ -18,6 +18,7 @@ class DFSCompoundIterator : public Iterator {
   }
 
   ~DFSCompoundIterator() {
+    ClearToVisit_();
     delete cursor_;
   }
 
