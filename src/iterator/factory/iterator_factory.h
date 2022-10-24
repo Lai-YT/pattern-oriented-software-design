@@ -14,10 +14,13 @@ class IteratorFactory {
     return new NullIterator{};
   }
 
-  virtual Iterator* createIterator(const std::list<Shape*>::const_iterator& begin,
-                           const std::list<Shape*>::const_iterator& end) const {
+  virtual Iterator* createIterator(
+      const std::list<Shape*>::const_iterator& begin,
+      const std::list<Shape*>::const_iterator& end) const {
     return new NullIterator{};
   }
+
+  virtual ~IteratorFactory() = default;
 };
 
 #endif /* end of include guard: SRC_ITERATOR_FACTORY_ITERATOR_FACTORY_H_ */
