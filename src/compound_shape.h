@@ -70,8 +70,7 @@ class CompoundShape : public Shape {
         std::set<const Point*, decltype(compare_by_value)>{compare_by_value};
     for (const auto* shape : shapes_) {
       for (const Point* vertex : shape->getPoints()) {
-        if (vertices_with_value_as_compare.find(vertex) !=
-            vertices_with_value_as_compare.end()) {
+        if (vertices_with_value_as_compare.count(vertex) != 0) {
           delete vertex;
         } else {
           vertices_with_value_as_compare.insert(vertex);
