@@ -77,7 +77,6 @@ class CompoundShape : public Shape {
         }
       }
     }
-    /* FIXME: should delete those duplicate points but how? */
 
     /* So bad that the return type is restricted to compare with pointer. */
     return {vertices_with_value_as_compare.begin(),
