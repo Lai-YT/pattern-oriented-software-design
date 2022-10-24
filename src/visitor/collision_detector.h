@@ -15,12 +15,20 @@
 #include "../triangle.h"
 #include "shape_visitor.h"
 
+/**
+ * `vertices` should be heap allocated and will be deleted by this function
+ * after use.
+ */
+BoundingBox CreateBoundingBoxWithHeapAllocatedPointsDeleted(
+    const std::set<const Point*>& vertices);
+
 class CollisionDetector : public ShapeVisitor {
  public:
   CollisionDetector(const Shape* const to_detect_with)
-      : bounding_box_{to_detect_with->getPoints()} {}
+      : bounding_box_{CreateBoundingBoxWithHeapAllocatedPointsDeleted(
+            to_detect_with->getPoints())} {}
 
-    void visitCircle(Circle* const circle) override {
+  void visitCircle(Circle* const circle) override {
     VisitNonCompoundShape_(circle);
   }
 
@@ -33,8 +41,8 @@ class CollisionDetector : public ShapeVisitor {
   }
 
   virtual void visitCompoundShape(CompoundShape* const compound) override {
-    std::set<const Point*> vertices = compound->getPoints();
-    auto bounding_box_to_detect = BoundingBox{vertices};
+    auto bounding_box_to_detect = BoundingBox{
+        CreateBoundingBoxWithHeapAllocatedPointsDeleted(compound->getPoints())};
     if (bounding_box_.collide(&bounding_box_to_detect)) {
       auto factory = ListIteratorFactory{};
       Iterator* it = compound->createIterator(&factory);
@@ -42,9 +50,6 @@ class CollisionDetector : public ShapeVisitor {
         it->currentItem()->accept(this);
       }
       delete it;
-    }
-    for (auto* vertex : vertices) {
-      delete vertex;
     }
   }
 
@@ -57,15 +62,22 @@ class CollisionDetector : public ShapeVisitor {
   std::vector<Shape*> collided_shapes_{};
 
   void VisitNonCompoundShape_(Shape* non_compound_shape) {
-    std::set<const Point*> vertices = non_compound_shape->getPoints();
-    auto bounding_box_to_detect = BoundingBox{vertices};
+    auto bounding_box_to_detect =
+        BoundingBox{CreateBoundingBoxWithHeapAllocatedPointsDeleted(
+            non_compound_shape->getPoints())};
     if (bounding_box_.collide(&bounding_box_to_detect)) {
       collided_shapes_.push_back(non_compound_shape);
     }
-    for (auto* vertex : vertices) {
-      delete vertex;
-    }
   }
 };
+
+BoundingBox CreateBoundingBoxWithHeapAllocatedPointsDeleted(
+    const std::set<const Point*>& vertices) {
+  auto bounding_box = BoundingBox{vertices};
+  for (auto* vertex : vertices) {
+    delete vertex;
+  }
+  return bounding_box;
+}
 
 #endif /* end of include guard: SRC_VISITOR_COLLISION_DETECTOR_H_ */
