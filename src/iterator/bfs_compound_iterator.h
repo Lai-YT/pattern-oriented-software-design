@@ -17,11 +17,12 @@ class BFSCompoundIterator : public Iterator {
   }
 
   ~BFSCompoundIterator() {
+    ClearToVisit_();
     delete cursor_;
   }
 
   void first() override {
-    to_visit_ = std::queue<Iterator*>{};
+    ClearToVisit_();
     top_level_cursor_ = begin_;
     if (!TopLevelIsDone_()) {
       Visit_(*top_level_cursor_);
@@ -97,6 +98,15 @@ class BFSCompoundIterator : public Iterator {
     if (!children->isDone()) {
       children->first();
       to_visit_.push(children);
+    } else {
+      delete children;
+    }
+  }
+
+  void ClearToVisit_() {
+    while (!to_visit_.empty()) {
+      delete to_visit_.front();
+      to_visit_.pop();
     }
   }
 };

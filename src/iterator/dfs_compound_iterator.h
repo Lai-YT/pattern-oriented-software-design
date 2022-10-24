@@ -18,12 +18,13 @@ class DFSCompoundIterator : public Iterator {
   }
 
   ~DFSCompoundIterator() {
+    ClearToVisit_();
     delete cursor_;
   }
 
   /** Restarts the iteration. */
   void first() override {
-    to_visit_ = std::stack<Iterator*>{};
+    ClearToVisit_();
     top_level_cursor_ = begin_;
     /* the range might be empty */
     if (!TopLevelIsDone_()) {
@@ -105,6 +106,15 @@ class DFSCompoundIterator : public Iterator {
     if (!children->isDone()) {
       children->first();
       to_visit_.push(children);
+    } else {
+      delete children;
+    }
+  }
+
+  void ClearToVisit_() {
+    while (!to_visit_.empty()) {
+      delete to_visit_.top();
+      to_visit_.pop();
     }
   }
 };
