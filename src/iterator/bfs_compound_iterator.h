@@ -97,6 +97,8 @@ class BFSCompoundIterator : public Iterator {
     if (!children->isDone()) {
       children->first();
       to_visit_.push(children);
+    } else {
+      delete children;
     }
   }
 
