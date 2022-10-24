@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <exception>
 #include <set>
 
 #include "../src/bounding_box.h"
@@ -24,6 +25,10 @@ class BoundingBoxTest : public ::testing::Test {
     }
   }
 };
+
+TEST_F(BoundingBoxTest, CreateBoundingBoxWithNoPointsShouldThrowRuntimeError) {
+  ASSERT_THROW({ BoundingBox({/* empty set */}); }, std::runtime_error);
+}
 
 TEST_F(BoundingBoxTest, TestUpperRight) {
   ASSERT_EQ(Point(190, 196), bounding_box_.upper_right());

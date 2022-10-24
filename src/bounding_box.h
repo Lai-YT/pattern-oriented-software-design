@@ -2,6 +2,7 @@
 #define SRC_BOUNDING_BOX_H_
 
 #include <algorithm>
+#include <exception>
 #include <set>
 
 #include "point.h"
@@ -11,7 +12,7 @@ class BoundingBox {
   BoundingBox(const std::set<const Point*>& points)
       : upper_right_{0, 0}, lower_left_{0, 0} /* placeholding values */ {
     if (points.empty()) {
-      throw;
+      throw std::runtime_error{""};
     }
     upper_right_ = Point{CalculateMaxX_(points), CalculateMaxY_(points)};
     lower_left_ = Point{CalculateMinX_(points), CalculateMinY_(points)};
