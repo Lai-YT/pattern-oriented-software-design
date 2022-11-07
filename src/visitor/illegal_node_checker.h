@@ -50,7 +50,6 @@ class IllegalNodeChecker : public ShapeVisitor {
     if (!HasTwoChildren_(compound)) {
       return true;
     }
-    std::cout << "here" << '\n';
     auto factory = BFSIteratorFactory{};
     Iterator *itr = compound->createIterator(&factory);
     for (itr->first(); !itr->isDone(); itr->next()) {

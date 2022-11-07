@@ -14,7 +14,9 @@ Iterator* GetBfsCompoundShapeIterator(Shape*);
 class IllegalNodeIterator : public Iterator {
  public:
   IllegalNodeIterator(Shape* root)
-      : bfs_itr_{GetBfsCompoundShapeIterator(root)} {}
+      : bfs_itr_{GetBfsCompoundShapeIterator(root)} {
+    first();
+  }
 
   ~IllegalNodeIterator() {
     delete bfs_itr_;
