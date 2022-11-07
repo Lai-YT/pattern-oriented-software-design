@@ -41,6 +41,11 @@ class BoundingBox {
     return !(AtRight_(box) || AtLeft_(box) || AtTop_(box) || AtBottom_(box));
   }
 
+  double distance(const BoundingBox* const box) const {
+    return lower_left_.distance(box->lower_left()) +
+           upper_right_.distance(box->upper_right());
+  }
+
  private:
   Point upper_right_;
   Point lower_left_;

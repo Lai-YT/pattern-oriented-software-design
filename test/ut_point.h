@@ -75,3 +75,13 @@ TEST(PointTest, TestInequalityOnSelfComparison) {
 
   ASSERT_FALSE(p != p);
 }
+
+TEST(PointTest, TestDistance) {
+  const auto a = Point{0, 0};
+  const auto b = Point{-3, 4};
+
+  const double distance = a.distance(b);
+
+  const double expected = 5;
+  ASSERT_NEAR(expected, distance, 0.001);
+}

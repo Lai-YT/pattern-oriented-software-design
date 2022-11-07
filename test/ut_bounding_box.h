@@ -76,3 +76,10 @@ TEST_F(BoundingBoxTest, TestCollideShouldBeShouldTrueIfAdjacentInside) {
 TEST_F(BoundingBoxTest, TestCollideShouldBeShouldTrueIfEntirelyOverlapped) {
   ASSERT_TRUE(bounding_box_.collide(&bounding_box_));
 }
+
+TEST_F(BoundingBoxTest, DistanceToSelfShouldBeZero) {
+  const double distance_to_self = bounding_box_.distance(&bounding_box_);
+
+  const double expected = 0;
+  ASSERT_NEAR(expected, distance_to_self, 0.001);
+}

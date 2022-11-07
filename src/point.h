@@ -1,6 +1,7 @@
 #ifndef SRC_POINT_H_
 #define SRC_POINT_H_
 
+#include <cmath>
 #include <ios>
 #include <sstream>
 #include <string>
@@ -30,6 +31,11 @@ class Point {
     return ss.str();
   }
 
+  /** Returns the Euclidean distance with `other`. */
+  double distance(const Point& other) const {
+    return sqrt(Pow2_(x_ - other.x_) + Pow2_(y_ - other.y_));
+  }
+
   /**
    * Points with their x, y values the same correspondingly after rounded to the
    * second decimal places are considered as equal.
@@ -49,6 +55,10 @@ class Point {
   bool HasEqualXY_(const Point& that) const {
     return that.info() == info();
   }
+
+  double Pow2_(const double n) const {
+    return n * n;
+  } 
 };
 
 #endif /* end of include guard: SRC_POINT_H_ */
