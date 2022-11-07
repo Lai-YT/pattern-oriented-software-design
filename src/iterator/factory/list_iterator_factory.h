@@ -1,0 +1,22 @@
+#ifndef SRC_ITERATOR_FACTORY_LIST_ITERATOR_FACTORY_H_
+#define SRC_ITERATOR_FACTORY_LIST_ITERATOR_FACTORY_H_
+
+#include <list>
+
+#include "../../shape.h"
+#include "../iterator.h"
+#include "../list_compound_iterator.h"
+#include "iterator_factory.h"
+
+class ListIteratorFactory : public IteratorFactory {
+ public:
+  Iterator* createIterator(
+      const std::list<Shape*>::const_iterator& begin,
+      const std::list<Shape*>::const_iterator& end) const override {
+    return new ListCompoundIterator<std::list<Shape*>::const_iterator>{begin,
+                                                                       end};
+  };
+};
+
+#endif /* end of include guard: SRC_ITERATOR_FACTORY_LIST_ITERATOR_FACTORY_H_ \
+        */
