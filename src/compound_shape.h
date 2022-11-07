@@ -110,6 +110,14 @@ class CompoundShape : public Shape {
     }
   }
 
+  void replace(Shape* old_shape, Shape* new_shape) {
+    for (Shape*& shape : shapes_) {
+      if (shape == old_shape) {
+        shape = new_shape;
+      }
+    }
+  }
+
  private:
   std::list<Shape*> shapes_;
 };

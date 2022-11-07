@@ -324,3 +324,20 @@ TEST_F(CompoundShapeDepthTwoTest,
     delete p;
   }
 }
+
+TEST_F(CompoundShapeDepthTwoTest, ReplaceShouldReplaceTheShape) {
+  level_one_compound_.replace(&circle_, &triangle_);
+
+  const std::string actual = level_one_compound_.info();
+  /* clang-format off */
+  const std::string expected =
+      "CompoundShape ("
+        "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), (3.00, 0.00))), "
+        "CompoundShape ("
+          "Rectangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((0.00, 0.00), (0.00, 4.00))), "
+          "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), (3.00, 0.00)))"
+        ")"
+      ")";
+  /* clang-format on */
+  ASSERT_EQ(expected, actual);
+}
