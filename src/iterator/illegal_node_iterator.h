@@ -8,6 +8,8 @@
 #include "factory/bfs_iterator_factory.h"
 #include "iterator.h"
 
+Iterator* GetBfsCompoundShapeIterator(Shape*);
+
 /** Iterates the illegal nodes in BFS order. */
 class IllegalNodeIterator : public Iterator {
  public:
