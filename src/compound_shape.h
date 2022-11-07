@@ -110,6 +110,7 @@ class CompoundShape : public Shape {
     }
   }
 
+  /** Replace the shape under the current compound shape. */
   void replace(Shape* old_shape, Shape* new_shape) {
     for (Shape*& shape : shapes_) {
       if (shape == old_shape) {
