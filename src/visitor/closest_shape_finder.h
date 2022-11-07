@@ -1,12 +1,13 @@
 #ifndef SRC_VISITOR_CLOSEST_SHAPE_FINDER_H_
 #define SRC_VISITOR_CLOSEST_SHAPE_FINDER_H_
 
-#include "./shape_visitor.h"
 #include "../shape.h"
+#include "./shape_visitor.h"
 
 class ClosestShapeFinder : public ShapeVisitor {
  public:
-  ClosestShapeFinder(Shape *shape) {}
+  ClosestShapeFinder(Shape *shape):
+   {}
 
   void visitCircle(Circle *circle) override {}
 
@@ -21,8 +22,8 @@ class ClosestShapeFinder : public ShapeVisitor {
   CompoundShape *getParent() const {}
 
  private:
-  Shape* parent_of_current_closest_ = nullptr;
-  Shape* current_closest_;
+  Shape *parent_of_current_closest_ = nullptr;
+  Shape *current_closest_;
 };
 
 #endif /* end of include guard: SRC_VISITOR_CLOSEST_SHAPE_FINDER_H_ */
