@@ -16,7 +16,6 @@ class IllegalNodeIterator : public Iterator {
   IllegalNodeIterator(Shape* root)
       : bfs_itr_{GetBfsCompoundShapeIterator(root)} {
     first();
-    std::cout << root->info() << '\n';
   }
 
   ~IllegalNodeIterator() {

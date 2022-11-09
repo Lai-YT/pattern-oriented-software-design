@@ -2,7 +2,7 @@
 #define SRC_VISITOR_CLOSEST_SHAPE_FINDER_H_
 
 #include "../bounding_box.h"
-#include "../iterator/factory/dfs_iterator_factory.h"
+#include "../iterator/factory/bfs_iterator_factory.h"
 #include "../iterator/iterator.h"
 #include "../shape.h"
 #include "shape_visitor.h"
@@ -49,13 +49,13 @@ class ClosestShapeFinder : public ShapeVisitor {
     }
     parent_of_current_closest_ = dynamic_cast<CompoundShape *>(target_shape_);
 
-    auto box_of_target = BoundingBox{target_shape_->getPoints()};
-    auto factory = DFSIteratorFactory{};
-    double min_distance = 10000; /* XXX: bad hack on infinity */ 
+    auto box_of_shape = BoundingBox{shape->getPoints()};
+    auto factory = BFSIteratorFactory{};
+    double min_distance = 10000; /* XXX: bad hack on infinity */
     auto itr = target_shape_->createIterator(&factory);
     for (itr->first(); !itr->isDone(); itr->next()) {
-      auto box_of_current = BoundingBox{itr->currentItem()->getPoints()};
-      double distance = box_of_current.distance(&box_of_target);
+      auto box_of_target = BoundingBox{itr->currentItem()->getPoints()};
+      double distance = box_of_shape.distance(&box_of_target);
       if (distance < min_distance) {
         min_distance = distance;
         current_closest_ = itr->currentItem();
