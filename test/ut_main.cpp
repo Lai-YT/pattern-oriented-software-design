@@ -12,6 +12,7 @@
 #include "ut_rectangle.h"
 #include "ut_triangle.h"
 #include "ut_two_dimensional_vector.h"
+#include "visitor/ut_closest_shape_finder.h"
 #include "visitor/ut_collision_detector.h"
 #include "visitor/ut_illegal_node_checker.h"
 
