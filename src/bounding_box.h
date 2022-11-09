@@ -9,6 +9,11 @@
 
 class BoundingBox {
  public:
+  /**
+   * If your `points`are heap-allocated, use
+   * "CreateBoundingBoxWithHeapAllocatedPointsDeleted" to have them deleted
+   * automatically.
+   */
   BoundingBox(const std::set<const Point*>& points)
       : upper_right_{0, 0}, lower_left_{0, 0} /* placeholding values */ {
     if (points.empty()) {
@@ -16,6 +21,15 @@ class BoundingBox {
     }
     upper_right_ = Point{CalculateMaxX_(points), CalculateMaxY_(points)};
     lower_left_ = Point{CalculateMinX_(points), CalculateMinY_(points)};
+  }
+
+  static BoundingBox CreateBoundingBoxWithHeapAllocatedPointsDeleted(
+      const std::set<const Point*>& vertices) {
+    auto bounding_box = BoundingBox{vertices};
+    for (auto* vertex : vertices) {
+      delete vertex;
+    }
+    return bounding_box;
   }
 
   Point upper_right() const {
