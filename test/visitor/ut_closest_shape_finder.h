@@ -61,9 +61,9 @@ TEST_F(ClosestShapeFinderTest,
 }
 
 TEST_F(ClosestShapeFinderTest, ClosestShapeOnCompoundShape) {
-  auto closest_finder = ClosestShapeFinder{&level_two_compound_};
+  auto closest_finder = ClosestShapeFinder{&level_one_compound_};
 
-  circle_.accept(&closest_finder);
+  rectangle_.accept(&closest_finder);
   ASSERT_EQ(&rectangle_, closest_finder.getClosestShape());
   ASSERT_EQ(&level_two_compound_, closest_finder.getParent());
 }
