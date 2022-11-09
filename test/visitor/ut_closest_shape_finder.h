@@ -23,11 +23,11 @@ class ClosestShapeFinderTest : public ::testing::Test {
   const TwoDimensionalVector rectangle_vector_2{&rectangle_vector_head_2_,
                                                 &rectangle_vector_tail_2_};
   const Point triangle_vector_head_1_{0, 0};
-  const Point triangle_vector_tail_1_{3, 0};
+  const Point triangle_vector_tail_1_{30, 0};
   const TwoDimensionalVector triangle_vector_1_{&triangle_vector_head_1_,
                                                 &triangle_vector_tail_1_};
-  const Point triangle_vector_head_2_{3, 4};
-  const Point triangle_vector_tail_2_{3, 0};
+  const Point triangle_vector_head_2_{30, 40};
+  const Point triangle_vector_tail_2_{30, 0};
   const TwoDimensionalVector triangle_vector_2_{&triangle_vector_head_2_,
                                                 &triangle_vector_tail_2_};
 
@@ -58,4 +58,12 @@ TEST_F(ClosestShapeFinderTest,
   rectangle_.accept(&closest_finder);
 
   ASSERT_EQ(&circle_, closest_finder.getClosestShape());
+}
+
+TEST_F(ClosestShapeFinderTest, ClosestShapeOnCompoundShape) {
+  auto closest_finder = ClosestShapeFinder{&level_one_compound_};
+
+  circle_.accept(&closest_finder);
+  ASSERT_EQ(&rectangle_, closest_finder.getClosestShape());
+  ASSERT_EQ(&level_two_compound_, closest_finder.getParent());
 }
