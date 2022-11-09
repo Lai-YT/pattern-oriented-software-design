@@ -1,6 +1,8 @@
 #ifndef SRC_VISITOR_ILLEGAL_NODE_CHECKER_H_
 #define SRC_VISITOR_ILLEGAL_NODE_CHECKER_H_
 
+#include <memory>
+
 #include "../circle.h"
 #include "../compound_shape.h"
 #include "../iterator/factory/bfs_iterator_factory.h"
@@ -51,7 +53,7 @@ class IllegalNodeChecker : public ShapeVisitor {
       return true;
     }
     auto factory = BFSIteratorFactory{};
-    Iterator *itr = compound->createIterator(&factory);
+    auto itr = std::unique_ptr<Iterator>{compound->createIterator(&factory)};
     for (itr->first(); !itr->isDone(); itr->next()) {
       CompoundShape *compound =
           dynamic_cast<CompoundShape *>(itr->currentItem());
@@ -64,7 +66,7 @@ class IllegalNodeChecker : public ShapeVisitor {
 
   bool HasTwoChildren_(CompoundShape *compound) {
     auto factory = ListIteratorFactory{};
-    Iterator *itr = compound->createIterator(&factory);
+    auto itr = std::unique_ptr<Iterator>{compound->createIterator(&factory)};
     int children_count = 0;
     for (itr->first(); !itr->isDone(); itr->next()) {
       ++children_count;
