@@ -59,3 +59,12 @@ TEST_F(IllegalNodeIteratorTest, TestIsDoneShouldBeTrueOnLegalShape) {
 
   ASSERT_TRUE(is_done);
 }
+
+TEST_F(IllegalNodeIteratorTest, TestIsDoneShouldBeTrueOnNonCompoundShape) {
+  Rectangle non_compound_shape = rectangle_;
+
+  auto itr = IllegalNodeIterator{&non_compound_shape};
+  bool is_done = itr.isDone();
+
+  ASSERT_TRUE(is_done);
+}

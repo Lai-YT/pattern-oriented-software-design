@@ -19,7 +19,7 @@ class IllegalNodeIterator : public Iterator {
   }
 
   ~IllegalNodeIterator() {
-    delete bfs_itr_;
+    // delete bfs_itr_;
   }
 
   void first() {
