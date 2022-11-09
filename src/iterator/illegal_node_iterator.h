@@ -2,6 +2,7 @@
 #define SRC_ITERATOR_ILLEGAL_NODE_ITERATOR_H_
 
 #include <list>
+#include <memory>
 
 #include "../shape.h"
 #include "../visitor/illegal_node_checker.h"
@@ -16,10 +17,6 @@ class IllegalNodeIterator : public Iterator {
   IllegalNodeIterator(Shape* root)
       : bfs_itr_{GetBfsCompoundShapeIterator(root)} {
     first();
-  }
-
-  ~IllegalNodeIterator() {
-    delete bfs_itr_;
   }
 
   void first() {
@@ -42,7 +39,7 @@ class IllegalNodeIterator : public Iterator {
   }
 
  private:
-  Iterator* bfs_itr_;
+  std::unique_ptr<Iterator> bfs_itr_;
   IllegalNodeChecker checker_{};
 
   void ToNextIllegal_() {

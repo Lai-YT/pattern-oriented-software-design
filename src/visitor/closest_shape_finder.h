@@ -1,6 +1,8 @@
 #ifndef SRC_VISITOR_CLOSEST_SHAPE_FINDER_H_
 #define SRC_VISITOR_CLOSEST_SHAPE_FINDER_H_
 
+#include <memory>
+
 #include "../bounding_box.h"
 #include "../iterator/factory/bfs_iterator_factory.h"
 #include "../iterator/iterator.h"
@@ -60,7 +62,8 @@ class ClosestShapeFinder : public ShapeVisitor {
     double min_distance = 10000; /* FIXME: bad hack on infinity */
     /* track parent with an addtional pointer */
     CompoundShape *prev_compound = nullptr;
-    auto itr = target_shape_->createIterator(&factory);
+    auto itr =
+        std::unique_ptr<Iterator>{target_shape_->createIterator(&factory)};
     for (itr->first(); !itr->isDone(); itr->next()) {
       auto box_of_target =
           BoundingBox::CreateBoundingBoxWithHeapAllocatedPointsDeleted(
@@ -76,7 +79,6 @@ class ClosestShapeFinder : public ShapeVisitor {
         prev_compound = compound;
       }
     }
-    delete itr;
   }
 };
 

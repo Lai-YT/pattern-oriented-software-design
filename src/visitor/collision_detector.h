@@ -1,6 +1,7 @@
 #ifndef SRC_VISITOR_COLLISION_DETECTOR_H_
 #define SRC_VISITOR_COLLISION_DETECTOR_H_
 
+#include <memory>
 #include <set>
 #include <vector>
 
@@ -47,11 +48,10 @@ class CollisionDetector : public ShapeVisitor {
             compound->getPoints());
     if (bounding_box_.collide(&bounding_box_to_detect)) {
       auto factory = ListIteratorFactory{};
-      Iterator* it = compound->createIterator(&factory);
-      for (it->first(); !it->isDone(); it->next()) {
-        it->currentItem()->accept(this);
+      auto itr = std::unique_ptr<Iterator>{compound->createIterator(&factory)};
+      for (itr->first(); !itr->isDone(); itr->next()) {
+        itr->currentItem()->accept(this);
       }
-      delete it;
     }
   }
 
