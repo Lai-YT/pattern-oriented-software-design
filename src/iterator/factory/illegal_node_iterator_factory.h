@@ -16,8 +16,8 @@ class IllegalNodeIteratorFactory : public IteratorFactory {
   }
 
   virtual Iterator* createIterator(
-      const std::list<Shape*>::const_iterator& _,
-      const std::list<Shape*>::const_iterator& _) const {
+      const std::list<Shape*>::const_iterator& begin,
+      const std::list<Shape*>::const_iterator& end) const {
     return new IllegalNodeIterator{root_};
   }
 
