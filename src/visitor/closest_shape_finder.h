@@ -43,17 +43,23 @@ class ClosestShapeFinder : public ShapeVisitor {
 
   void VisitShape_(Shape *shape) {
     /* non compound shape itself is the closest shape */
-    if (dynamic_cast<CompoundShape *>(target_shape_) == nullptr) {
+    bool target_shape_is_compound =
+        bool(dynamic_cast<CompoundShape *>(target_shape_));
+    if (!target_shape_is_compound) {
       current_closest_ = target_shape_;
       return;
     }
+
+    assert(target_shape_is_compound);
     parent_of_current_closest_ = dynamic_cast<CompoundShape *>(target_shape_);
 
     auto box_of_shape =
         BoundingBox::CreateBoundingBoxWithHeapAllocatedPointsDeleted(
             shape->getPoints());
     auto factory = BFSIteratorFactory{};
-    double min_distance = 10000; /* XXX: bad hack on infinity */
+    double min_distance = 10000; /* FIXME: bad hack on infinity */
+    /* track parent with an addtional pointer */
+    CompoundShape *prev_compound = nullptr;
     auto itr = target_shape_->createIterator(&factory);
     for (itr->first(); !itr->isDone(); itr->next()) {
       auto box_of_target =
@@ -63,13 +69,14 @@ class ClosestShapeFinder : public ShapeVisitor {
       if (distance < min_distance) {
         min_distance = distance;
         current_closest_ = itr->currentItem();
-        if (dynamic_cast<CompoundShape *>(itr->currentItem()) != nullptr) {
-          parent_of_current_closest_ =
-              dynamic_cast<CompoundShape *>(itr->currentItem());
-          return;
-        }
+        parent_of_current_closest_ = prev_compound;
+      }
+      auto *compound = dynamic_cast<CompoundShape *>(itr->currentItem());
+      if (compound) {
+        prev_compound = compound;
       }
     }
+    delete itr;
   }
 };
 
