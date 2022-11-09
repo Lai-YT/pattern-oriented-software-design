@@ -16,15 +16,20 @@ class IllegalNodeIterator : public Iterator {
   IllegalNodeIterator(Shape* root)
       : bfs_itr_{GetBfsCompoundShapeIterator(root)} {
     first();
+    std::cout << root->info() << '\n';
   }
 
   ~IllegalNodeIterator() {
-    // delete bfs_itr_;
+    delete bfs_itr_;
   }
 
   void first() {
-    bfs_itr_->first();
-    ToNextIllegal_();
+    try {
+      bfs_itr_->first();
+      ToNextIllegal_();
+    } catch (Iterator::IteratorDoneException) {
+      /* empty */
+    }
   }
 
   void next() {
