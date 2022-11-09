@@ -49,12 +49,16 @@ class ClosestShapeFinder : public ShapeVisitor {
     }
     parent_of_current_closest_ = dynamic_cast<CompoundShape *>(target_shape_);
 
-    auto box_of_shape = BoundingBox{shape->getPoints()};
+    auto box_of_shape =
+        BoundingBox::CreateBoundingBoxWithHeapAllocatedPointsDeleted(
+            shape->getPoints());
     auto factory = BFSIteratorFactory{};
     double min_distance = 10000; /* XXX: bad hack on infinity */
     auto itr = target_shape_->createIterator(&factory);
     for (itr->first(); !itr->isDone(); itr->next()) {
-      auto box_of_target = BoundingBox{itr->currentItem()->getPoints()};
+      auto box_of_target =
+          BoundingBox::CreateBoundingBoxWithHeapAllocatedPointsDeleted(
+              itr->currentItem()->getPoints());
       double distance = box_of_shape.distance(&box_of_target);
       if (distance < min_distance) {
         min_distance = distance;
