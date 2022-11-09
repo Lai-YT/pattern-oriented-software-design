@@ -19,14 +19,14 @@ class ListCompoundIterator : public Iterator {
 
   void next() override {
     if (isDone()) {
-      throw IteratorDoneException{""};
+      throw IteratorDoneException{"can't call next on a done iterator"};
     }
     ++curr_;
   }
 
   Shape* currentItem() const {
     if (isDone()) {
-      throw IteratorDoneException{""};
+      throw IteratorDoneException{"can't call currentItem on a done iterator"};
     }
     return *curr_;
   }

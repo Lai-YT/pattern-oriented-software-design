@@ -33,8 +33,7 @@ class BFSCompoundIterator : public Iterator {
 
   void next() override {
     if (isDone()) {
-      throw Iterator::IteratorDoneException{
-          "can't call next on a done iterator"};
+      throw IteratorDoneException{"can't call next on a done iterator"};
     }
     /*
      * The composite property:
@@ -67,8 +66,7 @@ class BFSCompoundIterator : public Iterator {
 
   Shape* currentItem() const override {
     if (isDone()) {
-      throw Iterator::IteratorDoneException{
-          "can't call currentItem on a done iterator"};
+      throw IteratorDoneException{"can't call currentItem on a done iterator"};
     }
     return current_item_;
   }

@@ -37,7 +37,7 @@ class DFSCompoundIterator : public Iterator {
   /** Throws an IteratorDoneException if the iteration reaches the end. */
   Shape* currentItem() const override {
     if (isDone()) {
-      throw IteratorDoneException{""};
+      throw IteratorDoneException{"can't call currentItem on a done iterator"};
     }
     return current_item_;
   }
@@ -45,7 +45,7 @@ class DFSCompoundIterator : public Iterator {
   /** Throws an IteratorDoneException if the iteration reaches the end. */
   void next() override {
     if (isDone()) {
-      throw IteratorDoneException{""};
+      throw IteratorDoneException{"can't call next on a done iterator"};
     }
 
     /*
