@@ -23,11 +23,9 @@ class IllegalNodeIterator : public Iterator {
   }
 
   void first() {
-    try {
+    if (!bfs_itr_->isDone()) {
       bfs_itr_->first();
       ToNextIllegal_();
-    } catch (Iterator::IteratorDoneException) {
-      /* empty */
     }
   }
 
