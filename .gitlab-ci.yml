@@ -3,12 +3,13 @@ image: ubuntu:22.04
 before_script:
   - apt update
   - apt install -y g++ make libgtest-dev cmake
+  - export REPO_DIR=$(pwd)
   - cd /usr/src/gtest
   - cmake CMakeLists.txt
   - make
   - cd lib
   - cp *.a /usr/lib
-  - cd /builds/108820026/posd2022f_108820026_hw
+  - cd $REPO_DIR
 
 stages:
   - test
