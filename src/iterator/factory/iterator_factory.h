@@ -24,6 +24,9 @@ class IteratorFactory {
   /* This also disable the copy constructor of all subclasses. */
   IteratorFactory(const IteratorFactory& other) = delete;
 
+  /* This also disable the copy assignment of all subclasses. */
+  IteratorFactory& operator=(const IteratorFactory& other) = delete;
+
   virtual ~IteratorFactory() = default;
 
  protected:

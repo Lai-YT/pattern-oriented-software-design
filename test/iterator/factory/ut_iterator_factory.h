@@ -48,3 +48,11 @@ TEST(IteratorFactoryTest, TestCopyConstructorShouldNotBePublic) {
   EXPECT_FALSE(std::is_copy_constructible<DFSIteratorFactory>::value);
   EXPECT_FALSE(std::is_copy_constructible<ListIteratorFactory>::value);
 }
+
+
+TEST(IteratorFactoryTest, TestCopyAssignmentShouldNotBePublic) {
+  EXPECT_FALSE(std::is_copy_assignable<IteratorFactory>::value);
+  EXPECT_FALSE(std::is_copy_assignable<BFSIteratorFactory>::value);
+  EXPECT_FALSE(std::is_copy_assignable<DFSIteratorFactory>::value);
+  EXPECT_FALSE(std::is_copy_assignable<ListIteratorFactory>::value);
+}
