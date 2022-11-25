@@ -18,7 +18,8 @@ TEST(ShapeBuilderTest, TestBuildCircle) {
   std::vector<Shape*> shapes = builder.getResult();
   ASSERT_EQ(1, shapes.size());
   Shape* circle = shapes.at(0);
-  ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-2.00, 6.00)))", circle->info());
+  ASSERT_NEAR(31.415, circle->perimeter(), 0.001);
+  ASSERT_NEAR(78.539, circle->area(), 0.001);
 
   for (auto&& s : shapes) {
     delete s;
