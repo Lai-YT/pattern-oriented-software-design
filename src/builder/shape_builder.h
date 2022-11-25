@@ -19,13 +19,7 @@ class ShapeBuilder {
     auto vector = new TwoDimensionalVector{center, on_circle};
     DeleteLater_(vector);
     auto* result = new Circle{vector};
-
-    if (IsBuildingCompound_()) {
-      DeleteLater_(result);
-      compounds_in_built_.top()->addShape(result);
-    } else {
-      results_.push_back(result);
-    }
+    CompleteBuiltOf_(result);
   }
 
   /**
@@ -39,13 +33,7 @@ class ShapeBuilder {
     DeleteLater_(vec1);
     DeleteLater_(vec2);
     auto* result = new Triangle{vec1, vec2};
-
-    if (IsBuildingCompound_()) {
-      DeleteLater_(result);
-      compounds_in_built_.top()->addShape(result);
-    } else {
-      results_.push_back(result);
-    }
+    CompleteBuiltOf_(result);
   }
 
   /**
@@ -60,33 +48,23 @@ class ShapeBuilder {
     DeleteLater_(vec1);
     DeleteLater_(vec2);
     auto result = new Rectangle{vec1, vec2};
-
-    if (IsBuildingCompound_()) {
-      DeleteLater_(result);
-      compounds_in_built_.top()->addShape(result);
-    } else {
-      results_.push_back(result);
-    }
+    CompleteBuiltOf_(result);
   }
 
   void buildCompoundShape() {
     auto* compound_to_build = new CompoundShape{{}, 0};
-    if (IsBuildingCompound_()) {
-      DeleteLater_(compound_to_build);
-    }
     compounds_in_built_.push(compound_to_build);
   }
 
   void buildCompoundEnd() {
     auto compound = compounds_in_built_.top();
     compounds_in_built_.pop();
-    if (IsBuildingCompound_()) {
-      compounds_in_built_.top()->addShape(compound);
-    } else {
-      results_.push_back(compound);
-    }
+    CompleteBuiltOf_(compound);
   }
 
+  /* The ownership of the shapes are transferred to the caller, but notice that
+   * the inner vectors / shapes are deleted when this builder is out of scope.
+   */
   std::vector<Shape*> getResult() {
     std::vector<Shape*> temp = results_;
     results_.clear();
@@ -94,34 +72,49 @@ class ShapeBuilder {
   }
 
   ~ShapeBuilder() {
-    for (auto&& shape : results_) {
-      delete shape;
-    }
-    for (auto&& shape : shapes_to_delete_) {
-      delete shape;
-    }
-    for (auto&& v : vectors_to_delete_) {
-      delete v;
-    }
+    Delete_(results_);
+    Delete_(shapes_to_delete_);
+    Delete_(vectors_to_delete_);
   }
 
  private:
   std::vector<Shape*> results_{};
   std::stack<CompoundShape*> compounds_in_built_{};
 
-  std::vector<TwoDimensionalVector*> vectors_to_delete_{};
-  std::vector<Shape*> shapes_to_delete_{};
+  /* We lose control over inner vectors / shapes if we don't keep them some
+   * where.
+   * NOTE: The life time of results_ are bounded by the builder since we'll
+   * delete their inner during the destruction. */
+
+  std::vector<const TwoDimensionalVector*> vectors_to_delete_{};
+  std::vector<const Shape*> shapes_to_delete_{};
 
   bool IsBuildingCompound_() const {
     return !compounds_in_built_.empty();
   }
 
-  void DeleteLater_(TwoDimensionalVector* to_delete) {
+  void DeleteLater_(const TwoDimensionalVector* const to_delete) {
     vectors_to_delete_.push_back(to_delete);
   }
 
-  void DeleteLater_(Shape* to_delete) {
+  void DeleteLater_(const Shape* const to_delete) {
     shapes_to_delete_.push_back(to_delete);
+  }
+
+  template <typename ForwardIterableContainer>
+  void Delete_(ForwardIterableContainer& container) {
+    for (auto&& v : container) {
+      delete v;
+    }
+  }
+
+  void CompleteBuiltOf_(Shape* const shape) {
+    if (IsBuildingCompound_()) {
+      DeleteLater_(shape);
+      compounds_in_built_.top()->addShape(shape);
+    } else {
+      results_.push_back(shape);
+    }
   }
 };
 
