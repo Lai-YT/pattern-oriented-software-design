@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <array>
 #include <vector>
 
 #include "../../src/builder/shape_builder.h"
@@ -18,6 +19,26 @@ TEST(ShapeBuilderTest, TestBuildCircle) {
   ASSERT_EQ(1, shapes.size());
   Shape* circle = shapes.at(0);
   ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-2.00, 6.00)))", circle->info());
+
+  for (auto&& s : shapes) {
+    delete s;
+  }
+}
+
+TEST(ShapeBuilderTest, TestBuildTriangle) {
+  auto builder = ShapeBuilder{};
+  const auto vertices =
+      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
+
+  builder.buildTriangle(&vertices.at(0), &vertices.at(1), &vertices.at(2));
+
+  std::vector<Shape*> shapes = builder.getResult();
+  ASSERT_EQ(1, shapes.size());
+  Shape* triangle = shapes.at(0);
+  /* Since the order of inner vectors aren't defined,
+    we can't test with info. */
+  ASSERT_EQ(12, triangle->perimeter());
+  ASSERT_EQ(6, triangle->area());
 
   for (auto&& s : shapes) {
     delete s;

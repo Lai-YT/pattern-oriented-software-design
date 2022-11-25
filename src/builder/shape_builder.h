@@ -19,8 +19,19 @@ class ShapeBuilder {
     to_deletes_.push_back(vector);
   }
 
-  void buildTriangle(const Point* common_point, const Point* v1_point,
-                     const Point* v2_point) {}
+  /**
+   * Builds a triangle with v1, v2, v3 as the three vertices.
+   *
+   * Does not take the ownership of points.
+   */
+  void buildTriangle(const Point* v1, const Point* v2, const Point* v3) {
+    auto vec1 = new TwoDimensionalVector(v1, v2);
+    auto vec2 = new TwoDimensionalVector(v1, v3);
+    results_.push_back(new Triangle{vec1, vec2});
+
+    to_deletes_.push_back(vec1);
+    to_deletes_.push_back(vec2);
+  }
 
   void buildRectangle(const Point* common_point, const Point* v1_point,
                       const Point* v2_point) {}
