@@ -1,8 +1,8 @@
 #ifndef SRC_SHAPE_H_
 #define SRC_SHAPE_H_
 
-#include <exception>
 #include <set>
+#include <stdexcept>
 #include <string>
 
 class IteratorFactory;
