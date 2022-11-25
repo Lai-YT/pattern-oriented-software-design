@@ -2,6 +2,7 @@
 
 #include <list>
 #include <memory>
+#include <mutex>
 #include <string>
 
 #include "../../shape.h"
@@ -25,6 +26,10 @@ std::unordered_map<std::string, std::unique_ptr<IteratorFactory>>
     IteratorFactory::pool_{};
 
 IteratorFactory* IteratorFactory::getInstance(const std::string& type) {
+  /* FIXME: still not thread-safe with the following lock */
+  static std::mutex instance_mutex{};
+  std::lock_guard<std::mutex> lock{instance_mutex};
+
   if (HasInstanceOf_(type)) {
     return pool_.at(type).get();
   }
