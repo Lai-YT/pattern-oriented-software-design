@@ -9,6 +9,7 @@
 #include "../../src/compound_shape.h"
 #include "../../src/iterator/bfs_compound_iterator.h"
 #include "../../src/iterator/factory/bfs_iterator_factory.h"
+#include "../../src/iterator/factory/iterator_factory.h"
 #include "../../src/iterator/iterator.h"
 #include "../../src/point.h"
 #include "../../src/rectangle.h"
@@ -47,14 +48,14 @@ class BFSCompoundIteratorTest : public ::testing::Test {
   Circle circle_{&circle_vector_};
   Rectangle rectangle_{&rectangle_vector_1, &rectangle_vector_2};
   Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
-  BFSIteratorFactory bfs_factory_{};
+  IteratorFactory* bfs_factory_ = IteratorFactory::getInstance("BFS");
 };
 
 TEST_F(BFSCompoundIteratorTest,
        CreateIteratorFromEmptyCompoundShapeShouldIsDone) {
   auto compound = CompoundShape{{}};
 
-  Iterator* itr = compound.createIterator(&bfs_factory_);
+  Iterator* itr = compound.createIterator(bfs_factory_);
   itr->first();
 
   ASSERT_TRUE(itr->isDone());
@@ -66,7 +67,7 @@ TEST_F(BFSCompoundIteratorTest,
   auto compound_child = CompoundShape{{}};
   auto compound = CompoundShape{{&compound_child}};
 
-  Iterator* itr = compound.createIterator(&bfs_factory_);
+  Iterator* itr = compound.createIterator(bfs_factory_);
   itr->first();
 
   ASSERT_EQ(&compound_child, itr->currentItem());
@@ -217,7 +218,7 @@ class BFSCompoundIteratorOnCompoundShapeTest : public BFSCompoundIteratorTest {
       {&level_three_compound_1_, &level_three_compound_2_, &triangle_}};
   CompoundShape level_one_compound_{
       {&level_two_compound_1_, &level_two_compound_2_}};
-  Iterator* bfs_itr_{level_one_compound_.createIterator(&bfs_factory_)};
+  Iterator* bfs_itr_{level_one_compound_.createIterator(bfs_factory_)};
 
   std::string current_info_() const {
     return bfs_itr_->currentItem()->info();
