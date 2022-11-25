@@ -67,3 +67,87 @@ TEST_F(ShapeBuilderTest, TestBuildRectangle) {
     delete s;
   }
 }
+
+/* Builds a one-level compound shape which has 3 inner shape: a circle, a
+ * triangle and a rectangle. */
+TEST_F(ShapeBuilderTest, TestBuildCompoundShapeOfOneLevel) {
+  const auto center = Point{1, 2};
+  const auto on_circle = Point{-2, 6};
+  const auto vertices_of_triangle =
+      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
+  const auto vertices_of_rectangle =
+      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
+
+  /*
+   * CompoundShape (
+   *  Circle ()
+   *  Triangle ()
+   *  Rectangle ()
+   * )
+   */
+  builder_.buildCompoundShape();
+  builder_.buildCircle(&center, &on_circle);
+  builder_.buildTriangle(&vertices_of_triangle.at(0),
+                         &vertices_of_triangle.at(1),
+                         &vertices_of_triangle.at(2));
+  builder_.buildRectangle(&vertices_of_rectangle.at(0),
+                          &vertices_of_rectangle.at(1),
+                          &vertices_of_rectangle.at(2));
+  builder_.buildCompoundEnd();
+
+  std::vector<Shape*> shapes = builder_.getResult();
+  ASSERT_EQ(1, shapes.size());
+  Shape* compound = shapes.at(0);
+  ASSERT_NEAR(31.415 + 12 + 14, compound->perimeter(), DELTA);
+  ASSERT_NEAR(78.539 + 6 + 12, compound->area(), DELTA);
+
+  for (auto&& s : shapes) {
+    delete s;
+  }
+}
+
+TEST_F(ShapeBuilderTest, TestBuildCompoundShapeOfTwoLevelAndNonCompoundShapes) {
+  const auto center = Point{1, 2};
+  const auto on_circle = Point{-2, 6};
+  const auto vertices_of_triangle =
+      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
+  const auto vertices_of_rectangle =
+      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
+
+  /*
+   * Circle ()
+   * CompoundShape (
+   *  CompoundShape (
+   *   Triangle ()
+   *   Circle ()
+   *  )
+   * )
+   * Rectangle ()
+   */
+  builder_.buildCircle(&center, &on_circle);
+  builder_.buildCompoundShape();
+  builder_.buildTriangle(&vertices_of_triangle.at(0),
+                         &vertices_of_triangle.at(1),
+                         &vertices_of_triangle.at(2));
+  builder_.buildCircle(&center, &on_circle);
+  builder_.buildCompoundEnd();
+  builder_.buildRectangle(&vertices_of_rectangle.at(0),
+                          &vertices_of_rectangle.at(1),
+                          &vertices_of_rectangle.at(2));
+
+  std::vector<Shape*> shapes = builder_.getResult();
+  ASSERT_EQ(3, shapes.size());
+  Shape* circle = shapes.at(0);
+  EXPECT_NEAR(31.415, circle->perimeter(), DELTA);
+  EXPECT_NEAR(78.539, circle->area(), DELTA);
+  Shape* compound = shapes.at(1);
+  EXPECT_NEAR(12 + 31.415, compound->perimeter(), DELTA);
+  EXPECT_NEAR(6 + 78.539, compound->area(), DELTA);
+  Shape* rectangle = shapes.at(2);
+  EXPECT_NEAR(14, rectangle->perimeter(), DELTA);
+  EXPECT_NEAR(12, rectangle->area(), DELTA);
+
+  for (auto&& s : shapes) {
+    delete s;
+  }
+}
