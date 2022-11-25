@@ -3,7 +3,12 @@
 CXXFLAGS = #-Wfatal-errors
 SRC = $(shell ls src/*.h src/**/*.h)
 TEST = $(shell ls test/*.h test/**/*.h)
-OBJ = obj/bfs_iterator_factory.o obj/dfs_iterator_factory.o
+OBJ = $(shell ls src/iterator/factory/*.cpp \
+	| $(STRIP_PARENT_PATH) \
+	| $(REPLACE_CPP_EXTENSION_WITH_O))
+# | is used as the delimiter
+STRIP_PARENT_PATH = sed 's|src/iterator/factory/|obj/|g'
+REPLACE_CPP_EXTENSION_WITH_O = sed 's|.cpp|.o|g'
 
 all: dirs bin/ut_all
 
