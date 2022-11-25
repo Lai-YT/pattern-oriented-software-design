@@ -50,3 +50,20 @@ TEST_F(ShapeBuilderTest, TestBuildTriangle) {
     delete s;
   }
 }
+
+TEST_F(ShapeBuilderTest, TestBuildRectangle) {
+  const auto vertices =
+      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
+
+  builder_.buildRectangle(&vertices.at(0), &vertices.at(1), &vertices.at(2));
+
+  std::vector<Shape*> shapes = builder_.getResult();
+  ASSERT_EQ(1, shapes.size());
+  Shape* rectangle = shapes.at(0);
+  ASSERT_NEAR(14, rectangle->perimeter(), DELTA);
+  ASSERT_NEAR(12, rectangle->area(), DELTA);
+
+  for (auto&& s : shapes) {
+    delete s;
+  }
+}
