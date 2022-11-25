@@ -1,8 +1,10 @@
 .PHONY: dirs clean clean_coverage
 
 CXXFLAGS = #-Wfatal-errors
-SRC = $(shell ls src/*.h src/**/*.h)
-TEST = $(shell ls test/*.h test/**/*.h)
+
+# FIXME: test/**/*.h doesn't work for deep files
+SRC = $(shell ls src/*.h src/*/*.h src/*/*/*.h)
+TEST = $(shell ls test/*.h test/*/*.h test/*/*/*.h)
 OBJ = $(shell ls src/iterator/factory/*.cpp \
 	| $(STRIP_PARENT_PATH) \
 	| $(REPLACE_CPP_EXTENSION_WITH_O))
