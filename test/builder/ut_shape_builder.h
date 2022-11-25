@@ -38,8 +38,8 @@ TEST(ShapeBuilderTest, TestBuildTriangle) {
   Shape* triangle = shapes.at(0);
   /* Since the order of inner vectors aren't defined,
     we can't test with info. */
-  ASSERT_EQ(12, triangle->perimeter());
-  ASSERT_EQ(6, triangle->area());
+  ASSERT_NEAR(12, triangle->perimeter(), 0.001);
+  ASSERT_NEAR(6, triangle->area(), 0.001);
 
   for (auto&& s : shapes) {
     delete s;
