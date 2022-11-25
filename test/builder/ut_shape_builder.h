@@ -10,8 +10,8 @@
 
 TEST(ShapeBuilderTest, TestBuildCircle) {
   auto builder = ShapeBuilder{};
-  const auto center = Point(1, 2);
-  const auto on_circle = Point(-2, 6);
+  const auto center = Point{1, 2};
+  const auto on_circle = Point{-2, 6};
 
   builder.buildCircle(&center, &on_circle);
 
