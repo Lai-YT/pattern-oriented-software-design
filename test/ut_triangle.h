@@ -40,7 +40,7 @@ TEST_F(TriangleTest, TestInfo) {
       triangle_.info());
 }
 
-TEST_F(TriangleTest, PassingVectorsWithNoCommonPointShoudThrowException) {
+TEST_F(TriangleTest, PassingVectorsWithNoCommonPointShouldThrowException) {
   const auto vector_head_1 = Point{0, 0};
   const auto vector_tail_1 = Point{4, 0};
   const auto vector_1 = TwoDimensionalVector{&vector_head_1, &vector_tail_1};
@@ -52,7 +52,7 @@ TEST_F(TriangleTest, PassingVectorsWithNoCommonPointShoudThrowException) {
                Triangle::NoCommonPointException);
 }
 
-TEST_F(TriangleTest, PassingParallelVectorsShoudThrowException) {
+TEST_F(TriangleTest, PassingParallelVectorsShouldThrowException) {
   const auto vector_head_1 = Point{0, 0};
   const auto vector_tail_1 = Point{4, 0};
   const auto vector_1 = TwoDimensionalVector{&vector_head_1, &vector_tail_1};

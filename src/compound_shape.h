@@ -104,7 +104,7 @@ class CompoundShape : public Shape {
       try {
         s->deleteShape(target);
       } catch (const Shape::ShapeUndeletableException& e) {
-        /* slient exception,
+        /* silent exception,
          * resemble `rm -f`, which ignores the non-existing error */
       }
     }
