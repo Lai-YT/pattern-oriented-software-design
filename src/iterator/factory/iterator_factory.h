@@ -21,6 +21,8 @@ class IteratorFactory {
   /* Instances are owned by the factory, do not delete them. */
   static IteratorFactory* getInstance(const std::string& type);
 
+  /* This also disable the copy constructor of all subclasses. */
+  IteratorFactory(const IteratorFactory& other) = delete;
 
   virtual ~IteratorFactory() = default;
 
