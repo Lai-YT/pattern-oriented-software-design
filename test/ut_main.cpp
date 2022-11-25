@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "builder/ut_scanner.h"
 #include "builder/ut_shape_builder.h"
 #include "iterator/factory/ut_iterator_factory.h"
 #include "iterator/ut_bfs_compound_iterator.h"
