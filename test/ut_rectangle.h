@@ -4,9 +4,7 @@
 #include <set>
 #include <vector>
 
-#include "../src/iterator/factory/bfs_iterator_factory.h"
-#include "../src/iterator/factory/dfs_iterator_factory.h"
-#include "../src/iterator/factory/list_iterator_factory.h"
+#include "../src/iterator/factory/iterator_factory.h"
 #include "../src/iterator/iterator.h"
 #include "../src/point.h"
 #include "../src/rectangle.h"
@@ -166,9 +164,9 @@ TEST_F(RectanglePolymorphismTest, TestPerimeter) {
 
 TEST_F(RectanglePolymorphismTest,
        CreateIteratorWithBfsIteratorFactoryShouldIsDone) {
-  const auto factory = BFSIteratorFactory{};
+  const IteratorFactory* factory = IteratorFactory::getInstance("BFS");
 
-  Iterator* it = rectangle_.createIterator(&factory);
+  Iterator* it = rectangle_.createIterator(factory);
 
   ASSERT_TRUE(it->isDone());
 
@@ -177,9 +175,9 @@ TEST_F(RectanglePolymorphismTest,
 
 TEST_F(RectanglePolymorphismTest,
        CreateIteratorWithDfsIteratorFactoryShouldIsDone) {
-  const auto factory = DFSIteratorFactory{};
+  const IteratorFactory* factory = IteratorFactory::getInstance("DFS");
 
-  Iterator* it = rectangle_.createIterator(&factory);
+  Iterator* it = rectangle_.createIterator(factory);
 
   ASSERT_TRUE(it->isDone());
 
@@ -188,9 +186,9 @@ TEST_F(RectanglePolymorphismTest,
 
 TEST_F(RectanglePolymorphismTest,
        CreateIteratorWithListIteratorFactoryShouldIsDone) {
-  const auto factory = ListIteratorFactory{};
+  const IteratorFactory* factory = IteratorFactory::getInstance("List");
 
-  Iterator* it = rectangle_.createIterator(&factory);
+  Iterator* it = rectangle_.createIterator(factory);
 
   ASSERT_TRUE(it->isDone());
 

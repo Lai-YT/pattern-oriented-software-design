@@ -21,9 +21,12 @@ class IteratorFactory {
   /* Instances are owned by the factory, do not delete them. */
   static IteratorFactory* getInstance(const std::string& type);
 
+
   virtual ~IteratorFactory() = default;
 
  protected:
+  IteratorFactory() = default;
+
   static std::unordered_map<std::string, std::unique_ptr<IteratorFactory>>
       pool_;
 

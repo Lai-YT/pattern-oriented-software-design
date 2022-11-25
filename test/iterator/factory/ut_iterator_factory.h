@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 
 #include <string>
+#include <type_traits>
 
+#include "../../../src/iterator/factory/bfs_iterator_factory.h"
 #include "../../../src/iterator/factory/iterator_factory.h"
 
 TEST(IteratorFactoryTest, TestGetInstanceBfsShouldBeIdentical) {
@@ -29,4 +31,8 @@ TEST(IteratorFactoryTest, TestGetInstanceListShouldBeIdentical) {
   IteratorFactory* second_one = IteratorFactory::getInstance(type);
 
   ASSERT_EQ(second_one, first_one);
+}
+
+TEST(IteratorFactoryTest, TestConstructorShouldNotBePublic) {
+  ASSERT_FALSE(std::is_constructible<BFSIteratorFactory>::value);
 }

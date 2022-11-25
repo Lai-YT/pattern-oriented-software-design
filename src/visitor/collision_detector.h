@@ -8,7 +8,7 @@
 #include "../bounding_box.h"
 #include "../circle.h"
 #include "../compound_shape.h"
-#include "../iterator/factory/list_iterator_factory.h"
+#include "../iterator/factory/iterator_factory.h"
 #include "../iterator/iterator.h"
 #include "../point.h"
 #include "../rectangle.h"
@@ -47,8 +47,8 @@ class CollisionDetector : public ShapeVisitor {
         BoundingBox::CreateBoundingBoxWithHeapAllocatedPointsDeleted(
             compound->getPoints());
     if (bounding_box_.collide(&bounding_box_to_detect)) {
-      auto factory = ListIteratorFactory{};
-      auto itr = std::unique_ptr<Iterator>{compound->createIterator(&factory)};
+      IteratorFactory* factory = IteratorFactory::getInstance("List");
+      auto itr = std::unique_ptr<Iterator>{compound->createIterator(factory)};
       for (itr->first(); !itr->isDone(); itr->next()) {
         itr->currentItem()->accept(this);
       }

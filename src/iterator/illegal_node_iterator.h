@@ -6,7 +6,7 @@
 
 #include "../shape.h"
 #include "../visitor/illegal_node_checker.h"
-#include "factory/bfs_iterator_factory.h"
+#include "factory/iterator_factory.h"
 #include "iterator.h"
 
 Iterator* GetBfsCompoundShapeIterator(Shape*);
@@ -53,8 +53,8 @@ class IllegalNodeIterator : public Iterator {
 };
 
 Iterator* GetBfsCompoundShapeIterator(Shape* const shape) {
-  auto factory = BFSIteratorFactory{};
-  return shape->createIterator(&factory);
+  const IteratorFactory* factory = IteratorFactory::getInstance("BFS");
+  return shape->createIterator(factory);
 }
 
 #endif /* end of include guard: SRC_ITERATOR_ILLEGAL_NODE_ITERATOR_H_ */

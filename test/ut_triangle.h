@@ -4,9 +4,7 @@
 #include <set>
 #include <vector>
 
-#include "../src/iterator/factory/bfs_iterator_factory.h"
-#include "../src/iterator/factory/dfs_iterator_factory.h"
-#include "../src/iterator/factory/list_iterator_factory.h"
+#include "../src/iterator/factory/iterator_factory.h"
 #include "../src/iterator/iterator.h"
 #include "../src/point.h"
 #include "../src/triangle.h"
@@ -122,9 +120,9 @@ TEST_F(TrianglePolymorphismTest, TestInfo) {
 
 TEST_F(TrianglePolymorphismTest,
        CreateIteratorWithBfsIteratorFactoryShouldIsDone) {
-  const auto factory = BFSIteratorFactory{};
+  const IteratorFactory* factory = IteratorFactory::getInstance("BFS");
 
-  Iterator* it = triangle_.createIterator(&factory);
+  Iterator* it = triangle_.createIterator(factory);
 
   ASSERT_TRUE(it->isDone());
 
@@ -133,9 +131,9 @@ TEST_F(TrianglePolymorphismTest,
 
 TEST_F(TrianglePolymorphismTest,
        CreateIteratorWithDfsIteratorFactoryShouldIsDone) {
-  const auto factory = DFSIteratorFactory{};
+  const IteratorFactory* factory = IteratorFactory::getInstance("DFS");
 
-  Iterator* it = triangle_.createIterator(&factory);
+  Iterator* it = triangle_.createIterator(factory);
 
   ASSERT_TRUE(it->isDone());
 
@@ -144,9 +142,9 @@ TEST_F(TrianglePolymorphismTest,
 
 TEST_F(TrianglePolymorphismTest,
        CreateIteratorWithListIteratorFactoryShouldIsDone) {
-  const auto factory = ListIteratorFactory{};
+  const IteratorFactory* factory = IteratorFactory::getInstance("List");
 
-  Iterator* it = triangle_.createIterator(&factory);
+  Iterator* it = triangle_.createIterator(factory);
 
   ASSERT_TRUE(it->isDone());
 

@@ -5,8 +5,7 @@
 
 #include "../circle.h"
 #include "../compound_shape.h"
-#include "../iterator/factory/bfs_iterator_factory.h"
-#include "../iterator/factory/list_iterator_factory.h"
+#include "../iterator/factory/iterator_factory.h"
 #include "../iterator/iterator.h"
 #include "../rectangle.h"
 #include "../triangle.h"
@@ -18,19 +17,19 @@ class IllegalNodeChecker : public ShapeVisitor {
    * Non-compound shapes are always legal.
    */
 
-  void visitCircle(Circle *circle) override {
+  void visitCircle(Circle* circle) override {
     is_illegal_ = false;
   }
 
-  void visitTriangle(Triangle *triangle) override {
+  void visitTriangle(Triangle* triangle) override {
     is_illegal_ = false;
   }
 
-  void visitRectangle(Rectangle *rectangle) override {
+  void visitRectangle(Rectangle* rectangle) override {
     is_illegal_ = false;
   }
 
-  void visitCompoundShape(CompoundShape *compound) override {
+  void visitCompoundShape(CompoundShape* compound) override {
     is_illegal_ = IsMissingChildren_(compound);
   }
 
@@ -48,15 +47,15 @@ class IllegalNodeChecker : public ShapeVisitor {
     is_illegal_ = false;
   }
 
-  bool IsMissingChildren_(CompoundShape *compound) {
+  bool IsMissingChildren_(CompoundShape* compound) {
     if (!HasTwoChildren_(compound)) {
       return true;
     }
-    auto factory = BFSIteratorFactory{};
-    auto itr = std::unique_ptr<Iterator>{compound->createIterator(&factory)};
+    IteratorFactory* factory = IteratorFactory::getInstance("BFS");
+    auto itr = std::unique_ptr<Iterator>{compound->createIterator(factory)};
     for (itr->first(); !itr->isDone(); itr->next()) {
-      CompoundShape *compound =
-          dynamic_cast<CompoundShape *>(itr->currentItem());
+      CompoundShape* compound =
+          dynamic_cast<CompoundShape*>(itr->currentItem());
       if (compound && IsMissingChildren_(compound)) {
         return true;
       }
@@ -64,9 +63,9 @@ class IllegalNodeChecker : public ShapeVisitor {
     return false;
   }
 
-  bool HasTwoChildren_(CompoundShape *compound) {
-    auto factory = ListIteratorFactory{};
-    auto itr = std::unique_ptr<Iterator>{compound->createIterator(&factory)};
+  bool HasTwoChildren_(CompoundShape* compound) {
+    IteratorFactory* factory = IteratorFactory::getInstance("List");
+    auto itr = std::unique_ptr<Iterator>{compound->createIterator(factory)};
     int children_count = 0;
     for (itr->first(); !itr->isDone(); itr->next()) {
       ++children_count;
