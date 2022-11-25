@@ -9,6 +9,7 @@
 class Iterator;
 class Shape;
 
+/* Singleton pattern: factories ar stateless objects, so we can reuse them. */
 class IteratorFactory {
  public:
   virtual Iterator* createIterator() const;
