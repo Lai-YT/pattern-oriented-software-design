@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <functional>
+#include <iostream>
 #include <set>
 #include <string>
 #include <vector>
@@ -16,7 +17,9 @@
 
 class ShapeParser {
  public:
-  ShapeParser(const std::string& input) : scanner_{input} {}
+  ShapeParser(const std::string& input) : scanner_{input} {
+    std::cout << input + '\n';
+  }
 
   ~ShapeParser() {
     for (auto&& p : points_to_delete_) {
