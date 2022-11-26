@@ -81,6 +81,11 @@ class ShapeParser {
                                 pointers_to_vertex.at(1),
                                 pointers_to_vertex.at(2));
         SkipTripleCloseParenthesis_();
+      } else if (token == "CompoundShape") {
+        builder_.buildCompoundShape();
+        scanner_.next(); /* ( */
+      } else if (token == ")") {
+        builder_.buildCompoundEnd();
       }
     }
   }
