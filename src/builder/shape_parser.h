@@ -2,8 +2,6 @@
 #define SRC_BUILDER_SHAPE_PARSER_H_
 
 #include <cassert>
-#include <functional>
-#include <iostream>
 #include <set>
 #include <string>
 #include <vector>
@@ -17,9 +15,7 @@
 
 class ShapeParser {
  public:
-  ShapeParser(const std::string& input) : scanner_{input} {
-    std::cout << input + '\n';
-  }
+  ShapeParser(const std::string& input) : scanner_{input} {}
 
   ~ShapeParser() {
     for (auto&& p : points_to_delete_) {
