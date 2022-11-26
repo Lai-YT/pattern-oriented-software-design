@@ -1,6 +1,9 @@
 #ifndef SRC_BUILDER_SHAPE_PARSER_H_
 #define SRC_BUILDER_SHAPE_PARSER_H_
 
+#include <cassert>
+#include <functional>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -31,10 +34,32 @@ class ShapeParser {
         DeleteLater_(center);
         DeleteLater_(on_circle);
         builder_.buildCircle(center, on_circle);
-        scanner_.next(); /* ) */
-        scanner_.next(); /* ) */
-        scanner_.next(); /* ) */
+      } else if (token == "Rectangle") {
+        auto vertices = std::set<Point, std::function<bool(Point, Point)>>{
+            {
+                Point{scanner_.nextDouble(), scanner_.nextDouble()},
+                Point{scanner_.nextDouble(), scanner_.nextDouble()},
+                Point{scanner_.nextDouble(), scanner_.nextDouble()},
+                Point{scanner_.nextDouble(), scanner_.nextDouble()},
+            },
+            [](const Point& p1, const Point& p2) -> bool {
+              return p1.info() < p2.info();
+            }};
+        auto pointers_to_vertex = std::vector<const Point*>{};
+        for (auto&& p : vertices) {
+          pointers_to_vertex.push_back(new Point{p});
+        }
+        assert(pointers_to_vertex.size() == 3);
+        for (const Point* p : pointers_to_vertex) {
+          DeleteLater_(p);
+        }
+        builder_.buildRectangle(pointers_to_vertex.at(0),
+                                pointers_to_vertex.at(1),
+                                pointers_to_vertex.at(2));
       }
+      scanner_.next(); /* ) */
+      scanner_.next(); /* ) */
+      scanner_.next(); /* ) */
     }
   }
 
