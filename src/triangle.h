@@ -19,11 +19,11 @@ class Triangle : public Shape {
            const TwoDimensionalVector* const side_2)
       : side_1_{side_1}, side_2_{side_2} {
     if (side_1_->cross(side_2_) == 0) {
-      throw ParallelSideException{""};
+      throw ParallelSideException{"sides should not be parallel"};
     }
     const Point* common_point = FindCommonPointOfVectors(*side_1, *side_2_);
     if (common_point == nullptr) {
-      throw NoCommonPointException{""};
+      throw NoCommonPointException{"sides should intersect at one end"};
     }
     side_3_ = std::unique_ptr<TwoDimensionalVector>{new TwoDimensionalVector{
         FindUncommonPointFromVector(*side_1_, *common_point),

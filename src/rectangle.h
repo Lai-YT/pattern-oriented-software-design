@@ -18,10 +18,10 @@ class Rectangle : public Shape {
             const TwoDimensionalVector* const width_side)
       : length_side_{length_side}, width_side_{width_side} {
     if (length_side_->dot(width_side_)) {
-      throw NonOrthogonalSideException{""};
+      throw NonOrthogonalSideException{"sides should be orthogonal"};
     }
     if (FindCommonPointOfVectors(*length_side_, *width_side_) == nullptr) {
-      throw NoCommonPointException{""};
+      throw NoCommonPointException{"sides should intersect at one end"};
     }
   }
 
