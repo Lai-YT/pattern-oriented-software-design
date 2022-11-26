@@ -6,6 +6,7 @@
 #include <string>
 
 #include "iterator/factory/iterator_factory.h"
+#include "iterator/iterator.h"
 #include "point.h"
 #include "shape.h"
 #include "two_dimensional_vector.h"
