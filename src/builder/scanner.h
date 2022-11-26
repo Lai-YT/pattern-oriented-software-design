@@ -34,11 +34,29 @@ class Scanner {
 
   double nextDouble() {
     SkipWhiteSpace_();
-    std::string::size_type length = 0;
-    double result = std::stod(input_.substr(pos_), &length);
-    pos_ += length;
+    std::string double_ = "";
+    while (!std::isdigit(input_.at(pos_)) && input_.at(pos_) != '+' &&
+           input_.at(pos_) != '-') {
+      ++pos_;
+    }
+    if (input_.at(pos_) == '+' || input_.at(pos_) == '-') {
+      double_ += input_.at(pos_++);
+    }
+    std::cout << double_ + '\n';
+    if (std::isdigit(input_.at(pos_))) {
+      while (std::isdigit(input_.at(pos_))) {
+        double_ += input_.at(pos_++);
+      }
+      if (input_.at(pos_) == '.') {
+        double_ += input_.at(pos_++);
+      }
+      while (std::isdigit(input_.at(pos_))) {
+        double_ += input_.at(pos_++);
+      }
+    }
+    std::cout << double_ + '\n';
     SkipWhiteSpace_();
-    return result;
+    return std::stod(double_);
   }
 
   bool isDone() const {

@@ -19,15 +19,15 @@ class ScannerTest : public ::testing::Test {
   const double DELTA = 0.001;
 };
 
-// TEST_F(ScannerTest, TestNextDoubleOnVector) {
-//   const std::string input = "Vector ((1.00, 2.00), (-3.00, 5.00))";
-//   auto scanner = Scanner{input};
+TEST_F(ScannerTest, TestNextDoubleOnVector) {
+  const std::string input = "Vector ((1.00, 2.00), (-3.00, 5.00))";
+  auto scanner = Scanner{input};
 
-//   ASSERT_NEAR(1, scanner.nextDouble(), DELTA);
-//   ASSERT_NEAR(2, scanner.nextDouble(), DELTA);
-//   ASSERT_NEAR(-3, scanner.nextDouble(), DELTA);
-//   ASSERT_NEAR(5, scanner.nextDouble(), DELTA);
-// }
+  ASSERT_NEAR(1, scanner.nextDouble(), DELTA);
+  ASSERT_NEAR(2, scanner.nextDouble(), DELTA);
+  ASSERT_NEAR(-3, scanner.nextDouble(), DELTA);
+  ASSERT_NEAR(5, scanner.nextDouble(), DELTA);
+}
 
 TEST_F(ScannerTest, TestNextOnVector) {
   const std::string input = "Vector ((1.00, 2.00), (-3.00, 5.00))";
@@ -45,26 +45,26 @@ TEST_F(ScannerTest, TestNextOnVector) {
   ASSERT_EQ(")", scanner.next());
 }
 
-// TEST_F(ScannerTest, TestNextWithNextDoubleOnVector) {
-//   const std::string input = "Vector ((1.00, 2.00), (-3.00, 5.00))";
-//   auto scanner = Scanner{input};
+TEST_F(ScannerTest, TestNextWithNextDoubleOnVector) {
+  const std::string input = "Vector ((1.00, 2.00), (-3.00, 5.00))";
+  auto scanner = Scanner{input};
 
-//   ASSERT_EQ("Vector", scanner.next());
-//   ASSERT_EQ("(", scanner.next());
-//   ASSERT_EQ("(", scanner.next());
-//   ASSERT_NEAR(1, scanner.nextDouble(), DELTA);
-//   ASSERT_EQ(",", scanner.next());
-//   ASSERT_NEAR(2, scanner.nextDouble(), DELTA);
-//   ASSERT_EQ(")", scanner.next());
-//   ASSERT_EQ(",", scanner.next());
-//   ASSERT_EQ("(", scanner.next());
-//   ASSERT_NEAR(-3, scanner.nextDouble(), DELTA);
-//   ASSERT_EQ(",", scanner.next());
-//   ASSERT_NEAR(5, scanner.nextDouble(), DELTA);
-//   ASSERT_EQ(")", scanner.next());
-//   ASSERT_EQ(")", scanner.next());
-//   ASSERT_TRUE(scanner.isDone());
-// }
+  ASSERT_EQ("Vector", scanner.next());
+  ASSERT_EQ("(", scanner.next());
+  ASSERT_EQ("(", scanner.next());
+  ASSERT_NEAR(1, scanner.nextDouble(), DELTA);
+  ASSERT_EQ(",", scanner.next());
+  ASSERT_NEAR(2, scanner.nextDouble(), DELTA);
+  ASSERT_EQ(")", scanner.next());
+  ASSERT_EQ(",", scanner.next());
+  ASSERT_EQ("(", scanner.next());
+  ASSERT_NEAR(-3, scanner.nextDouble(), DELTA);
+  ASSERT_EQ(",", scanner.next());
+  ASSERT_NEAR(5, scanner.nextDouble(), DELTA);
+  ASSERT_EQ(")", scanner.next());
+  ASSERT_EQ(")", scanner.next());
+  ASSERT_TRUE(scanner.isDone());
+}
 
 // TEST_F(ScannerTest, TestNextWithNextDoubleOnCircle) {
 //   const std::string input = "Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))";
