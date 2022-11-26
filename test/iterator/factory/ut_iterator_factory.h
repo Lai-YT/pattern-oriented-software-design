@@ -2,6 +2,7 @@
 
 #include <array>
 #include <chrono>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <type_traits>
@@ -60,18 +61,20 @@ TEST(IteratorFactoryTest, TestCopyAssignmentShouldNotBePublic) {
   EXPECT_FALSE(std::is_copy_assignable<ListIteratorFactory>::value);
 }
 
-/* This test is unstable. */
+/* This test is unstable: may pass even not thread-safe. */
 TEST(IteratorFactoryTest,
      TestGetInstanceListShouldBeIdenticalUnderMultiThreading) {
-  GTEST_SKIP() << "Fix race condition later";
+  /* writing to set isn't thread-safe. */
+  std::mutex mutex_for_set_insertion{};
   auto threads = std::array<std::thread, 1000>{};
   auto factories = std::unordered_set<IteratorFactory*>{};
-  const std::string type = "BFS";
 
   for (auto&& thread : threads) {
-    thread = std::thread([&type, &factories]() -> void {
+    thread = std::thread([&mutex_for_set_insertion, &factories]() -> void {
       std::this_thread::sleep_for(std::chrono::seconds(1));
-      factories.insert(IteratorFactory::getInstance(type));
+      IteratorFactory* factory = IteratorFactory::getInstance("BFS");
+      std::lock_guard<std::mutex> lock{mutex_for_set_insertion};
+      factories.insert(factory);
     });
   }
   for (auto&& thread : threads) {
