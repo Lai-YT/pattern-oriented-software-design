@@ -1,6 +1,7 @@
 #ifndef SRC_BUILDER_SCANNER_H_
 #define SRC_BUILDER_SCANNER_H_
 
+#include <cctype>
 #include <stdexcept>
 #include <string>
 #include <unordered_set>
@@ -14,9 +15,17 @@ class Scanner {
     SkipWhiteSpace_();
     do {
       word.clear();
-      while (!isDone() && input_.at(pos_) != ' ' && input_.at(pos_) != '\n' &&
+      char c = input_.at(pos_);
+      if (IsToken_(std::string{c})) {
+        word = c;
+        ++pos_;
+        break;
+      }
+      while (!isDone() && !IsWhiteSpace_(c) && !IsToken_(std::string{c}) &&
              !IsToken_(word)) {
-        word += input_.at(pos_++);
+        word += input_.at(pos_);
+        c = input_.at(++pos_);
+        std::cout << word + '\n';
       }
     } while (!IsToken_(word) && !isDone());
     SkipWhiteSpace_();
@@ -43,9 +52,13 @@ class Scanner {
   std::string::size_type pos_ = 0;
 
   void SkipWhiteSpace_() {
-    while (!isDone() && (input_.at(pos_) == ' ' || input_.at(pos_) == '\n')) {
+    while (!isDone() && IsWhiteSpace_(input_.at(pos_))) {
       ++pos_;
     }
+  }
+
+  bool IsWhiteSpace_(const char c) const {
+    return c == ' ' || c == '\n';
   }
 
   bool IsToken_(const std::string& candidate) const {
