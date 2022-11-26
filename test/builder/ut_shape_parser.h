@@ -128,6 +128,7 @@ TEST_F(ShapeParserTest, TestParseTwoLevelCompoundShape) {
   dfs_itr->next();
   ASSERT_TRUE(dfs_itr->isDone());
 
+  delete dfs_itr;
   for (auto&& s : shapes) {
     delete s;
   }
