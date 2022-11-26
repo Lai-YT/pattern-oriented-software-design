@@ -25,6 +25,25 @@ TEST_F(ShapeParserTest, TestParseCircle) {
   }
 }
 
+TEST_F(ShapeParserTest, TestParseTriangle) {
+  const auto input = std::string{
+      "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), "
+      "(3.00, 0.00)))"};
+  ShapeParser parser{input};
+
+  parser.parse();
+
+  std::vector<Shape*> shapes = parser.getResult();
+  ASSERT_EQ(1, shapes.size());
+  Shape* triangle = shapes.at(0);
+  ASSERT_NEAR(12, triangle->perimeter(), DELTA);
+  ASSERT_NEAR(6, triangle->area(), DELTA);
+
+  for (auto&& s : shapes) {
+    delete s;
+  }
+}
+
 TEST_F(ShapeParserTest, TestParseRectangle) {
   const auto input = std::string{
       "Rectangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((0.00, 0.00), "
