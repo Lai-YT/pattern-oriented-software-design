@@ -34,6 +34,7 @@ class ShapeParser {
         DeleteLater_(center);
         DeleteLater_(on_circle);
         builder_.buildCircle(center, on_circle);
+        SkipTripleCloseParenthesis_();
       } else if (token == "Rectangle") {
         auto vertices = std::set<Point, std::function<bool(Point, Point)>>{
             {
@@ -56,10 +57,8 @@ class ShapeParser {
         builder_.buildRectangle(pointers_to_vertex.at(0),
                                 pointers_to_vertex.at(1),
                                 pointers_to_vertex.at(2));
+        SkipTripleCloseParenthesis_();
       }
-      scanner_.next(); /* ) */
-      scanner_.next(); /* ) */
-      scanner_.next(); /* ) */
     }
   }
 
@@ -77,6 +76,12 @@ class ShapeParser {
 
   void DeleteLater_(const Point* const to_delete) {
     points_to_delete_.push_back(to_delete);
+  }
+
+  void SkipTripleCloseParenthesis_() {
+    scanner_.next();
+    scanner_.next();
+    scanner_.next();
   }
 };
 
