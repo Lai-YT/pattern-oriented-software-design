@@ -38,8 +38,12 @@ class TwoDimensionalVector {
     return std::sqrt(x_offset_() * x_offset_() + y_offset_() * y_offset_());
   }
 
+  double dot(const TwoDimensionalVector& that) const {
+    return x_offset_() * that.x_offset_() + y_offset_() * that.y_offset_();
+  }
+
   double dot(const TwoDimensionalVector* const that) const {
-    return x_offset_() * that->x_offset_() + y_offset_() * that->y_offset_();
+    return dot(*that);
   }
 
   /**
@@ -49,8 +53,12 @@ class TwoDimensionalVector {
    * the z-axis is set as 0, and their cross product will always be
    * (0, 0, some_value).
    */
+  double cross(const TwoDimensionalVector& that) const {
+    return x_offset_() * that.y_offset_() - y_offset_() * that.x_offset_();
+  }
+
   double cross(const TwoDimensionalVector* const that) const {
-    return x_offset_() * that->y_offset_() - y_offset_() * that->x_offset_();
+    return cross(*that);
   }
 
  private:

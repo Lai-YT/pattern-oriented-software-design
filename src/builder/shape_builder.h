@@ -1,6 +1,9 @@
 #ifndef SRC_BUILDER_SHAPE_BUILDER_H_
 #define SRC_BUILDER_SHAPE_BUILDER_H_
 
+#include <array>
+#include <cassert>
+#include <set>
 #include <stack>
 #include <vector>
 
@@ -11,6 +14,10 @@
 #include "../shape.h"
 #include "../triangle.h"
 #include "../two_dimensional_vector.h"
+
+/** @brief Returns whether the 2 vectors are orthogonal. */
+bool IsOrthogonal(const TwoDimensionalVector& v1,
+                  const TwoDimensionalVector& v2);
 
 class ShapeBuilder {
  public:
@@ -43,11 +50,9 @@ class ShapeBuilder {
    * Does not take the ownership of points.
    */
   void buildRectangle(const Point* v1, const Point* v2, const Point* v3) {
-    auto vec1 = new TwoDimensionalVector{v1, v2};
-    auto vec2 = new TwoDimensionalVector{v1, v3};
-    DeleteLater_(vec1);
-    DeleteLater_(vec2);
-    auto result = new Rectangle{vec1, vec2};
+    std::array<const TwoDimensionalVector*, 2> sides =
+        MakeOrthogonalSides_(v1, v2, v3);
+    auto result = new Rectangle{sides.at(0), sides.at(1)};
     CompleteBuiltOf_(result);
   }
 
@@ -116,6 +121,50 @@ class ShapeBuilder {
       results_.push_back(shape);
     }
   }
+
+  std::array<const TwoDimensionalVector*, 2> MakeOrthogonalSides_(
+      const Point* v1, const Point* v2, const Point* v3) {
+    const Point* common = FindRightAnglePoint_(v1, v2, v3);
+    if (!common) {
+      throw Rectangle::NonOrthogonalSideException{"sides should be orthogonal"};
+    }
+
+    /* Find the 2 uncommon points. */
+    auto pool = std::set<const Point*>{v1, v2, v3};
+    pool.erase(pool.find(common));
+
+    /* So can we make orthogonal sides. */
+    auto sides = std::vector<const TwoDimensionalVector*>{};
+    for (const Point* v : pool) {
+      sides.push_back(new TwoDimensionalVector{common, v});
+    }
+    for (auto&& side : sides) {
+      DeleteLater_(side);
+    }
+    assert(sides.size() == 2);
+    return {sides.at(0), sides.at(1)};
+  }
+
+  const Point* FindRightAnglePoint_(const Point* vertex_1,
+                                    const Point* vertex_2,
+                                    const Point* vertex_3) const {
+    using Vector = TwoDimensionalVector;
+    if (IsOrthogonal(Vector{vertex_1, vertex_2}, Vector{vertex_1, vertex_3})) {
+      return vertex_1;
+    } else if (IsOrthogonal(Vector{vertex_2, vertex_1},
+                            Vector{vertex_2, vertex_3})) {
+      return vertex_2;
+    } else if (IsOrthogonal(Vector{vertex_3, vertex_1},
+                            Vector{vertex_3, vertex_2})) {
+      return vertex_3;
+    }
+    return nullptr;
+  }
 };
+
+bool IsOrthogonal(const TwoDimensionalVector& v1,
+                  const TwoDimensionalVector& v2) {
+  return v1.dot(v2) == 0;
+}
 
 #endif /* end of include guard: SRC_BUILDER_SHAPE_BUILDER_H_ */
