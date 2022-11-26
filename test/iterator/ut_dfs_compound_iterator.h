@@ -48,7 +48,6 @@ class DFSCompoundIteratorTest : public ::testing::Test {
   Rectangle rectangle_{&rectangle_vector_1, &rectangle_vector_2};
   Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
   IteratorFactory* dfs_factory_ = IteratorFactory::getInstance("DFS");
-
 };
 
 class DFSCompoundIteratorOnFlatListTest : public DFSCompoundIteratorTest {
