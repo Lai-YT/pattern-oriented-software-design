@@ -1,6 +1,7 @@
 #ifndef SRC_VISITOR_CLOSEST_SHAPE_FINDER_H_
 #define SRC_VISITOR_CLOSEST_SHAPE_FINDER_H_
 
+#include <cassert>
 #include <memory>
 
 #include "../bounding_box.h"
@@ -60,7 +61,7 @@ class ClosestShapeFinder : public ShapeVisitor {
             shape->getPoints());
     IteratorFactory* factory = IteratorFactory::getInstance("BFS");
     double min_distance = 10000; /* FIXME: bad hack on infinity */
-    /* track parent with an addtional pointer */
+    /* track parent with an additional pointer */
     CompoundShape* prev_compound = nullptr;
     auto itr =
         std::unique_ptr<Iterator>{target_shape_->createIterator(factory)};

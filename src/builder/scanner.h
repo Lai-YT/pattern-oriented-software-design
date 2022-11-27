@@ -2,7 +2,6 @@
 #define SRC_BUILDER_SCANNER_H_
 
 #include <cctype>
-#include <stdexcept>
 #include <string>
 #include <unordered_set>
 

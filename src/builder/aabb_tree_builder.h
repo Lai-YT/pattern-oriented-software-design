@@ -1,11 +1,8 @@
 #ifndef SRC_BUILDER_AABB_TREE_BUILDER_H_
 #define SRC_BUILDER_AABB_TREE_BUILDER_H_
 
-#include "../circle.h"
-#include "../iterator/factory/list_iterator_factory.h"
+#include "../point.h"
 #include "../shape.h"
-#include "../triangle.h"
-#include "../visitor/closest_shape_finder.h"
 
 class AABBTreeBuilder {
  public:
