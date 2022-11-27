@@ -2,6 +2,7 @@
 #define SRC_BUILDER_SCANNER_H_
 
 #include <cctype>
+#include <regex>
 #include <string>
 #include <unordered_set>
 
@@ -35,31 +36,12 @@ class Scanner {
   }
 
   double nextDouble() {
+    auto match = std::smatch{};
+    std::regex_search(input_.cbegin() + pos_, input_.cend(), match,
+                      REGEX_FOR_FLOATING_POINT_NUMBERS_);
+    pos_ += match.position() + match.length();
     SkipWhiteSpace_();
-
-    std::string double_ = "";
-    while (!std::isdigit(input_.at(pos_)) && !IsSign_(input_.at(pos_))) {
-      ++pos_;
-    }
-    if (IsSign_(input_.at(pos_))) {
-      double_ += input_.at(pos_++);
-    }
-    if (std::isdigit(input_.at(pos_))) {
-      /* a floating-point number has 3 parts:
-       * integer part, decimal point and fractional part */
-      while (std::isdigit(input_.at(pos_))) {
-        double_ += input_.at(pos_++);
-      }
-      if (input_.at(pos_) == '.') {
-        double_ += input_.at(pos_++);
-      }
-      while (std::isdigit(input_.at(pos_))) {
-        double_ += input_.at(pos_++);
-      }
-    }
-
-    SkipWhiteSpace_();
-    return std::stod(double_);
+    return std::stod(match.str());
   }
 
   bool isDone() const {
@@ -68,6 +50,7 @@ class Scanner {
 
  private:
   static const std::unordered_set<std::string> TOKENS_;
+  static const std::regex REGEX_FOR_FLOATING_POINT_NUMBERS_;
 
   std::string input_;
   std::string::size_type pos_ = 0;
@@ -98,5 +81,8 @@ class Scanner {
 const std::unordered_set<std::string> Scanner::TOKENS_ = {
     "Circle", "Rectangle", "Triangle", "CompoundShape", "Vector", "(", ")", ",",
 };
+
+const std::regex Scanner::REGEX_FOR_FLOATING_POINT_NUMBERS_{
+    R"([-+]?(?:\d+(?:\.\d*)?|\.\d+))"};
 
 #endif /* end of include guard: SRC_BUILDER_SCANNER_H_ */
