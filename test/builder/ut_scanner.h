@@ -222,3 +222,25 @@ TEST_F(ScannerTest, TestNextWithNextDoubleOnCompoundShape) {
   ASSERT_TRUE(scanner.isDone());
   /* clang-format on */
 }
+
+TEST_F(ScannerTest, TestNextShouldThrowExceptionWhenIsDone) {
+  const std::string input = "Vector ((1.00, 2.00), (-3.00, 5.00))";
+  const int number_of_tokens = 10;
+  auto scanner = Scanner{input};
+  for (size_t i = 0; i < number_of_tokens; i++) {
+    scanner.next();
+  }
+
+  ASSERT_THROW(scanner.next(), Scanner::ScanIsDoneException);
+}
+
+TEST_F(ScannerTest, TestNextDoubleShouldThrowExceptionWhenIsDone) {
+  const std::string input = "Vector ((1.00, 2.00), (-3.00, 5.00))";
+  const int number_of_doubles = 4;
+  auto scanner = Scanner{input};
+  for (size_t i = 0; i < number_of_doubles; i++) {
+    scanner.nextDouble();
+  }
+
+  ASSERT_THROW(scanner.nextDouble(), Scanner::ScanIsDoneException);
+}
