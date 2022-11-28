@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <regex>
 #include <string>
 
 #include "../../src/builder/scanner.h"
@@ -12,6 +13,33 @@ TEST(StodTest, TestConvertDoubleWithCommaEnding) {
 
   ASSERT_NEAR(1, actual, 0.001);
   ASSERT_EQ(5, length);
+}
+
+/* To learn how regex in C++ works and whether the expression is correct. */
+class RegexOnFloatingPointNumberTest
+    : public testing::TestWithParam<std::string> {};
+
+INSTANTIATE_TEST_SUITE_P(PossibleForms, RegexOnFloatingPointNumberTest,
+                         testing::Values("450.945", "450", "450.", ".945",
+                                         "+450.945", "-450.945"));
+
+TEST_P(RegexOnFloatingPointNumberTest, TestCorrectnessOfRegex) {
+  const std::string target = GetParam();
+  const auto subject =
+      std::string{"Here we have " + target + " as the target."};
+  const int first_match_char_position = 13;
+  auto match = std::smatch{};
+
+  const auto regex_for_floating_points =
+      std::regex{R"([-+]?(?:\d+(?:\.\d*)?|\.\d+))"};
+
+  const bool has_floating_point_number =
+      std::regex_search(subject, match, regex_for_floating_points);
+  ASSERT_TRUE(has_floating_point_number);
+  EXPECT_EQ(1, match.size());
+  ASSERT_EQ(target, match.str());
+  ASSERT_EQ(target.size(), match.length());
+  ASSERT_EQ(13, match.position());
 }
 
 class ScannerTest : public ::testing::Test {
