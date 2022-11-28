@@ -11,28 +11,12 @@ class Scanner {
   Scanner(const std::string& input) : input_{input} {}
 
   std::string next() {
+    auto match = std::smatch{};
+    std::regex_search(input_.cbegin() + pos_, input_.cend(), match,
+                      REGEX_FOR_TOKENS_);
+    pos_ += match.position() + match.length();
     SkipWhiteSpace_();
-
-    auto word = std::string{};
-    do {
-      word.clear();
-      char c = input_.at(pos_);
-      /* single-character token */
-      if (IsToken_(c)) {
-        word = c;
-        ++pos_;
-        break;
-      }
-      /* normal-string token */
-      while (!isDone() && !IsWhiteSpace_(input_.at(pos_)) &&
-             !IsToken_(input_.at(pos_)) && !IsToken_(word)) {
-        word += input_.at(pos_);
-        ++pos_;
-      }
-    } while (!IsToken_(word) && !isDone());
-
-    SkipWhiteSpace_();
-    return IsToken_(word) ? word : "";
+    return match.str();
   }
 
   double nextDouble() {
@@ -50,6 +34,7 @@ class Scanner {
 
  private:
   static const std::unordered_set<std::string> TOKENS_;
+  static const std::regex REGEX_FOR_TOKENS_;
   static const std::regex REGEX_FOR_FLOATING_POINT_NUMBERS_;
 
   std::string input_;
@@ -81,6 +66,9 @@ class Scanner {
 const std::unordered_set<std::string> Scanner::TOKENS_ = {
     "Circle", "Rectangle", "Triangle", "CompoundShape", "Vector", "(", ")", ",",
 };
+
+const std::regex Scanner::REGEX_FOR_TOKENS_{
+    R"(\b(Circle|Rectangle|Triangle|CompoundShape|Vector)\b|[(),])"};
 
 const std::regex Scanner::REGEX_FOR_FLOATING_POINT_NUMBERS_{
     R"([-+]?(?:\d+(?:\.\d*)?|\.\d+))"};
