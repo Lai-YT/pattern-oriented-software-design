@@ -41,7 +41,7 @@ IteratorFactory* IteratorFactory::getInstance(const std::string& type) {
   } else if (type == "List") {
     instance = new ListIteratorFactory{};
   } else {
-    throw;
+    throw UnknownInstanceTypeException{"unknown instance type: " + type};
   }
   pool_.emplace(type, instance);
   return instance;

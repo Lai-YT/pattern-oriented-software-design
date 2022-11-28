@@ -40,6 +40,13 @@ TEST(IteratorFactoryTest, TestGetInstanceListShouldBeIdentical) {
   ASSERT_EQ(second_one, first_one);
 }
 
+TEST(IteratorFactoryTest, TestGetInstanceShouldThrowExceptionIfIsUnknownType) {
+  const std::string type = "unknown type";
+
+  ASSERT_THROW(IteratorFactory::getInstance(type),
+               IteratorFactory::UnknownInstanceTypeException);
+}
+
 TEST(IteratorFactoryTest, TestConstructorShouldNotBePublic) {
   EXPECT_FALSE(std::is_constructible<IteratorFactory>::value);
   EXPECT_FALSE(std::is_constructible<BFSIteratorFactory>::value);

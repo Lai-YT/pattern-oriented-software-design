@@ -3,6 +3,7 @@
 
 #include <list>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 
@@ -28,6 +29,10 @@ class IteratorFactory {
   IteratorFactory& operator=(const IteratorFactory& other) = delete;
 
   virtual ~IteratorFactory() = default;
+
+  class UnknownInstanceTypeException : public std::runtime_error {
+    using std::runtime_error::runtime_error;
+  };
 
  protected:
   IteratorFactory() = default;
