@@ -11,21 +11,15 @@ class Scanner {
   Scanner(const std::string& input) : input_{input} {}
 
   std::string next() {
-    auto match = std::smatch{};
-    std::regex_search(input_.cbegin() + pos_, input_.cend(), match,
-                      REGEX_FOR_TOKENS_);
-    pos_ += match.position() + match.length();
+    std::string token = NextRegexMatch_(REGEX_FOR_TOKENS_);
     SkipWhiteSpace_();
-    return match.str();
+    return token;
   }
 
   double nextDouble() {
-    auto match = std::smatch{};
-    std::regex_search(input_.cbegin() + pos_, input_.cend(), match,
-                      REGEX_FOR_FLOATING_POINT_NUMBERS_);
-    pos_ += match.position() + match.length();
+    std::string double_ = NextRegexMatch_(REGEX_FOR_FLOATING_POINT_NUMBERS_);
     SkipWhiteSpace_();
-    return std::stod(match.str());
+    return std::stod(double_);
   }
 
   bool isDone() const {
@@ -40,6 +34,13 @@ class Scanner {
   std::string input_;
   std::string::size_type pos_ = 0;
 
+  std::string NextRegexMatch_(const std::regex& re) {
+    auto match = std::smatch{};
+    std::regex_search(input_.cbegin() + pos_, input_.cend(), match, re);
+    pos_ += match.position() + match.length();
+    return match.str();
+  }
+
   void SkipWhiteSpace_() {
     while (!isDone() && IsWhiteSpace_(input_.at(pos_))) {
       ++pos_;
@@ -48,18 +49,6 @@ class Scanner {
 
   bool IsWhiteSpace_(const char c) const {
     return c == ' ' || c == '\n';
-  }
-
-  bool IsSign_(const char c) const {
-    return c == '+' || c == '-';
-  }
-
-  bool IsToken_(const std::string& candidate) const {
-    return TOKENS_.find(candidate) != TOKENS_.cend();
-  }
-
-  bool IsToken_(const char c) const {
-    return IsToken_(std::string{c});
   }
 };
 
