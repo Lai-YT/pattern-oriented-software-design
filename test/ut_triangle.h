@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <memory>
 #include <set>
 #include <vector>
 
@@ -58,8 +59,9 @@ TEST_F(TriangleTest, DeleteShapeShouldThrowException) {
 }
 
 TEST_F(TriangleTest, GetPointsShouldReturnTheThreeVertices) {
-  const std::set<Point> vertices = triangle_.getPoints();
   const auto expected_vertices = std::vector<Point>{{0, 0}, {3, 0}, {3, 4}};
+
+  const std::set<Point> vertices = triangle_.getPoints();
 
   ASSERT_EQ(3, vertices.size());
   for (const Point& vertex : expected_vertices) {
@@ -91,31 +93,25 @@ TEST_F(TrianglePolymorphismTest,
        CreateIteratorWithBfsIteratorFactoryShouldIsDone) {
   const IteratorFactory* factory = IteratorFactory::getInstance("BFS");
 
-  Iterator* it = triangle_.createIterator(factory);
+  auto it = std::unique_ptr<Iterator>{triangle_.createIterator(factory)};
 
   ASSERT_TRUE(it->isDone());
-
-  delete it;
 }
 
 TEST_F(TrianglePolymorphismTest,
        CreateIteratorWithDfsIteratorFactoryShouldIsDone) {
   const IteratorFactory* factory = IteratorFactory::getInstance("DFS");
 
-  Iterator* it = triangle_.createIterator(factory);
+  auto it = std::unique_ptr<Iterator>{triangle_.createIterator(factory)};
 
   ASSERT_TRUE(it->isDone());
-
-  delete it;
 }
 
 TEST_F(TrianglePolymorphismTest,
        CreateIteratorWithListIteratorFactoryShouldIsDone) {
   const IteratorFactory* factory = IteratorFactory::getInstance("List");
 
-  Iterator* it = triangle_.createIterator(factory);
+  auto it = std::unique_ptr<Iterator>{triangle_.createIterator(factory)};
 
   ASSERT_TRUE(it->isDone());
-
-  delete it;
 }

@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <memory>
+
 #include "../../src/builder/shape_parser.h"
 #include "../../src/circle.h"
 #include "../../src/compound_shape.h"
@@ -12,6 +14,12 @@
 class ShapeParserTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
+
+  void Delete_(const std::vector<Shape*> shapes) const {
+    for (auto&& s : shapes) {
+      delete s;
+    }
+  }
 };
 
 TEST_F(ShapeParserTest, TestParseCircle) {
@@ -26,9 +34,7 @@ TEST_F(ShapeParserTest, TestParseCircle) {
   ASSERT_NEAR(31.415, circle->perimeter(), DELTA);
   ASSERT_NEAR(78.539, circle->area(), DELTA);
 
-  for (auto&& s : shapes) {
-    delete s;
-  }
+  Delete_(shapes);
 }
 
 TEST_F(ShapeParserTest, TestParseTriangle) {
@@ -45,9 +51,7 @@ TEST_F(ShapeParserTest, TestParseTriangle) {
   ASSERT_NEAR(12, triangle->perimeter(), DELTA);
   ASSERT_NEAR(6, triangle->area(), DELTA);
 
-  for (auto&& s : shapes) {
-    delete s;
-  }
+  Delete_(shapes);
 }
 
 TEST_F(ShapeParserTest, TestParseRectangle) {
@@ -64,9 +68,7 @@ TEST_F(ShapeParserTest, TestParseRectangle) {
   ASSERT_NEAR(16.492, rectangle->perimeter(), DELTA);
   ASSERT_NEAR(17, rectangle->area(), DELTA);
 
-  for (auto&& s : shapes) {
-    delete s;
-  }
+  Delete_(shapes);
 }
 
 /* A complex test that uses Iterator to traverse the CompoundShape. */
@@ -89,8 +91,8 @@ TEST_F(ShapeParserTest, TestParseTwoLevelCompoundShape) {
   std::vector<Shape*> shapes = parser.getResult();
   ASSERT_EQ(1, shapes.size());
   Shape* level_one_compound = shapes.at(0);
-  Iterator* dfs_itr =
-      level_one_compound->createIterator(IteratorFactory::getInstance("DFS"));
+  auto dfs_itr = std::unique_ptr<Iterator>{
+      level_one_compound->createIterator(IteratorFactory::getInstance("DFS"))};
   {
     Shape* circle = dynamic_cast<Circle*>(dfs_itr->currentItem());
     ASSERT_TRUE(circle);
@@ -128,8 +130,5 @@ TEST_F(ShapeParserTest, TestParseTwoLevelCompoundShape) {
   dfs_itr->next();
   ASSERT_TRUE(dfs_itr->isDone());
 
-  delete dfs_itr;
-  for (auto&& s : shapes) {
-    delete s;
-  }
+  Delete_(shapes);
 }

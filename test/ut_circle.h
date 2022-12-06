@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <memory>
 #include <set>
 
 #include "../src/circle.h"
@@ -41,9 +42,10 @@ TEST_F(CircleTest, DeleteShapeShouldThrowException) {
 }
 
 TEST_F(CircleTest, GetPointsShouldReturnUpperRightAndLowerLeft) {
-  const std::set<Point> bounding_points = circle_.getPoints();
   const auto upper_right = Point{6, 7};
   const auto lower_left = Point{-4, -3};
+
+  const std::set<Point> bounding_points = circle_.getPoints();
 
   ASSERT_EQ(2, bounding_points.size());
   ASSERT_TRUE(bounding_points.find(upper_right) != bounding_points.end());
@@ -71,31 +73,25 @@ TEST_F(CirclePolymorphismTest,
        CreateIteratorWithBfsIteratorFactoryShouldIsDone) {
   const IteratorFactory* factory = IteratorFactory::getInstance("BFS");
 
-  Iterator* it = circle_.createIterator(factory);
+  auto it = std::unique_ptr<Iterator>{circle_.createIterator(factory)};
 
   ASSERT_TRUE(it->isDone());
-
-  delete it;
 }
 
 TEST_F(CirclePolymorphismTest,
        CreateIteratorWithDfsIteratorFactoryShouldIsDone) {
   const IteratorFactory* factory = IteratorFactory::getInstance("DFS");
 
-  Iterator* it = circle_.createIterator(factory);
+  auto it = std::unique_ptr<Iterator>{circle_.createIterator(factory)};
 
   ASSERT_TRUE(it->isDone());
-
-  delete it;
 }
 
 TEST_F(CirclePolymorphismTest,
        CreateIteratorWithListIteratorFactoryShouldIsDone) {
   const IteratorFactory* factory = IteratorFactory::getInstance("List");
 
-  Iterator* it = circle_.createIterator(factory);
+  auto it = std::unique_ptr<Iterator>{circle_.createIterator(factory)};
 
   ASSERT_TRUE(it->isDone());
-
-  delete it;
 }

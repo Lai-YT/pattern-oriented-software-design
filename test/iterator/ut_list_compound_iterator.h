@@ -2,6 +2,7 @@
 
 #include <array>
 #include <list>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -37,13 +38,12 @@ TEST_F(ListCompoundIteratorTest,
   auto compound_child = CompoundShape{{}};
   auto compound = CompoundShape{{&compound_child}};
 
-  Iterator* itr = compound.createIterator(list_factory_);
+  auto itr = std::unique_ptr<Iterator>{compound.createIterator(list_factory_)};
   itr->first();
 
   ASSERT_EQ(&compound_child, itr->currentItem());
   itr->next();
   ASSERT_TRUE(itr->isDone());
-  delete itr;
 }
 
 TEST_F(ListCompoundIteratorOnFlatListTest, TestFirst) {
@@ -160,10 +160,6 @@ TEST_F(ListCompoundIteratorOnFlatArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
 class ListCompoundIteratorOnCompoundShapeTest
     : public ListCompoundIteratorTest {
  protected:
-  ~ListCompoundIteratorOnCompoundShapeTest() override {
-    delete list_itr_;
-  }
-
   /*
    *     compound_1
    *      /      \
@@ -178,7 +174,8 @@ class ListCompoundIteratorOnCompoundShapeTest
   CompoundShape level_two_compound_{
       {&rectangle_, &level_three_compound_, &triangle_}};
   CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
-  Iterator* list_itr_{level_one_compound_.createIterator(list_factory_)};
+  std::unique_ptr<Iterator> list_itr_{
+      level_one_compound_.createIterator(list_factory_)};
 
   std::string current_info_() const {
     return list_itr_->currentItem()->info();

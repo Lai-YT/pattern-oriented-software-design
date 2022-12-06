@@ -13,6 +13,12 @@ class ShapeBuilderTest : public ::testing::Test {
   const double DELTA = 0.001;
 
   ShapeBuilder builder_{};
+
+  void Delete_(const std::vector<Shape*> shapes) const {
+    for (auto&& s : shapes) {
+      delete s;
+    }
+  }
 };
 
 TEST_F(ShapeBuilderTest, TestBuildCircle) {
@@ -24,9 +30,7 @@ TEST_F(ShapeBuilderTest, TestBuildCircle) {
   ASSERT_NEAR(31.415, circle->perimeter(), DELTA);
   ASSERT_NEAR(78.539, circle->area(), DELTA);
 
-  for (auto&& s : shapes) {
-    delete s;
-  }
+  Delete_(shapes);
 }
 
 TEST_F(ShapeBuilderTest, TestBuildTriangle) {
@@ -40,9 +44,7 @@ TEST_F(ShapeBuilderTest, TestBuildTriangle) {
   ASSERT_NEAR(12, triangle->perimeter(), DELTA);
   ASSERT_NEAR(6, triangle->area(), DELTA);
 
-  for (auto&& s : shapes) {
-    delete s;
-  }
+  Delete_(shapes);
 }
 
 TEST_F(ShapeBuilderTest, TestBuildRectangle) {
@@ -54,9 +56,7 @@ TEST_F(ShapeBuilderTest, TestBuildRectangle) {
   ASSERT_NEAR(14, rectangle->perimeter(), DELTA);
   ASSERT_NEAR(12, rectangle->area(), DELTA);
 
-  for (auto&& s : shapes) {
-    delete s;
-  }
+  Delete_(shapes);
 }
 
 /* Builds a one-level compound shape which has 3 inner shape: a circle, a
@@ -81,9 +81,7 @@ TEST_F(ShapeBuilderTest, TestBuildCompoundShapeOfOneLevel) {
   ASSERT_NEAR(31.415 + 12 + 14, compound->perimeter(), DELTA);
   ASSERT_NEAR(78.539 + 6 + 12, compound->area(), DELTA);
 
-  for (auto&& s : shapes) {
-    delete s;
-  }
+  Delete_(shapes);
 }
 
 TEST_F(ShapeBuilderTest, TestBuildCompoundShapeOfTwoLevelAndNonCompoundShapes) {
@@ -116,7 +114,5 @@ TEST_F(ShapeBuilderTest, TestBuildCompoundShapeOfTwoLevelAndNonCompoundShapes) {
   EXPECT_NEAR(14, rectangle->perimeter(), DELTA);
   EXPECT_NEAR(12, rectangle->area(), DELTA);
 
-  for (auto&& s : shapes) {
-    delete s;
-  }
+  Delete_(shapes);
 }

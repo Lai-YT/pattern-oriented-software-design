@@ -2,6 +2,7 @@
 
 #include <array>
 #include <list>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -30,11 +31,10 @@ TEST_F(BFSCompoundIteratorTest,
        CreateIteratorFromEmptyCompoundShapeShouldIsDone) {
   auto compound = CompoundShape{{}};
 
-  Iterator* itr = compound.createIterator(bfs_factory_);
+  auto itr = std::unique_ptr<Iterator>{compound.createIterator(bfs_factory_)};
   itr->first();
 
   ASSERT_TRUE(itr->isDone());
-  delete itr;
 }
 
 TEST_F(BFSCompoundIteratorTest,
@@ -42,14 +42,12 @@ TEST_F(BFSCompoundIteratorTest,
   auto compound_child = CompoundShape{{}};
   auto compound = CompoundShape{{&compound_child}};
 
-  Iterator* itr = compound.createIterator(bfs_factory_);
+  auto itr = std::unique_ptr<Iterator>{compound.createIterator(bfs_factory_)};
   itr->first();
 
   ASSERT_EQ(&compound_child, itr->currentItem());
   itr->next();
   ASSERT_TRUE(itr->isDone());
-
-  delete itr;
 }
 
 class BFSCompoundIteratorOnFlatListTest : public BFSCompoundIteratorTest {
@@ -172,10 +170,6 @@ TEST_F(BFSCompoundIteratorOnFlatArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
 
 class BFSCompoundIteratorOnCompoundShapeTest : public BFSCompoundIteratorTest {
  protected:
-  ~BFSCompoundIteratorOnCompoundShapeTest() override {
-    delete bfs_itr_;
-  }
-
   /*
    *         com_1
    *      /         \
@@ -193,7 +187,8 @@ class BFSCompoundIteratorOnCompoundShapeTest : public BFSCompoundIteratorTest {
       {&level_three_compound_1_, &level_three_compound_2_, &triangle_}};
   CompoundShape level_one_compound_{
       {&level_two_compound_1_, &level_two_compound_2_}};
-  Iterator* bfs_itr_{level_one_compound_.createIterator(bfs_factory_)};
+  std::unique_ptr<Iterator> bfs_itr_{
+      level_one_compound_.createIterator(bfs_factory_)};
 
   std::string current_info_() const {
     return bfs_itr_->currentItem()->info();

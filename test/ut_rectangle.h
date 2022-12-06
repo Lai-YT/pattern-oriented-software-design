@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <memory>
 #include <set>
 #include <vector>
 
@@ -80,7 +81,7 @@ TEST_F(RectangleTest, GetPointsShouldReturnTheFourVertices) {
 }
 
 TEST_F(RectangleTest, GetPointsFromRotatedShouldReturnTheFourVertices) {
-  const Rectangle rectangle_{{{4, 0}, {0, 3}}, {{7, 4}, {4, 0}}};
+  const auto rectangle_ = Rectangle{{{4, 0}, {0, 3}}, {{7, 4}, {4, 0}}};
   const auto expected_vertices_carried_by_vector =
       std::vector<Point>{{4, 0}, {0, 3}, {7, 4}};
   const auto expected_derived_vertex = Point{3, 7};
@@ -118,31 +119,25 @@ TEST_F(RectanglePolymorphismTest,
        CreateIteratorWithBfsIteratorFactoryShouldIsDone) {
   const IteratorFactory* factory = IteratorFactory::getInstance("BFS");
 
-  Iterator* it = rectangle_.createIterator(factory);
+  auto it = std::unique_ptr<Iterator>{rectangle_.createIterator(factory)};
 
   ASSERT_TRUE(it->isDone());
-
-  delete it;
 }
 
 TEST_F(RectanglePolymorphismTest,
        CreateIteratorWithDfsIteratorFactoryShouldIsDone) {
   const IteratorFactory* factory = IteratorFactory::getInstance("DFS");
 
-  Iterator* it = rectangle_.createIterator(factory);
+  auto it = std::unique_ptr<Iterator>{rectangle_.createIterator(factory)};
 
   ASSERT_TRUE(it->isDone());
-
-  delete it;
 }
 
 TEST_F(RectanglePolymorphismTest,
        CreateIteratorWithListIteratorFactoryShouldIsDone) {
   const IteratorFactory* factory = IteratorFactory::getInstance("List");
 
-  Iterator* it = rectangle_.createIterator(factory);
+  auto it = std::unique_ptr<Iterator>{rectangle_.createIterator(factory)};
 
   ASSERT_TRUE(it->isDone());
-
-  delete it;
 }

@@ -2,6 +2,7 @@
 
 #include <array>
 #include <list>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -38,13 +39,12 @@ TEST_F(DFSCompoundIteratorTest,
   auto compound_child = CompoundShape{{}};
   auto compound = CompoundShape{{&compound_child}};
 
-  Iterator* itr = compound.createIterator(dfs_factory_);
+  auto itr = std::unique_ptr<Iterator>{compound.createIterator(dfs_factory_)};
   itr->first();
 
   ASSERT_EQ(&compound_child, itr->currentItem());
   itr->next();
   ASSERT_TRUE(itr->isDone());
-  delete itr;
 }
 
 TEST_F(DFSCompoundIteratorOnFlatListTest, TestFirst) {
@@ -160,10 +160,6 @@ TEST_F(DFSCompoundIteratorOnFlatArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
 
 class DFSCompoundIteratorOnCompoundShapeTest : public DFSCompoundIteratorTest {
  protected:
-  ~DFSCompoundIteratorOnCompoundShapeTest() override {
-    delete dfs_itr_;
-  }
-
   /*
    *     compound_1
    *      /      \
@@ -178,7 +174,8 @@ class DFSCompoundIteratorOnCompoundShapeTest : public DFSCompoundIteratorTest {
   CompoundShape level_two_compound_{
       {&rectangle_, &level_three_compound_, &triangle_}};
   CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
-  Iterator* dfs_itr_{level_one_compound_.createIterator(dfs_factory_)};
+  std::unique_ptr<Iterator> dfs_itr_{
+      level_one_compound_.createIterator(dfs_factory_)};
 
   std::string current_info_() const {
     return dfs_itr_->currentItem()->info();
