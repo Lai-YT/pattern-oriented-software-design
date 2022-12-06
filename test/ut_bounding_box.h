@@ -8,13 +8,12 @@
 
 class BoundingBoxTest : public ::testing::Test {
  protected:
-  BoundingBox bounding_box_{{Point{153, 183}, Point{127, 196}, Point{143, 140},
-                             Point{108, 120}, Point{190, 121}}};
+  BoundingBox bounding_box_{
+      {{153, 183}, {127, 196}, {143, 140}, {108, 120}, {190, 121}}};
 };
 
 TEST_F(BoundingBoxTest, CreateBoundingBoxWithNoPointsShouldThrowRuntimeError) {
-  ASSERT_THROW({ BoundingBox(std::set<Point>{/* empty set */}); },
-               std::runtime_error);
+  ASSERT_THROW({ BoundingBox({/* empty set */}); }, std::runtime_error);
 }
 
 TEST_F(BoundingBoxTest, TestUpperRight) {
@@ -34,22 +33,19 @@ TEST_F(BoundingBoxTest, TestLowerLeftPointerAliasMin) {
 }
 
 TEST_F(BoundingBoxTest, TestCollideShouldBeTrueIfOverlapped) {
-  auto points = std::set<Point>{Point{150, 170}, Point{210, 180}};
-  auto bb = BoundingBox{points};
+  auto bb = BoundingBox{{{150, 170}, {210, 180}}};
 
   ASSERT_TRUE(bounding_box_.collide(&bb));
 }
 
 TEST_F(BoundingBoxTest, TestCollideShouldBeShouldTrueIfAdjacentOutside) {
-  auto points = std::set<Point>{Point{190, 170}, Point{210, 300}};
-  auto bb = BoundingBox{points};
+  auto bb = BoundingBox{{{190, 170}, {210, 300}}};
 
   ASSERT_TRUE(bounding_box_.collide(&bb));
 }
 
 TEST_F(BoundingBoxTest, TestCollideShouldBeShouldTrueIfAdjacentInside) {
-  auto points = std::set<Point>{Point{180, 196}, Point{130, 130}};
-  auto bb = BoundingBox{points};
+  auto bb = BoundingBox{{{180, 196}, {130, 130}}};
 
   ASSERT_TRUE(bounding_box_.collide(&bb));
 }
