@@ -42,28 +42,13 @@ TEST_F(CircleTest, DeleteShapeShouldThrowException) {
 }
 
 TEST_F(CircleTest, GetPointsShouldReturnUpperRightAndLowerLeft) {
-  const std::set<const Point*> bounding_points = circle_.getPoints();
-
-  /* the key comparison used by set are the memory positions.
-   * Our comparison can't relay on that since we don't know where the points
-   * should be. A workaround is to traverse the set and dump the points
-   * into another set which compares with value. */
-  const auto bounding_points_with_value_as_compare =
-      std::set<const Point*, std::function<bool(const Point*, const Point*)>>{
-          bounding_points.begin(), bounding_points.end(),
-          [](const Point* p1, const Point* p2) {
-            return p1->info() < p2->info();
-          }};
+  const std::set<Point> bounding_points = circle_.getPointsXX();
   const auto upper_right = Point{6, 7};
   const auto lower_left = Point{-4, -3};
+
   ASSERT_EQ(2, bounding_points.size());
-  ASSERT_TRUE(bounding_points_with_value_as_compare.find(&upper_right) !=
-              bounding_points_with_value_as_compare.end());
-  ASSERT_TRUE(bounding_points_with_value_as_compare.find(&lower_left) !=
-              bounding_points_with_value_as_compare.end());
-  for (const Point* p : bounding_points) {
-    delete p;
-  }
+  ASSERT_TRUE(bounding_points.find(upper_right) != bounding_points.end());
+  ASSERT_TRUE(bounding_points.find(lower_left) != bounding_points.end());
 }
 
 class CirclePolymorphismTest : public CircleTest {

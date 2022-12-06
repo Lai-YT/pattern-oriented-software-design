@@ -52,6 +52,15 @@ class Circle : public Shape {
     return {upper_right, lower_left};
   }
 
+  std::set<Point> getPointsXX() const override {
+    const auto upper_right =
+        Point{center_().x() + radius(), center_().y() + radius()};
+    const auto lower_left =
+        Point{center_().x() - radius(), center_().y() - radius()};
+
+    return {upper_right, lower_left};
+  }
+
   Iterator* createIterator(const IteratorFactory* const factory) override {
     return factory->createIterator();
   }
