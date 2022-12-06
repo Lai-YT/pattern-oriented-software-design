@@ -16,36 +16,12 @@
 #include "../../src/two_dimensional_vector.h"
 
 class ListCompoundIteratorTest : public ::testing::Test {
- private:
-  const Point circle_vector_head_{1, 2};
-  const Point circle_vector_tail_{-3, 5};
-  const TwoDimensionalVector circle_vector_{&circle_vector_head_,
-                                            &circle_vector_tail_};
-  const Point rectangle_vector_head_1_{0, 0};
-  const Point rectangle_vector_tail_1_{3, 0};
-  const TwoDimensionalVector rectangle_vector_1{&rectangle_vector_head_1_,
-                                                &rectangle_vector_tail_1_};
-  const Point rectangle_vector_head_2_{0, 0};
-  const Point rectangle_vector_tail_2_{0, 4};
-  const TwoDimensionalVector rectangle_vector_2{&rectangle_vector_head_2_,
-                                                &rectangle_vector_tail_2_};
-  const Point triangle_vector_head_1_{0, 0};
-  const Point triangle_vector_tail_1_{3, 0};
-  const TwoDimensionalVector triangle_vector_1_{&triangle_vector_head_1_,
-                                                &triangle_vector_tail_1_};
-  const Point triangle_vector_head_2_{3, 4};
-  const Point triangle_vector_tail_2_{3, 0};
-  const TwoDimensionalVector triangle_vector_2_{&triangle_vector_head_2_,
-                                                &triangle_vector_tail_2_};
-
-  /* protected after private because non-static data members are initialized in
-   * order of declaration in the class definition. */
  protected:
   const double DELTA = 0.001;
 
-  Circle circle_{&circle_vector_};
-  Rectangle rectangle_{&rectangle_vector_1, &rectangle_vector_2};
-  Triangle triangle_{&triangle_vector_1_, &triangle_vector_2_};
+  Circle circle_{{{1, 2}, {-3, 5}}};
+  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
   IteratorFactory* list_factory_ = IteratorFactory::getInstance("List");
 };
 
