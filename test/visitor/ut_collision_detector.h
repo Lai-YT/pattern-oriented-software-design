@@ -12,81 +12,17 @@
 #include "../../src/visitor/collision_detector.h"
 
 class CollisionDetectorTest : public ::testing::Test {
- protected:
  private:
-  Point upper_right_{1, 5};
-  Point lower_left_{-3, 2};
-  const Point to_detect_with_vector_head_1_{1, 2};
-  const Point to_detect_with_vector_tail_1_{upper_right_};
-  const TwoDimensionalVector to_detect_with_vector_1_{
-      &to_detect_with_vector_head_1_, &to_detect_with_vector_tail_1_};
-  const Point to_detect_with_vector_head_2_{1, 2};
-  const Point to_detect_with_vector_tail_2_{lower_left_};
-  const TwoDimensionalVector to_detect_with_vector_2_{
-      &to_detect_with_vector_head_2_, &to_detect_with_vector_tail_2_};
-  const Triangle shape_to_detect_with_{&to_detect_with_vector_1_,
-                                       &to_detect_with_vector_2_};
-
-  const Point collided_circle_vector_head_{1, 2};
-  const Point collided_circle_vector_tail_{-3, 5};
-  const TwoDimensionalVector collided_circle_vector_{
-      &collided_circle_vector_head_, &collided_circle_vector_tail_};
-
-  const Point uncollided_circle_vector_head_{10, 20};
-  const Point uncollided_circle_vector_tail_{13, 16};
-  const TwoDimensionalVector uncollided_circle_vector_{
-      &uncollided_circle_vector_head_, &uncollided_circle_vector_tail_};
-
-  const Point collided_triangle_vector_head_1_{0, 0};
-  const Point collided_triangle_vector_tail_1_{3, 0};
-  const TwoDimensionalVector collided_triangle_vector_1_{
-      &collided_triangle_vector_head_1_, &collided_triangle_vector_tail_1_};
-  const Point collided_triangle_vector_head_2_{3, 4};
-  const Point collided_triangle_vector_tail_2_{3, 0};
-  const TwoDimensionalVector collided_triangle_vector_2_{
-      &collided_triangle_vector_head_2_, &collided_triangle_vector_tail_2_};
-
-  const Point uncollided_triangle_vector_head_1_{10, 10};
-  const Point uncollided_triangle_vector_tail_1_{13, 10};
-  const TwoDimensionalVector uncollided_triangle_vector_1_{
-      &uncollided_triangle_vector_head_1_, &uncollided_triangle_vector_tail_1_};
-  const Point uncollided_triangle_vector_head_2_{13, 14};
-  const Point uncollided_triangle_vector_tail_2_{13, 10};
-  const TwoDimensionalVector uncollided_triangle_vector_2_{
-      &uncollided_triangle_vector_head_2_, &uncollided_triangle_vector_tail_2_};
-
-  const Point collided_rectangle_vector_head_1_{0, 0};
-  const Point collided_rectangle_vector_tail_1_{3, 0};
-  const TwoDimensionalVector collided_rectangle_vector_1_{
-      &collided_rectangle_vector_head_1_, &collided_rectangle_vector_tail_1_};
-  const Point collided_rectangle_vector_head_2_{0, 0};
-  const Point collided_rectangle_vector_tail_2_{0, 4};
-  const TwoDimensionalVector collided_rectangle_vector_2_{
-      &collided_rectangle_vector_head_2_, &collided_rectangle_vector_tail_2_};
-
-  const Point uncollided_rectangle_vector_head_1_{10, 10};
-  const Point uncollided_rectangle_vector_tail_1_{13, 10};
-  const TwoDimensionalVector uncollided_rectangle_vector_1_{
-      &uncollided_rectangle_vector_head_1_,
-      &uncollided_rectangle_vector_tail_1_};
-  const Point uncollided_rectangle_vector_head_2_{10, 10};
-  const Point uncollided_rectangle_vector_tail_2_{10, 14};
-  const TwoDimensionalVector uncollided_rectangle_vector_2_{
-      &uncollided_rectangle_vector_head_2_,
-      &uncollided_rectangle_vector_tail_2_};
+  const Triangle shape_to_detect_with_{{{1, 2}, {1, 5}}, {{1, 2}, {-3, 2}}};
 
  protected:
   CollisionDetector detector_{&shape_to_detect_with_};
-  Circle collided_circle_{&collided_circle_vector_};
-  Circle uncollided_circle_{&uncollided_circle_vector_};
-  Triangle collided_triangle_{&collided_triangle_vector_1_,
-                              &collided_triangle_vector_2_};
-  Triangle uncollided_triangle_{&uncollided_triangle_vector_1_,
-                                &uncollided_triangle_vector_2_};
-  Rectangle collided_rectangle_{&collided_rectangle_vector_1_,
-                                &collided_rectangle_vector_2_};
-  Rectangle uncollided_rectangle_{&uncollided_rectangle_vector_1_,
-                                  &uncollided_rectangle_vector_2_};
+  Circle collided_circle_{{{1, 2}, {-3, 5}}};
+  Circle uncollided_circle_{{{10, 20}, {13, 16}}};
+  Triangle collided_triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
+  Triangle uncollided_triangle_{{{10, 10}, {13, 10}}, {{13, 14}, {13, 10}}};
+  Rectangle collided_rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Rectangle uncollided_rectangle_{{{10, 10}, {13, 10}}, {{10, 10}, {10, 14}}};
 };
 
 TEST_F(CollisionDetectorTest,

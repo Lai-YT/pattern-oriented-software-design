@@ -51,7 +51,7 @@ TEST_F(RectangleTest, PassingSidesWithNoCommonPointShouldThrowException) {
   const auto vector_1 = TwoDimensionalVector{{1, 0}, {3, 0}};
   const auto vector_2 = TwoDimensionalVector{{0, 0}, {0, 4}};
 
-  ASSERT_THROW({ const auto rectangle = Rectangle(&vector_1, &vector_2); },
+  ASSERT_THROW({ const auto rectangle = Rectangle(vector_1, vector_2); },
                Rectangle::NoCommonPointException);
 }
 

@@ -35,7 +35,7 @@ TEST_F(TriangleTest, PassingVectorsWithNoCommonPointShouldThrowException) {
   const auto vector_1 = TwoDimensionalVector{{0, 0}, {4, 0}};
   const auto vector_2 = TwoDimensionalVector{{3, 4}, {3, 0}};
 
-  ASSERT_THROW({ const auto triangle = Triangle(&vector_1, &vector_2); },
+  ASSERT_THROW({ const auto triangle = Triangle(vector_1, vector_2); },
                Triangle::NoCommonPointException);
 }
 
@@ -43,7 +43,7 @@ TEST_F(TriangleTest, PassingParallelVectorsShouldThrowException) {
   const auto vector_1 = TwoDimensionalVector{{0, 0}, {4, 0}};
   const auto vector_2 = TwoDimensionalVector{{4, 0}, {5, 0}};
 
-  ASSERT_THROW({ const auto triangle = Triangle(&vector_1, &vector_2); },
+  ASSERT_THROW({ const auto triangle = Triangle(vector_1, vector_2); },
                Triangle::ParallelSideException);
 }
 

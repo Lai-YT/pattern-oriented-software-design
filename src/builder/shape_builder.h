@@ -21,33 +21,12 @@ bool IsOrthogonal(const TwoDimensionalVector& v1,
 
 class ShapeBuilder {
  public:
-  /* Does not take the ownership of points. */
-  void buildCircle(const Point* center, const Point* on_circle) {
-    auto vector = new TwoDimensionalVector{center, on_circle};
-    DeleteLater_(vector);
-    auto* result = new Circle{vector};
-    CompleteBuiltOf_(result);
-  }
-
   void buildCircle(const Point& center, const Point& on_circle) {
     auto* result = new Circle{{center, on_circle}};
     CompleteBuiltOf_(result);
   }
 
-  /**
-   * Builds a triangle with v1, v2, v3 as the three vertices.
-   *
-   * Does not take the ownership of points.
-   */
-  void buildTriangle(const Point* v1, const Point* v2, const Point* v3) {
-    auto vec1 = new TwoDimensionalVector{v1, v2};
-    auto vec2 = new TwoDimensionalVector{v1, v3};
-    DeleteLater_(vec1);
-    DeleteLater_(vec2);
-    auto* result = new Triangle{vec1, vec2};
-    CompleteBuiltOf_(result);
-  }
-
+  /** Builds a triangle with v1, v2, v3 as the three vertices. */
   void buildTriangle(const Point& v1, const Point& v2, const Point& v3) {
     auto* result = new Triangle{{v1, v2}, {v1, v3}};
     CompleteBuiltOf_(result);
@@ -56,16 +35,7 @@ class ShapeBuilder {
   /**
    * Builds a triangle with v1, v2, v3 as the three vertices,
    * the fourth is deduced.
-   *
-   * Does not take the ownership of points.
    */
-  void buildRectangle(const Point* v1, const Point* v2, const Point* v3) {
-    std::array<const TwoDimensionalVector*, 2> sides =
-        MakeOrthogonalSides_(v1, v2, v3);
-    auto result = new Rectangle{sides.at(0), sides.at(1)};
-    CompleteBuiltOf_(result);
-  }
-
   void buildRectangle(const Point& v1, const Point& v2, const Point& v3) {
     std::array<const TwoDimensionalVector*, 2> sides =
         MakeOrthogonalSides_(&v1, &v2, &v3);

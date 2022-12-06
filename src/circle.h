@@ -15,8 +15,6 @@
 class Circle : public Shape {
  public:
   /** The length of the vector is the radius of the circle. */
-  Circle(const TwoDimensionalVector* const vector) : Circle{*vector} {}
-
   Circle(const TwoDimensionalVector& vector) : represent_vector_{vector} {}
 
   double area() const override {

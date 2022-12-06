@@ -16,10 +16,6 @@
 
 class Triangle : public Shape {
  public:
-  Triangle(const TwoDimensionalVector* const side_1,
-           const TwoDimensionalVector* const side_2)
-      : Triangle{*side_1, *side_2} {}
-
   Triangle(const TwoDimensionalVector& side_1,
            const TwoDimensionalVector& side_2)
       : side_1_{side_1},
