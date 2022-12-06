@@ -7,7 +7,7 @@ class TwoDimensionalVectorTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  const TwoDimensionalVector vector_{Point{2, -3}, Point{-3, 2}};
+  const TwoDimensionalVector vector_{{2, -3}, {-3, 2}};
 };
 
 TEST_F(TwoDimensionalVectorTest, CheckHeadTailSetProperlyByConstructor) {
@@ -25,46 +25,46 @@ TEST_F(TwoDimensionalVectorTest, TestInfo) {
 }
 
 TEST_F(TwoDimensionalVectorTest, TestLength) {
-  const auto vector = TwoDimensionalVector{Point{1, -1}, Point{0, 0}};
+  const auto vector = TwoDimensionalVector{{1, -1}, {0, 0}};
 
   ASSERT_NEAR(1.414, vector.length(), DELTA);
 }
 
 TEST_F(TwoDimensionalVectorTest, TestDot) {
-  const auto vector = TwoDimensionalVector{Point{3, -1}, Point{0, 0}};
+  const auto vector = TwoDimensionalVector{{3, -1}, {0, 0}};
 
   ASSERT_NEAR(20, vector.dot(&vector_), DELTA);
 }
 
 TEST_F(TwoDimensionalVectorTest, TestCrossProduct) {
-  const auto vector_1 = TwoDimensionalVector{Point{0, 0}, Point{4, 5}};
-  const auto vector_2 = TwoDimensionalVector{Point{0, 0}, Point{-3, 2}};
+  const auto vector_1 = TwoDimensionalVector{{0, 0}, {4, 5}};
+  const auto vector_2 = TwoDimensionalVector{{0, 0}, {-3, 2}};
 
   ASSERT_NEAR(23, vector_1.cross(&vector_2), DELTA);
 }
 
 TEST_F(TwoDimensionalVectorTest, TestCrossProductAngleOverPi) {
-  const auto vector_1 = TwoDimensionalVector{Point{0, 0}, Point{4, 5}};
-  const auto vector_2 = TwoDimensionalVector{Point{0, 0}, Point{-3, -10}};
+  const auto vector_1 = TwoDimensionalVector{{0, 0}, {4, 5}};
+  const auto vector_2 = TwoDimensionalVector{{0, 0}, {-3, -10}};
 
   ASSERT_NEAR(-25, vector_1.cross(&vector_2), DELTA);
 }
 
 TEST(VectorHelperTest, HasCommonPointWithVector) {
-  const auto vector = TwoDimensionalVector{Point{4, 5}, Point{0, 0}};
+  const auto vector = TwoDimensionalVector{{4, 5}, {0, 0}};
 
-  ASSERT_TRUE(HasCommonPointWithVector(Point{4, 5}, vector));
+  ASSERT_TRUE(HasCommonPointWithVector({4, 5}, vector));
 }
 
 TEST(VectorHelperTest, HasNoCommonPointWithVector) {
-  const auto vector = TwoDimensionalVector{Point{4, 5}, Point{0, 0}};
+  const auto vector = TwoDimensionalVector{{4, 5}, {0, 0}};
 
-  ASSERT_FALSE(HasCommonPointWithVector(Point{5, 4}, vector));
+  ASSERT_FALSE(HasCommonPointWithVector({5, 4}, vector));
 }
 
 TEST(VectorHelperTest, FindCommonPointOfVectors) {
-  const auto vector_1 = TwoDimensionalVector{Point{4, 5}, Point{0, 0}};
-  const auto vector_2 = TwoDimensionalVector{Point{0, 0}, Point{-3, -10}};
+  const auto vector_1 = TwoDimensionalVector{{4, 5}, {0, 0}};
+  const auto vector_2 = TwoDimensionalVector{{0, 0}, {-3, -10}};
   const auto expect_common_point = Point{0, 0};
 
   const auto actual_common_point =
@@ -75,8 +75,8 @@ TEST(VectorHelperTest, FindCommonPointOfVectors) {
 
 TEST(VectorHelperTest,
      FindCommonPointOfVectorsShouldReturnNullIfNoCommonPoint) {
-  const auto vector_1 = TwoDimensionalVector{Point{1, 2}, Point{-3, -4}};
-  const auto vector_2 = TwoDimensionalVector{Point{0, 0}, Point{-3, -10}};
+  const auto vector_1 = TwoDimensionalVector{{1, 2}, {-3, -4}};
+  const auto vector_2 = TwoDimensionalVector{{0, 0}, {-3, -10}};
 
   ASSERT_TRUE(FindCommonPointOfVectors(vector_1, vector_2) == nullptr);
 }
