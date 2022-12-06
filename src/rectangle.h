@@ -16,34 +16,38 @@ class Rectangle : public Shape {
  public:
   Rectangle(const TwoDimensionalVector* const length_side,
             const TwoDimensionalVector* const width_side)
+      : Rectangle{*length_side, *width_side} {}
+
+  Rectangle(const TwoDimensionalVector& length_side,
+            const TwoDimensionalVector& width_side)
       : length_side_{length_side}, width_side_{width_side} {
-    if (length_side_->dot(width_side_)) {
+    if (length_side_.dot(width_side_)) {
       throw NonOrthogonalSideException{"sides should be orthogonal"};
     }
-    if (FindCommonPointOfVectors(*length_side_, *width_side_) == nullptr) {
+    if (FindCommonPointOfVectors(length_side_, width_side_) == nullptr) {
       throw NoCommonPointException{"sides should intersect at one end"};
     }
   }
 
   double area() const override {
-    return length_side_->length() * width_side_->length();
+    return length_side_.length() * width_side_.length();
   }
 
   double perimeter() const override {
-    return (length_side_->length() + width_side_->length()) * 2;
+    return (length_side_.length() + width_side_.length()) * 2;
   }
 
   std::string info() const override {
-    return "Rectangle (" + length_side_->info() + ", " + width_side_->info() +
+    return "Rectangle (" + length_side_.info() + ", " + width_side_.info() +
            ")";
   }
 
   double length() const {
-    return length_side_->length();
+    return length_side_.length();
   }
 
   double width() const {
-    return width_side_->length();
+    return width_side_.length();
   }
 
   /**
@@ -55,11 +59,11 @@ class Rectangle : public Shape {
   std::set<const Point*> getPoints() const override {
     /* Three of the vertices are held by the under-laying vectors
        while the forth has to be derived. */
-    const Point common = *FindCommonPointOfVectors(*length_side_, *width_side_);
+    const Point common = *FindCommonPointOfVectors(length_side_, width_side_);
     const Point uncommon_in_length =
-        *FindUncommonPointFromVector(*length_side_, common);
+        *FindUncommonPointFromVector(length_side_, common);
     const Point uncommon_in_width =
-        *FindUncommonPointFromVector(*width_side_, common);
+        *FindUncommonPointFromVector(width_side_, common);
     return {new Point{common}, new Point{uncommon_in_length},
             new Point{uncommon_in_width},
             new Point{DeriveTheForthVertex_(common, uncommon_in_length,
@@ -83,8 +87,8 @@ class Rectangle : public Shape {
   };
 
  private:
-  const TwoDimensionalVector* length_side_;
-  const TwoDimensionalVector* width_side_;
+  TwoDimensionalVector length_side_;
+  TwoDimensionalVector width_side_;
 
   Point DeriveTheForthVertex_(const Point& common, const Point& uncommon_1,
                               const Point& uncommon_2) const {

@@ -11,18 +11,10 @@
 #include "../src/two_dimensional_vector.h"
 
 class RectangleTest : public ::testing::Test {
- private:
-  const Point vector_head_1_{0, 0};
-  const Point vector_tail_1_{3, 0};
-  const TwoDimensionalVector vector_1_{&vector_head_1_, &vector_tail_1_};
-  const Point vector_head_2_{0, 0};
-  const Point vector_tail_2_{0, 4};
-  const TwoDimensionalVector vector_2_{&vector_head_2_, &vector_tail_2_};
-
  protected:
   const double DELTA = 0.001;
 
-  Rectangle rectangle_{&vector_1_, &vector_2_};
+  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
 };
 
 TEST_F(RectangleTest, TestLength) {
@@ -48,25 +40,17 @@ TEST_F(RectangleTest, TestPerimeter) {
   ASSERT_NEAR(14, rectangle_.perimeter(), DELTA);
 }
 
-TEST_F(RectangleTest, PassingNonOrthognalSidesShouldThrowException) {
-  const auto vector_head_1 = Point{0, 0};
-  const auto vector_tail_1 = Point{3, 1};
-  const auto vector_1 = TwoDimensionalVector{&vector_head_1, &vector_tail_1};
-  const auto vector_head_2 = Point{0, 0};
-  const auto vector_tail_2 = Point{0, 4};
-  const auto vector_2 = TwoDimensionalVector{&vector_head_2, &vector_tail_2};
+TEST_F(RectangleTest, PassingNonOrthogonalSidesShouldThrowException) {
+  const auto vector_1 = TwoDimensionalVector{{0, 0}, {3, 1}};
+  const auto vector_2 = TwoDimensionalVector{{0, 0}, {0, 4}};
 
-  ASSERT_THROW({ const auto rectangle = Rectangle(&vector_1, &vector_2); },
+  ASSERT_THROW({ const auto rectangle = Rectangle(vector_1, vector_2); },
                Rectangle::NonOrthogonalSideException);
 }
 
 TEST_F(RectangleTest, PassingSidesWithNoCommonPointShouldThrowException) {
-  const auto vector_head_1 = Point{1, 0};
-  const auto vector_tail_1 = Point{3, 0};
-  const auto vector_1 = TwoDimensionalVector{&vector_head_1, &vector_tail_1};
-  const auto vector_head_2 = Point{0, 0};
-  const auto vector_tail_2 = Point{0, 4};
-  const auto vector_2 = TwoDimensionalVector{&vector_head_2, &vector_tail_2};
+  const auto vector_1 = TwoDimensionalVector{{1, 0}, {3, 0}};
+  const auto vector_2 = TwoDimensionalVector{{0, 0}, {0, 4}};
 
   ASSERT_THROW({ const auto rectangle = Rectangle(&vector_1, &vector_2); },
                Rectangle::NoCommonPointException);
@@ -111,13 +95,7 @@ TEST_F(RectangleTest, GetPointsShouldReturnTheFourVertices) {
 }
 
 TEST_F(RectangleTest, GetPointsFromRotatedShouldReturnTheFourVertices) {
-  const Point vector_head_1 = Point{4, 0};
-  const Point vector_tail_1 = Point{0, 3};
-  const TwoDimensionalVector vector_1{&vector_head_1, &vector_tail_1};
-  const Point vector_head_2 = Point{7, 4};
-  const Point vector_tail_2 = Point{4, 0};
-  const TwoDimensionalVector vector_2{&vector_head_2, &vector_tail_2};
-  const Rectangle rectangle_{&vector_1, &vector_2};
+  const Rectangle rectangle_{{{4, 0}, {0, 3}}, {{7, 4}, {4, 0}}};
 
   const std::set<const Point*> vertices = rectangle_.getPoints();
 
