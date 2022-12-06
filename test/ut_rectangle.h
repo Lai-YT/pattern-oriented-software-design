@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <functional>
 #include <set>
 #include <vector>
 
