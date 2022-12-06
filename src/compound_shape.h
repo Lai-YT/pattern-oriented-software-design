@@ -54,11 +54,11 @@ class CompoundShape : public Shape {
   }
 
   /** Returns all vertices of the shapes contained by compound shape. */
-  std::set<Point> getPointsXX() const override {
+  std::set<Point> getPoints() const override {
     auto vertices = std::set<Point>{};
     for (const auto* shape : shapes_) {
       /* NOTE: use std::set::merge if C++17 is supported */
-      for (const Point vertex : shape->getPointsXX()) {
+      for (const Point vertex : shape->getPoints()) {
         vertices.insert(vertex);
       }
     }

@@ -56,7 +56,7 @@ class ClosestShapeFinder : public ShapeVisitor {
     assert(target_shape_is_compound);
     parent_of_current_closest_ = dynamic_cast<CompoundShape*>(target_shape_);
 
-    auto box_of_shape = BoundingBox{shape->getPointsXX()};
+    auto box_of_shape = BoundingBox{shape->getPoints()};
     IteratorFactory* factory = IteratorFactory::getInstance("BFS");
     double min_distance = 10000; /* FIXME: bad hack on infinity */
     /* track parent with an additional pointer */
@@ -64,7 +64,7 @@ class ClosestShapeFinder : public ShapeVisitor {
     auto itr =
         std::unique_ptr<Iterator>{target_shape_->createIterator(factory)};
     for (itr->first(); !itr->isDone(); itr->next()) {
-      auto box_of_target = BoundingBox{itr->currentItem()->getPointsXX()};
+      auto box_of_target = BoundingBox{itr->currentItem()->getPoints()};
       double distance = box_of_shape.distance(&box_of_target);
       if (distance < min_distance) {
         min_distance = distance;

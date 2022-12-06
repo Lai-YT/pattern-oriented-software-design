@@ -51,7 +51,7 @@ class Rectangle : public Shape {
   }
 
   /** Returns the four vertices of the rectangle. */
-  std::set<Point> getPointsXX() const override {
+  std::set<Point> getPoints() const override {
     /* Three of the vertices are held by the under-laying vectors
        while the forth has to be derived. */
     const Point common = *FindCommonPointOfVectors(length_side_, width_side_);

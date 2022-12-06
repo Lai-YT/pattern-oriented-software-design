@@ -19,7 +19,7 @@
 class CollisionDetector : public ShapeVisitor {
  public:
   CollisionDetector(const Shape* const to_detect_with)
-      : bounding_box_{to_detect_with->getPointsXX()} {}
+      : bounding_box_{to_detect_with->getPoints()} {}
 
   void visitCircle(Circle* const circle) override {
     VisitNonCompoundShape_(circle);
@@ -34,7 +34,7 @@ class CollisionDetector : public ShapeVisitor {
   }
 
   virtual void visitCompoundShape(CompoundShape* const compound) override {
-    const auto bounding_box_to_detect = BoundingBox{compound->getPointsXX()};
+    const auto bounding_box_to_detect = BoundingBox{compound->getPoints()};
     if (bounding_box_.collide(&bounding_box_to_detect)) {
       IteratorFactory* factory = IteratorFactory::getInstance("List");
       auto itr = std::unique_ptr<Iterator>{compound->createIterator(factory)};
@@ -54,7 +54,7 @@ class CollisionDetector : public ShapeVisitor {
 
   void VisitNonCompoundShape_(Shape* non_compound_shape) {
     const auto bounding_box_to_detect =
-        BoundingBox{non_compound_shape->getPointsXX()};
+        BoundingBox{non_compound_shape->getPoints()};
     if (bounding_box_.collide(&bounding_box_to_detect)) {
       collided_shapes_.push_back(non_compound_shape);
     }

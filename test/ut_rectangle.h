@@ -71,7 +71,7 @@ TEST_F(RectangleTest, GetPointsShouldReturnTheFourVertices) {
       std::vector<Point>{{0, 0}, {3, 0}, {0, 4}};
   const auto expected_derived_vertex = Point{3, 4};
 
-  const std::set<Point> vertices = rectangle_.getPointsXX();
+  const std::set<Point> vertices = rectangle_.getPoints();
 
   ASSERT_EQ(4, vertices.size());
   for (const Point& vertex : expected_vertices_carried_by_vector) {
@@ -86,7 +86,7 @@ TEST_F(RectangleTest, GetPointsFromRotatedShouldReturnTheFourVertices) {
       std::vector<Point>{{4, 0}, {0, 3}, {7, 4}};
   const auto expected_derived_vertex = Point{3, 7};
 
-  const std::set<Point> vertices = rectangle_.getPointsXX();
+  const std::set<Point> vertices = rectangle_.getPoints();
 
   ASSERT_EQ(4, vertices.size());
   for (const Point& vertex : expected_vertices_carried_by_vector) {

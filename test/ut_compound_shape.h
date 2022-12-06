@@ -277,7 +277,7 @@ TEST_F(CompoundShapeDepthTwoTest,
       {0, 0}, {3, 0},   {3, 4},         /* triangle */
   };
 
-  const std::set<Point> vertices = level_one_compound_.getPointsXX();
+  const std::set<Point> vertices = level_one_compound_.getPoints();
 
   ASSERT_EQ(6, vertices.size()); /* no duplicates */
   for (const Point& vertex : expected_vertices) {

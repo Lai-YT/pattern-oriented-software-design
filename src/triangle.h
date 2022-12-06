@@ -50,7 +50,7 @@ class Triangle : public Shape {
   }
 
   /** Returns the three vertices of the triangle. */
-  std::set<Point> getPointsXX() const override {
+  std::set<Point> getPoints() const override {
     const Point common_between_side_1_and_2 =
         *FindCommonPointOfVectors(side_1_, side_2_);
     const Point uncommon_in_side_2_with_side_1 =

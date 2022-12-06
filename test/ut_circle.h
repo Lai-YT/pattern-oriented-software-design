@@ -42,7 +42,7 @@ TEST_F(CircleTest, DeleteShapeShouldThrowException) {
 }
 
 TEST_F(CircleTest, GetPointsShouldReturnUpperRightAndLowerLeft) {
-  const std::set<Point> bounding_points = circle_.getPointsXX();
+  const std::set<Point> bounding_points = circle_.getPoints();
   const auto upper_right = Point{6, 7};
   const auto lower_left = Point{-4, -3};
 

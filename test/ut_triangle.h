@@ -59,7 +59,7 @@ TEST_F(TriangleTest, DeleteShapeShouldThrowException) {
 }
 
 TEST_F(TriangleTest, GetPointsShouldReturnTheThreeVertices) {
-  const std::set<Point> vertices = triangle_.getPointsXX();
+  const std::set<Point> vertices = triangle_.getPoints();
   const auto expected_vertices = std::vector<Point>{{0, 0}, {3, 0}, {3, 4}};
 
   ASSERT_EQ(3, vertices.size());

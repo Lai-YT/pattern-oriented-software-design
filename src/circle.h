@@ -39,7 +39,7 @@ class Circle : public Shape {
    * Returns the upper right and lower left points which represent the bounding
    * box of the circle.
    */
-  std::set<Point> getPointsXX() const override {
+  std::set<Point> getPoints() const override {
     const auto upper_right =
         Point{center_().x() + radius(), center_().y() + radius()};
     const auto lower_left =
