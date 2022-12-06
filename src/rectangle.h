@@ -4,6 +4,7 @@
 #include <set>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 #include "iterator/factory/iterator_factory.h"
 #include "iterator/iterator.h"
@@ -24,7 +25,7 @@ class Rectangle : public Shape {
     if (length_side_.dot(width_side_)) {
       throw NonOrthogonalSideException{"sides should be orthogonal"};
     }
-    if (FindCommonPointOfVectors(length_side_, width_side_) == nullptr) {
+    if (!FindCommonPointOfVectors(length_side_, width_side_).first) {
       throw NoCommonPointException{"sides should intersect at one end"};
     }
   }
@@ -54,14 +55,17 @@ class Rectangle : public Shape {
   std::set<Point> getPoints() const override {
     /* Three of the vertices are held by the under-laying vectors
        while the forth has to be derived. */
-    const Point common = *FindCommonPointOfVectors(length_side_, width_side_);
+    const Point common =
+        FindCommonPointOfVectors(length_side_, width_side_).second;
     const Point uncommon_in_length =
-        *FindUncommonPointFromVector(length_side_, common);
+        FindUncommonPointFromVector(length_side_, common).second;
     const Point uncommon_in_width =
-        *FindUncommonPointFromVector(width_side_, common);
-    return {Point{common}, Point{uncommon_in_length}, Point{uncommon_in_width},
-            Point{DeriveTheForthVertex_(common, uncommon_in_length,
-                                        uncommon_in_width)}};
+        FindUncommonPointFromVector(width_side_, common).second;
+    return {
+        {common},
+        {uncommon_in_length},
+        {uncommon_in_width},
+        {DeriveTheForthVertex_(common, uncommon_in_length, uncommon_in_width)}};
   }
 
   Iterator* createIterator(const IteratorFactory* const factory) {

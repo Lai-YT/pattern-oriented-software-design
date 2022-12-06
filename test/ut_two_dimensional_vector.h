@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <utility>
+
 #include "../src/point.h"
 #include "../src/two_dimensional_vector.h"
 
@@ -16,8 +18,8 @@ TEST_F(TwoDimensionalVectorTest, CheckHeadTailSetProperlyByConstructor) {
 }
 
 TEST_F(TwoDimensionalVectorTest, CheckHeadTailAliasSetProperlyByConstructor) {
-  EXPECT_EQ(Point(2, -3), *vector_.a());
-  EXPECT_EQ(Point(-3, 2), *vector_.b());
+  EXPECT_EQ(Point(2, -3), vector_.a());
+  EXPECT_EQ(Point(-3, 2), vector_.b());
 }
 
 TEST_F(TwoDimensionalVectorTest, TestInfo) {
@@ -67,16 +69,17 @@ TEST(VectorHelperTest, FindCommonPointOfVectors) {
   const auto vector_2 = TwoDimensionalVector{{0, 0}, {-3, -10}};
   const auto expect_common_point = Point{0, 0};
 
-  const auto actual_common_point =
-      *FindCommonPointOfVectors(vector_1, vector_2);
+  const std::pair<bool, Point> actual_common_point =
+      FindCommonPointOfVectors(vector_1, vector_2);
 
-  ASSERT_EQ(expect_common_point, actual_common_point);
+  ASSERT_TRUE(actual_common_point.first);
+  ASSERT_EQ(expect_common_point, actual_common_point.second);
 }
 
 TEST(VectorHelperTest,
-     FindCommonPointOfVectorsShouldReturnNullIfNoCommonPoint) {
+     FindCommonPointOfVectorsShouldReturnPairWithFirstAsFalseIfNoCommonPoint) {
   const auto vector_1 = TwoDimensionalVector{{1, 2}, {-3, -4}};
   const auto vector_2 = TwoDimensionalVector{{0, 0}, {-3, -10}};
 
-  ASSERT_TRUE(FindCommonPointOfVectors(vector_1, vector_2) == nullptr);
+  ASSERT_FALSE(FindCommonPointOfVectors(vector_1, vector_2).first);
 }

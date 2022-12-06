@@ -5,6 +5,7 @@
 #include <memory>
 #include <set>
 #include <stdexcept>
+#include <utility>
 
 #include "iterator/factory/iterator_factory.h"
 #include "iterator/iterator.h"
@@ -28,13 +29,14 @@ class Triangle : public Shape {
     if (side_1_.cross(side_2_) == 0) {
       throw ParallelSideException{"sides should not be parallel"};
     }
-    const Point* common_point = FindCommonPointOfVectors(side_1, side_2_);
-    if (common_point == nullptr) {
+    std::pair<bool, Point> common_point =
+        FindCommonPointOfVectors(side_1, side_2_);
+    if (!common_point.first) {
       throw NoCommonPointException{"sides should intersect at one end"};
     }
     side_3_ = TwoDimensionalVector{
-        FindUncommonPointFromVector(side_1_, *common_point),
-        FindUncommonPointFromVector(side_2_, *common_point)};
+        FindUncommonPointFromVector(side_1_, common_point.second).second,
+        FindUncommonPointFromVector(side_2_, common_point.second).second};
   }
 
   double perimeter() const override {
@@ -52,11 +54,12 @@ class Triangle : public Shape {
   /** Returns the three vertices of the triangle. */
   std::set<Point> getPoints() const override {
     const Point common_between_side_1_and_2 =
-        *FindCommonPointOfVectors(side_1_, side_2_);
+        FindCommonPointOfVectors(side_1_, side_2_).second;
     const Point uncommon_in_side_2_with_side_1 =
-        *FindUncommonPointFromVector(side_2_, common_between_side_1_and_2);
-    return {Point{side_1_.head()}, Point{side_1_.tail()},
-            Point{uncommon_in_side_2_with_side_1}};
+        FindUncommonPointFromVector(side_2_, common_between_side_1_and_2)
+            .second;
+    return {
+        {side_1_.head()}, {side_1_.tail()}, {uncommon_in_side_2_with_side_1}};
   }
 
   Iterator* createIterator(const IteratorFactory* const factory) {
