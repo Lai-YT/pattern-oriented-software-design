@@ -10,28 +10,31 @@
 class TwoDimensionalVector {
  public:
   TwoDimensionalVector(const Point* const head, const Point* const tail)
+      : TwoDimensionalVector{*head, *tail} {}
+
+  TwoDimensionalVector(const Point& head, const Point& tail)
       : head_{head}, tail_{tail} {}
 
   Point head() const {
-    return *head_;
+    return head_;
   }
 
   /** Returns head in pointer type. */
   const Point* a() const {
-    return head_;
+    return &head_;
   }
 
   Point tail() const {
-    return *tail_;
+    return tail_;
   }
 
   /** Returns tail in pointer type. */
   const Point* b() const {
-    return tail_;
+    return &tail_;
   }
 
   std::string info() const {
-    return "Vector (" + head_->info() + ", " + tail_->info() + ")";
+    return "Vector (" + head_.info() + ", " + tail_.info() + ")";
   }
 
   double length() const {
@@ -62,15 +65,15 @@ class TwoDimensionalVector {
   }
 
  private:
-  const Point* head_;
-  const Point* tail_;
+  Point head_;
+  Point tail_;
 
   double x_offset_() const {
-    return tail_->x() - head_->x();
+    return tail_.x() - head_.x();
   }
 
   double y_offset_() const {
-    return tail_->y() - head_->y();
+    return tail_.y() - head_.y();
   }
 };
 

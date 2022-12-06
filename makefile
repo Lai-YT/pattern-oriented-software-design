@@ -1,6 +1,6 @@
 .PHONY: dirs clean clean_coverage
 
-CXXFLAGS = #-Wfatal-errors
+CXXFLAGS = -Wfatal-errors
 
 # FIXME: test/**/*.h doesn't work for deep files
 SRC = $(shell ls src/*.h src/*/*.h src/*/*/*.h)
