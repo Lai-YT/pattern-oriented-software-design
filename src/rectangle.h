@@ -70,6 +70,19 @@ class Rectangle : public Shape {
                                             uncommon_in_width)}};
   }
 
+  std::set<Point> getPointsXX() const override {
+    /* Three of the vertices are held by the under-laying vectors
+       while the forth has to be derived. */
+    const Point common = *FindCommonPointOfVectors(length_side_, width_side_);
+    const Point uncommon_in_length =
+        *FindUncommonPointFromVector(length_side_, common);
+    const Point uncommon_in_width =
+        *FindUncommonPointFromVector(width_side_, common);
+    return {Point{common}, Point{uncommon_in_length}, Point{uncommon_in_width},
+            Point{DeriveTheForthVertex_(common, uncommon_in_length,
+                                        uncommon_in_width)}};
+  }
+
   Iterator* createIterator(const IteratorFactory* const factory) {
     return factory->createIterator();
   }

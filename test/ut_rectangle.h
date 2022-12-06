@@ -67,31 +67,17 @@ TEST_F(RectangleTest, DeleteShapeShouldThrowException) {
 }
 
 TEST_F(RectangleTest, GetPointsShouldReturnTheFourVertices) {
-  const std::set<const Point*> vertices = rectangle_.getPoints();
-
-  /* the key comparison used by set are the memory positions.
-   * Our comparison can't relay on that since we don't know where the points
-   * should be. A workaround is to traverse the set and dump the points
-   * into another set which compares with value. */
-  const auto vertices_with_value_as_compare =
-      std::set<const Point*, std::function<bool(const Point*, const Point*)>>{
-          vertices.begin(), vertices.end(),
-          [](const Point* p1, const Point* p2) {
-            return p1->info() < p2->info();
-          }};
   const auto expected_vertices_carried_by_vector =
       std::vector<Point>{{0, 0}, {3, 0}, {0, 4}};
   const auto expected_derived_vertex = Point{3, 4};
+
+  const std::set<Point> vertices = rectangle_.getPointsXX();
+
   ASSERT_EQ(4, vertices.size());
   for (const Point& vertex : expected_vertices_carried_by_vector) {
-    ASSERT_TRUE(vertices_with_value_as_compare.find(&vertex) !=
-                vertices_with_value_as_compare.end());
+    ASSERT_TRUE(vertices.find(vertex) != vertices.end());
   }
-  ASSERT_TRUE(vertices_with_value_as_compare.find(&expected_derived_vertex) !=
-              vertices_with_value_as_compare.end());
-  for (const Point* p : vertices) {
-    delete p;
-  }
+  ASSERT_TRUE(vertices.find(expected_derived_vertex) != vertices.end());
 }
 
 TEST_F(RectangleTest, GetPointsFromRotatedShouldReturnTheFourVertices) {
