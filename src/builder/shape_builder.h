@@ -29,6 +29,11 @@ class ShapeBuilder {
     CompleteBuiltOf_(result);
   }
 
+  void buildCircle(const Point& center, const Point& on_circle) {
+    auto* result = new Circle{{center, on_circle}};
+    CompleteBuiltOf_(result);
+  }
+
   /**
    * Builds a triangle with v1, v2, v3 as the three vertices.
    *
@@ -43,6 +48,11 @@ class ShapeBuilder {
     CompleteBuiltOf_(result);
   }
 
+  void buildTriangle(const Point& v1, const Point& v2, const Point& v3) {
+    auto* result = new Triangle{{v1, v2}, {v1, v3}};
+    CompleteBuiltOf_(result);
+  }
+
   /**
    * Builds a triangle with v1, v2, v3 as the three vertices,
    * the fourth is deduced.
@@ -53,6 +63,13 @@ class ShapeBuilder {
     std::array<const TwoDimensionalVector*, 2> sides =
         MakeOrthogonalSides_(v1, v2, v3);
     auto result = new Rectangle{sides.at(0), sides.at(1)};
+    CompleteBuiltOf_(result);
+  }
+
+  void buildRectangle(const Point& v1, const Point& v2, const Point& v3) {
+    std::array<const TwoDimensionalVector*, 2> sides =
+        MakeOrthogonalSides_(&v1, &v2, &v3);
+    auto result = new Rectangle{*sides.at(0), *sides.at(1)};
     CompleteBuiltOf_(result);
   }
 

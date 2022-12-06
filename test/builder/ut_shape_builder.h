@@ -16,10 +16,7 @@ class ShapeBuilderTest : public ::testing::Test {
 };
 
 TEST_F(ShapeBuilderTest, TestBuildCircle) {
-  const auto center = Point{1, 2};
-  const auto on_circle = Point{-2, 6};
-
-  builder_.buildCircle(&center, &on_circle);
+  builder_.buildCircle(Point{1, 2}, Point{-2, 6});
 
   std::vector<Shape*> shapes = builder_.getResult();
   ASSERT_EQ(1, shapes.size());
@@ -33,10 +30,7 @@ TEST_F(ShapeBuilderTest, TestBuildCircle) {
 }
 
 TEST_F(ShapeBuilderTest, TestBuildTriangle) {
-  const auto vertices =
-      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
-
-  builder_.buildTriangle(&vertices.at(0), &vertices.at(1), &vertices.at(2));
+  builder_.buildTriangle(Point{0, 0}, Point{3, 0}, Point{0, 4});
 
   std::vector<Shape*> shapes = builder_.getResult();
   ASSERT_EQ(1, shapes.size());
@@ -52,10 +46,7 @@ TEST_F(ShapeBuilderTest, TestBuildTriangle) {
 }
 
 TEST_F(ShapeBuilderTest, TestBuildRectangle) {
-  const auto vertices =
-      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
-
-  builder_.buildRectangle(&vertices.at(0), &vertices.at(1), &vertices.at(2));
+  builder_.buildRectangle(Point{0, 0}, Point{3, 0}, Point{0, 4});
 
   std::vector<Shape*> shapes = builder_.getResult();
   ASSERT_EQ(1, shapes.size());
@@ -71,13 +62,6 @@ TEST_F(ShapeBuilderTest, TestBuildRectangle) {
 /* Builds a one-level compound shape which has 3 inner shape: a circle, a
  * triangle and a rectangle. */
 TEST_F(ShapeBuilderTest, TestBuildCompoundShapeOfOneLevel) {
-  const auto center = Point{1, 2};
-  const auto on_circle = Point{-2, 6};
-  const auto vertices_of_triangle =
-      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
-  const auto vertices_of_rectangle =
-      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
-
   /*
    * CompoundShape (
    *  Circle ()
@@ -86,13 +70,9 @@ TEST_F(ShapeBuilderTest, TestBuildCompoundShapeOfOneLevel) {
    * )
    */
   builder_.buildCompoundShape();
-  builder_.buildCircle(&center, &on_circle);
-  builder_.buildTriangle(&vertices_of_triangle.at(0),
-                         &vertices_of_triangle.at(1),
-                         &vertices_of_triangle.at(2));
-  builder_.buildRectangle(&vertices_of_rectangle.at(0),
-                          &vertices_of_rectangle.at(1),
-                          &vertices_of_rectangle.at(2));
+  builder_.buildCircle(Point{1, 2}, Point{-2, 6});
+  builder_.buildTriangle(Point{0, 0}, Point{3, 0}, Point{0, 4});
+  builder_.buildRectangle(Point{0, 0}, Point{3, 0}, Point{0, 4});
   builder_.buildCompoundEnd();
 
   std::vector<Shape*> shapes = builder_.getResult();
@@ -107,13 +87,6 @@ TEST_F(ShapeBuilderTest, TestBuildCompoundShapeOfOneLevel) {
 }
 
 TEST_F(ShapeBuilderTest, TestBuildCompoundShapeOfTwoLevelAndNonCompoundShapes) {
-  const auto center = Point{1, 2};
-  const auto on_circle = Point{-2, 6};
-  const auto vertices_of_triangle =
-      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
-  const auto vertices_of_rectangle =
-      std::array<Point, 3>{Point{0, 0}, Point{3, 0}, Point{0, 4}};
-
   /*
    * Circle ()
    * CompoundShape (
@@ -124,16 +97,12 @@ TEST_F(ShapeBuilderTest, TestBuildCompoundShapeOfTwoLevelAndNonCompoundShapes) {
    * )
    * Rectangle ()
    */
-  builder_.buildCircle(&center, &on_circle);
+  builder_.buildCircle(Point{1, 2}, Point{-2, 6});
   builder_.buildCompoundShape();
-  builder_.buildTriangle(&vertices_of_triangle.at(0),
-                         &vertices_of_triangle.at(1),
-                         &vertices_of_triangle.at(2));
-  builder_.buildCircle(&center, &on_circle);
+  builder_.buildTriangle(Point{0, 0}, Point{3, 0}, Point{0, 4});
+  builder_.buildCircle(Point{1, 2}, Point{-2, 6});
   builder_.buildCompoundEnd();
-  builder_.buildRectangle(&vertices_of_rectangle.at(0),
-                          &vertices_of_rectangle.at(1),
-                          &vertices_of_rectangle.at(2));
+  builder_.buildRectangle(Point{0, 0}, Point{3, 0}, Point{0, 4});
 
   std::vector<Shape*> shapes = builder_.getResult();
   ASSERT_EQ(3, shapes.size());
