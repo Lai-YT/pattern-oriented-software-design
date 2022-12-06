@@ -15,7 +15,16 @@ class BoundingBox {
    * automatically.
    */
   BoundingBox(const std::set<const Point*>& points)
-      : upper_right_{0, 0}, lower_left_{0, 0} /* placeholding values */ {
+      : upper_right_{0, 0}, lower_left_{0, 0} /* place-holding values */ {
+    if (points.empty()) {
+      throw std::runtime_error{""};
+    }
+    upper_right_ = Point{CalculateMaxX_(points), CalculateMaxY_(points)};
+    lower_left_ = Point{CalculateMinX_(points), CalculateMinY_(points)};
+  }
+
+  BoundingBox(const std::set<Point>& points)
+      : upper_right_{0, 0}, lower_left_{0, 0} /* place-holding values */ {
     if (points.empty()) {
       throw std::runtime_error{""};
     }
@@ -32,22 +41,22 @@ class BoundingBox {
     return bounding_box;
   }
 
+  /** Alias of "max". */
   Point upper_right() const {
+    return max();
+  }
+
+  Point max() const {
     return upper_right_;
   }
 
-  /** Returns upper_right in pointer type. */
-  const Point* max() {
-    return &upper_right_;
-  }
-
+  /** Alias of "min". */
   Point lower_left() const {
-    return lower_left_;
+    return min();
   }
 
-  /** Returns lower_left in pointer type. */
-  const Point* min() {
-    return &lower_left_;
+  Point min() const {
+    return lower_left_;
   }
 
   bool collide(const BoundingBox* const box) const {
@@ -71,11 +80,25 @@ class BoundingBox {
     return point_with_max_x->x();
   }
 
+  double CalculateMaxX_(const std::set<Point>& points) const {
+    Point point_with_max_x = *std::max_element(
+        points.begin(), points.end(),
+        [](const Point& a, const Point& b) { return a.x() < b.x(); });
+    return point_with_max_x.x();
+  }
+
   double CalculateMinX_(const std::set<const Point*>& points) const {
     const Point* point_with_min_x = *std::min_element(
         points.begin(), points.end(),
         [](const Point* a, const Point* b) { return a->x() < b->x(); });
     return point_with_min_x->x();
+  }
+
+  double CalculateMinX_(const std::set<Point>& points) const {
+    Point point_with_min_x = *std::min_element(
+        points.begin(), points.end(),
+        [](const Point& a, const Point& b) { return a.x() < b.x(); });
+    return point_with_min_x.x();
   }
 
   double CalculateMaxY_(const std::set<const Point*>& points) const {
@@ -85,11 +108,25 @@ class BoundingBox {
     return point_with_max_y->y();
   }
 
+  double CalculateMaxY_(const std::set<Point>& points) const {
+    Point point_with_max_y = *std::max_element(
+        points.begin(), points.end(),
+        [](const Point& a, const Point& b) { return a.y() < b.y(); });
+    return point_with_max_y.y();
+  }
+
   double CalculateMinY_(const std::set<const Point*>& points) const {
     const Point* point_with_min_y = *std::min_element(
         points.begin(), points.end(),
         [](const Point* a, const Point* b) { return a->y() < b->y(); });
     return point_with_min_y->y();
+  }
+
+  double CalculateMinY_(const std::set<Point>& points) const {
+    Point point_with_min_y = *std::min_element(
+        points.begin(), points.end(),
+        [](const Point& a, const Point& b) { return a.y() < b.y(); });
+    return point_with_min_y.y();
   }
 
   bool AtRight_(const BoundingBox* const box) const {
