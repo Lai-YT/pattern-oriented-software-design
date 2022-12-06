@@ -76,6 +76,22 @@ TEST(PointTest, TestInequalityOnSelfComparison) {
   ASSERT_FALSE(p != p);
 }
 
+TEST(PointTest, TestLessThanOnSameY) {
+  const auto smaller_x = Point{2, -3};
+  const auto larger_x = Point{3, -3};
+
+  ASSERT_TRUE(smaller_x < larger_x);
+  ASSERT_FALSE(larger_x < smaller_x);
+}
+
+TEST(PointTest, TestLessThanOnSameX) {
+  const auto smaller_y = Point{2, -3};
+  const auto larger_y = Point{2, -2};
+
+  ASSERT_TRUE(smaller_y < larger_y);
+  ASSERT_FALSE(larger_y < smaller_y);
+}
+
 TEST(PointTest, TestDistance) {
   const auto a = Point{0, 0};
   const auto b = Point{-3, 4};

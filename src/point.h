@@ -5,6 +5,7 @@
 #include <ios>
 #include <sstream>
 #include <string>
+#include <tuple>
 
 class Point {
  public:
@@ -48,6 +49,10 @@ class Point {
     return !operator==(that);
   }
 
+  bool operator<(const Point& that) const {
+    return std::tie(x_, y_) < std::tie(that.x_, that.y_);
+  }
+
  private:
   double x_;
   double y_;
@@ -58,7 +63,7 @@ class Point {
 
   double Pow2_(const double n) const {
     return n * n;
-  } 
+  }
 };
 
 #endif /* end of include guard: SRC_POINT_H_ */
