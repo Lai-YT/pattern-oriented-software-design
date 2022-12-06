@@ -83,6 +83,17 @@ class CompoundShape : public Shape {
             vertices_with_value_as_compare.end()};
   }
 
+  std::set<Point> getPointsXX() const override {
+    auto vertices = std::set<Point>{};
+    for (const auto* shape : shapes_) {
+      /* NOTE: use std::set::merge if C++17 is supported */
+      for (const Point vertex : shape->getPointsXX()) {
+        vertices.insert(vertex);
+      }
+    }
+    return vertices;
+  }
+
   Iterator* createIterator(const IteratorFactory* const factory) override {
     return factory->createIterator(shapes_.begin(), shapes_.end());
   }

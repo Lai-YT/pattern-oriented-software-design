@@ -271,30 +271,17 @@ TEST_F(CompoundShapeDepthTwoTest, DeleteShapeShouldDeleteAllTargetShapes) {
 
 TEST_F(CompoundShapeDepthTwoTest,
        GetPointsShouldReturnAllVerticesShapesThatContains) {
-  const std::set<const Point*> vertices = level_one_compound_.getPoints();
-
-  /* the key comparison used by set are the memory positions.
-   * Our comparison can't relay on that since we don't know where the points
-   * should be. A workaround is to traverse the set and dump the points
-   * into another set which compares with value. */
-  const auto vertices_with_value_as_compare =
-      std::set<const Point*, std::function<bool(const Point*, const Point*)>>{
-          vertices.begin(), vertices.end(),
-          [](const Point* p1, const Point* p2) {
-            return p1->info() < p2->info();
-          }};
   const auto expected_vertices = std::vector<Point>{
       {6, 7}, {-4, -3},                 /* circle */
       {0, 0}, {3, 0},   {0, 4}, {3, 4}, /* rectangle */
       {0, 0}, {3, 0},   {3, 4},         /* triangle */
   };
+
+  const std::set<Point> vertices = level_one_compound_.getPointsXX();
+
   ASSERT_EQ(6, vertices.size()); /* no duplicates */
   for (const Point& vertex : expected_vertices) {
-    ASSERT_TRUE(vertices_with_value_as_compare.find(&vertex) !=
-                vertices_with_value_as_compare.end());
-  }
-  for (const Point* p : vertices) {
-    delete p;
+    ASSERT_TRUE(vertices.find(vertex) != vertices.end());
   }
 }
 
