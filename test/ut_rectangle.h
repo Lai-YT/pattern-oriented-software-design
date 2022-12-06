@@ -82,28 +82,17 @@ TEST_F(RectangleTest, GetPointsShouldReturnTheFourVertices) {
 
 TEST_F(RectangleTest, GetPointsFromRotatedShouldReturnTheFourVertices) {
   const Rectangle rectangle_{{{4, 0}, {0, 3}}, {{7, 4}, {4, 0}}};
-
-  const std::set<const Point*> vertices = rectangle_.getPoints();
-
-  const auto vertices_with_value_as_compare =
-      std::set<const Point*, std::function<bool(const Point*, const Point*)>>{
-          vertices.begin(), vertices.end(),
-          [](const Point* p1, const Point* p2) {
-            return p1->info() < p2->info();
-          }};
   const auto expected_vertices_carried_by_vector =
       std::vector<Point>{{4, 0}, {0, 3}, {7, 4}};
   const auto expected_derived_vertex = Point{3, 7};
+
+  const std::set<Point> vertices = rectangle_.getPointsXX();
+
   ASSERT_EQ(4, vertices.size());
   for (const Point& vertex : expected_vertices_carried_by_vector) {
-    ASSERT_TRUE(vertices_with_value_as_compare.find(&vertex) !=
-                vertices_with_value_as_compare.end());
+    ASSERT_TRUE(vertices.find(vertex) != vertices.end());
   }
-  ASSERT_TRUE(vertices_with_value_as_compare.find(&expected_derived_vertex) !=
-              vertices_with_value_as_compare.end());
-  for (const Point* p : vertices) {
-    delete p;
-  }
+  ASSERT_TRUE(vertices.find(expected_derived_vertex) != vertices.end());
 }
 
 class RectanglePolymorphismTest : public RectangleTest {
