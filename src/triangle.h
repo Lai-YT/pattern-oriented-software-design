@@ -64,6 +64,15 @@ class Triangle : public Shape {
             new Point{uncommon_in_side_2_with_side_1}};
   }
 
+  std::set<Point> getPointsXX() const override {
+    const Point common_between_side_1_and_2 =
+        *FindCommonPointOfVectors(side_1_, side_2_);
+    const Point uncommon_in_side_2_with_side_1 =
+        *FindUncommonPointFromVector(side_2_, common_between_side_1_and_2);
+    return {Point{side_1_.head()}, Point{side_1_.tail()},
+            Point{uncommon_in_side_2_with_side_1}};
+  }
+
   Iterator* createIterator(const IteratorFactory* const factory) {
     return factory->createIterator();
   }
