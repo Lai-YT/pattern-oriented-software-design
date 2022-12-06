@@ -10,15 +10,10 @@
 #include "../src/two_dimensional_vector.h"
 
 class CircleTest : public ::testing::Test {
- private:
-  const Point vector_head_{1, 2};
-  const Point vector_tail_{-3, 5};
-  const TwoDimensionalVector vector_{&vector_head_, &vector_tail_};
-
  protected:
   const double DELTA = 0.001;
 
-  Circle circle_{&vector_};
+  Circle circle_{{{1, 2}, {-3, 5}}};
 };
 
 TEST_F(CircleTest, TestRadius) {

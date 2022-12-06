@@ -15,8 +15,9 @@
 class Circle : public Shape {
  public:
   /** The length of the vector is the radius of the circle. */
-  Circle(const TwoDimensionalVector* const vector)
-      : represent_vector_{vector} {}
+  Circle(const TwoDimensionalVector* const vector) : Circle{*vector} {}
+
+  Circle(const TwoDimensionalVector& vector) : represent_vector_{vector} {}
 
   double area() const override {
     return M_PI * radius() * radius();
@@ -27,11 +28,11 @@ class Circle : public Shape {
   }
 
   double radius() const {
-    return represent_vector_->length();
+    return represent_vector_.length();
   }
 
   std::string info() const override {
-    return "Circle (" + represent_vector_->info() + ")";
+    return "Circle (" + represent_vector_.info() + ")";
   }
 
   /**
@@ -60,10 +61,10 @@ class Circle : public Shape {
   }
 
  private:
-  const TwoDimensionalVector* represent_vector_;
+  TwoDimensionalVector represent_vector_;
 
   Point center_() const {
-    return represent_vector_->head();
+    return represent_vector_.head();
   }
 };
 
