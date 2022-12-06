@@ -49,21 +49,7 @@ class Triangle : public Shape {
     return "Triangle (" + side_1_.info() + ", " + side_2_.info() + ")";
   }
 
-  /**
-   * Returns the three vertices of the triangle.
-   *
-   * The caller takes the ownership of the points returned, which are the copies
-   * that aren't actually used internally by triangle itself.
-   */
-  std::set<const Point*> getPoints() const override {
-    const Point common_between_side_1_and_2 =
-        *FindCommonPointOfVectors(side_1_, side_2_);
-    const Point uncommon_in_side_2_with_side_1 =
-        *FindUncommonPointFromVector(side_2_, common_between_side_1_and_2);
-    return {new Point{side_1_.head()}, new Point{side_1_.tail()},
-            new Point{uncommon_in_side_2_with_side_1}};
-  }
-
+  /** Returns the three vertices of the triangle. */
   std::set<Point> getPointsXX() const override {
     const Point common_between_side_1_and_2 =
         *FindCommonPointOfVectors(side_1_, side_2_);

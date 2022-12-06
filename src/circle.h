@@ -38,20 +38,7 @@ class Circle : public Shape {
   /**
    * Returns the upper right and lower left points which represent the bounding
    * box of the circle.
-   *
-   * The caller takes the ownership of the points returned.
-   * NOTE: So bad that the value type is in pointer since memory spaces they
-   * pointed to are not used by circle itself.
    */
-  std::set<const Point*> getPoints() const override {
-    const auto* upper_right =
-        new Point{center_().x() + radius(), center_().y() + radius()};
-    const auto* lower_left =
-        new Point{center_().x() - radius(), center_().y() - radius()};
-
-    return {upper_right, lower_left};
-  }
-
   std::set<Point> getPointsXX() const override {
     const auto upper_right =
         Point{center_().x() + radius(), center_().y() + radius()};

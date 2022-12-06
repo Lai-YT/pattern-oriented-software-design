@@ -53,36 +53,7 @@ class CompoundShape : public Shape {
     return "CompoundShape (" + inner_info + ")";
   }
 
-  /**
-   * Returns all vertices of the shapes contained by compound shape.
-   *
-   * The caller takes the ownership of the points returned, which are the copies
-   * that aren't actually used internally by compound shape itself.
-   */
-  std::set<const Point*> getPoints() const override {
-    /* two points might have same (x, y) but different memory positions,
-     * but they should be treated as equal, which means we should not relay on
-     * comparing the pointers. */
-    auto compare_by_value = [](const Point* p1, const Point* p2) {
-      return p1->info() < p2->info();
-    };
-    auto vertices_with_value_as_compare =
-        std::set<const Point*, decltype(compare_by_value)>{compare_by_value};
-    for (const auto* shape : shapes_) {
-      for (const Point* vertex : shape->getPoints()) {
-        if (vertices_with_value_as_compare.count(vertex) != 0) {
-          delete vertex;
-        } else {
-          vertices_with_value_as_compare.insert(vertex);
-        }
-      }
-    }
-
-    /* So bad that the return type is restricted to compare with pointer. */
-    return {vertices_with_value_as_compare.begin(),
-            vertices_with_value_as_compare.end()};
-  }
-
+  /** Returns all vertices of the shapes contained by compound shape. */
   std::set<Point> getPointsXX() const override {
     auto vertices = std::set<Point>{};
     for (const auto* shape : shapes_) {
