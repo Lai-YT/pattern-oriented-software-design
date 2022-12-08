@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <set>
+
 #include "../../src/circle.h"
 #include "../../src/graphics/canvas.h"
 #include "../../src/graphics/sdl/sdl.h"
@@ -51,18 +53,19 @@ TEST_F(SDLAdapterTest,
 
 TEST_F(SDLAdapterTest, DrawTriangleShouldCallRenderDrawLinesWithCorrectPoints) {
   const auto triangle = Triangle{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
-  const int expected_size = 6;
-  const double expected_points[expected_size] = {0, 0, 3, 0, 3, 4};
+  const auto expected_points = std::set<Point>{{0, 0}, {3, 0}, {3, 4}};
 
   canvas_.drawTriangle(&triangle);
 
   /* XXX: the mocking class takes the ownership, while the real class doesn't.
    */
   const int size = mock_sdl_renderer_.renderDrawLinesCalledSize();
-  ASSERT_EQ(expected_size, size);
-  const double* points = mock_sdl_renderer_.renderDrawLinesCalledPoints();
-  for (int i = 0; i < size; i++) {
-    ASSERT_NEAR(expected_points[i], points[i], DELTA);
+  ASSERT_EQ(expected_points.size() * 2, size);
+  const double* x_and_ys = mock_sdl_renderer_.renderDrawLinesCalledPoints();
+  for (int i = 0; i < size; i += 2) {
+    /* order is irrelevant */
+    ASSERT_TRUE(expected_points.find(Point{x_and_ys[i], x_and_ys[i + 1]}) !=
+                expected_points.end());
   }
-  delete[] points;
+  delete[] x_and_ys;
 }
