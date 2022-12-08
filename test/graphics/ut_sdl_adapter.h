@@ -90,3 +90,9 @@ TEST_F(SDLAdapterTest,
   }
   delete[] x_and_ys;
 }
+
+TEST_F(SDLAdapterTest, DisplayShouldCallRenderPresent) {
+  canvas_.display();
+
+  ASSERT_TRUE(mock_sdl_renderer_.isRenderPresentCalled());
+}

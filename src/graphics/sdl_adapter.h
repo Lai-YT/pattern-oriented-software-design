@@ -55,7 +55,9 @@ class SDLAdapter : public Canvas {
     // delete[] x_and_ys;
   }
 
-  void display() {}
+  void display() override {
+    sdl_->renderPresent();
+  }
 
   class NonPositiveLengthOfSideException : public std::runtime_error {
     using std::runtime_error::runtime_error;
