@@ -4,6 +4,7 @@
 #include "../../src/graphics/canvas.h"
 #include "../../src/graphics/sdl/sdl.h"
 #include "../../src/graphics/sdl_adapter.h"
+#include "../../src/triangle.h"
 #include "mock_sdl_renderer.h"
 
 TEST(SDLAdapterTest, InitShouldBeCalled) {
@@ -25,7 +26,8 @@ TEST(SDLAdapterTest, InitShouldBeCalledWithCorrectWidthAndHeight) {
   ASSERT_EQ(height, mockSDLRenderer.initHeight());
 }
 
-TEST(SDLAdapterTest, RenderDrawCircleShouldBeCalledWithCorrectCentreAndRadius) {
+TEST(SDLAdapterTest,
+     DrawCircleShouldCallRenderDrawCircleWithCorrectCentreAndRadius) {
   const auto circle = Circle{{{1, 2}, {4, 6}}};
   auto mockSDLRenderer = MockSDLRenderer{};
   auto canvas = SDLAdapter{1024, 768, &mockSDLRenderer};
@@ -36,4 +38,24 @@ TEST(SDLAdapterTest, RenderDrawCircleShouldBeCalledWithCorrectCentreAndRadius) {
   EXPECT_NEAR(1, args[0], 0.001);
   EXPECT_NEAR(2, args[1], 0.001);
   EXPECT_NEAR(5, args[2], 0.001);
+}
+
+TEST(SDLAdapterTest, DrawTriangleShouldCallRenderDrawLinesWithCorrectPoints) {
+  const auto triangle = Triangle{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
+  const int expected_size = 6;
+  const double expected_points[expected_size] = {0, 0, 3, 0, 3, 4};
+  auto mockSDLRenderer = MockSDLRenderer{};
+  auto canvas = SDLAdapter{1024, 768, &mockSDLRenderer};
+
+  canvas.drawTriangle(&triangle);
+
+  /* XXX: the mocking class takes the ownership, while the real class doesn't.
+   */
+  const int size = mockSDLRenderer.renderDrawLinesCalledSize();
+  ASSERT_EQ(expected_size, size);
+  const double* points = mockSDLRenderer.renderDrawLinesCalledPoints();
+  for (int i = 0; i < size; i++) {
+    ASSERT_NEAR(expected_points[i], points[i], 0.001);
+  }
+  delete[] points;
 }

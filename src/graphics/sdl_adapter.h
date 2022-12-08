@@ -26,7 +26,19 @@ class SDLAdapter : public Canvas {
     }
     sdl_->renderDrawCircle(x / points.size(), y / points.size(), cir->radius());
   }
-  void drawTriangle(const Triangle* tri) const override {}
+
+  void drawTriangle(const Triangle* tri) const override {
+    const std::set<Point> points = tri->getPoints();
+    double* x_and_ys = new double[points.size() * 2];
+    int i = 0;
+    for (const Point& p : points) {
+      x_and_ys[i++] = p.x();
+      x_and_ys[i++] = p.y();
+    }
+    sdl_->renderDrawLines(x_and_ys, points.size() * 2);
+    // delete[] x_and_ys;
+  }
+
   void drawRectangle(const Rectangle* rect) const override {}
   void display() {}
 
