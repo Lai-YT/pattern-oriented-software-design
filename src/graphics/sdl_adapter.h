@@ -2,6 +2,7 @@
 #define SRC_GRAPHICS_SDL_ADAPTER_H_
 
 #include <set>
+#include <stdexcept>
 
 #include "../circle.h"
 #include "../point.h"
@@ -13,6 +14,9 @@
 class SDLAdapter : public Canvas {
  public:
   SDLAdapter(const int width, const int height, SDL* const sdl) : sdl_{sdl} {
+    if (width <= 0 || height <= 0) {
+      throw NonPositiveLengthOfSideException{"both sides should >= 0"};
+    }
     sdl_->init(width, height);
   }
 
@@ -41,6 +45,10 @@ class SDLAdapter : public Canvas {
 
   void drawRectangle(const Rectangle* rect) const override {}
   void display() {}
+
+  class NonPositiveLengthOfSideException : public std::runtime_error {
+    using std::runtime_error::runtime_error;
+  };
 
  private:
   SDL* sdl_;

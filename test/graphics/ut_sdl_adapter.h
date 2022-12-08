@@ -26,6 +26,21 @@ TEST(SDLAdapterTest, InitShouldBeCalledWithCorrectWidthAndHeight) {
   ASSERT_EQ(height, mockSDLRenderer.initHeight());
 }
 
+TEST(SDLAdapterTest, InitWithNonPositiveWidthShouldThrowException) {
+  const int non_positive_width = 0;
+  auto mockSDLRenderer = MockSDLRenderer{};
+
+  ASSERT_THROW(SDLAdapter(non_positive_width, 768, &mockSDLRenderer),
+               SDLAdapter::NonPositiveLengthOfSideException);
+}
+
+TEST(SDLAdapterTest, InitWithNonPositiveHeightShouldThrowException) {
+  const int non_positive_height = 0;
+  auto mockSDLRenderer = MockSDLRenderer{};
+
+  ASSERT_THROW(SDLAdapter(1024, non_positive_height, &mockSDLRenderer),
+               SDLAdapter::NonPositiveLengthOfSideException);
+}
 TEST(SDLAdapterTest,
      DrawCircleShouldCallRenderDrawCircleWithCorrectCentreAndRadius) {
   const auto circle = Circle{{{1, 2}, {4, 6}}};
