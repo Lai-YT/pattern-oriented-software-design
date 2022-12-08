@@ -43,7 +43,18 @@ class SDLAdapter : public Canvas {
     // delete[] x_and_ys;
   }
 
-  void drawRectangle(const Rectangle* rect) const override {}
+  void drawRectangle(const Rectangle* rect) const override {
+    const std::set<Point> points = rect->getPoints();
+    double* x_and_ys = new double[points.size() * 2];
+    int i = 0;
+    for (const Point& p : points) {
+      x_and_ys[i++] = p.x();
+      x_and_ys[i++] = p.y();
+    }
+    sdl_->renderDrawLines(x_and_ys, points.size() * 2);
+    // delete[] x_and_ys;
+  }
+
   void display() {}
 
   class NonPositiveLengthOfSideException : public std::runtime_error {

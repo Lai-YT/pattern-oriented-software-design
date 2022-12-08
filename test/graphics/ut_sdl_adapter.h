@@ -6,6 +6,7 @@
 #include "../../src/graphics/canvas.h"
 #include "../../src/graphics/sdl/sdl.h"
 #include "../../src/graphics/sdl_adapter.h"
+#include "../../src/rectangle.h"
 #include "../../src/triangle.h"
 #include "mock_sdl_renderer.h"
 
@@ -56,6 +57,26 @@ TEST_F(SDLAdapterTest, DrawTriangleShouldCallRenderDrawLinesWithCorrectPoints) {
   const auto expected_points = std::set<Point>{{0, 0}, {3, 0}, {3, 4}};
 
   canvas_.drawTriangle(&triangle);
+
+  /* XXX: the mocking class takes the ownership, while the real class doesn't.
+   */
+  const int size = mock_sdl_renderer_.renderDrawLinesCalledSize();
+  ASSERT_EQ(expected_points.size() * 2, size);
+  const double* x_and_ys = mock_sdl_renderer_.renderDrawLinesCalledPoints();
+  for (int i = 0; i < size; i += 2) {
+    /* order is irrelevant */
+    ASSERT_TRUE(expected_points.find(Point{x_and_ys[i], x_and_ys[i + 1]}) !=
+                expected_points.end());
+  }
+  delete[] x_and_ys;
+}
+
+TEST_F(SDLAdapterTest,
+       DrawRectangleShouldCallRenderDrawLinesWithCorrectPoints) {
+  const auto rectangle = Rectangle{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
+  const auto expected_points = std::set<Point>{{0, 0}, {3, 0}, {3, 4}, {0, 4}};
+
+  canvas_.drawRectangle(&rectangle);
 
   /* XXX: the mocking class takes the ownership, while the real class doesn't.
    */
