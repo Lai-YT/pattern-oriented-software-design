@@ -26,6 +26,10 @@ class Rectangle : public Shape {
     }
   }
 
+  Rectangle* clone() const override {
+    return new Rectangle{*this};
+  }
+
   double area() const override {
     return length_side_.length() * width_side_.length();
   }

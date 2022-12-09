@@ -37,7 +37,7 @@ TEST_F(BFSCompoundIteratorTest,
 TEST_F(BFSCompoundIteratorTest,
        IteratingWithEmptyCompoundShapeChildShouldBeCorrect) {
   Shape* compound_child = new CompoundShape{{}};
-  auto compound = CompoundShape{{compound_child}};
+  CompoundShape compound{{compound_child}};
 
   auto itr = std::unique_ptr<Iterator>{compound.createIterator(bfs_factory_)};
   itr->first();

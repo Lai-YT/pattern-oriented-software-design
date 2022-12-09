@@ -24,6 +24,16 @@ class CompoundShape : public Shape {
                 const size_t size)
       : shapes_{shapes, shapes + size} {}
 
+  CompoundShape(const CompoundShape& other) : shapes_{} {
+    for (auto* shape : other.shapes_) {
+      shapes_.push_back(shape->clone());
+    }
+  }
+
+  CompoundShape* clone() const override {
+    return new CompoundShape{*this};
+  }
+
   ~CompoundShape() {
     for (auto* shape : shapes_) {
       delete shape;

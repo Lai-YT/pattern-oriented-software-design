@@ -37,7 +37,7 @@ class DFSCompoundIteratorOnFlatListTest : public DFSCompoundIteratorTest {
 TEST_F(DFSCompoundIteratorTest,
        IteratingWithEmptyCompoundShapeChildShouldBeCorrect) {
   Shape* compound_child = new CompoundShape{{}};
-  auto compound = CompoundShape{{compound_child}};
+  CompoundShape compound{{compound_child}};
 
   auto itr = std::unique_ptr<Iterator>{compound.createIterator(dfs_factory_)};
   itr->first();

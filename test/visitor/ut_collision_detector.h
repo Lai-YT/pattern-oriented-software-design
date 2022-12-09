@@ -86,8 +86,7 @@ TEST_F(
   auto* collided_triangle = new Triangle{collided_triangle_};
   Shape* level_two_compound =
       new CompoundShape{{uncollided_circle, collided_rectangle}};
-  auto level_one_compound =
-      CompoundShape{{collided_triangle, level_two_compound}};
+  CompoundShape level_one_compound{{collided_triangle, level_two_compound}};
 
   detector_.visitCompoundShape(&level_one_compound);
 

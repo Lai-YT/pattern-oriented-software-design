@@ -35,6 +35,10 @@ class Triangle : public Shape {
         FindUncommonPointFromVector(side_2_, common_point.second).second};
   }
 
+  Triangle* clone() const override {
+    return new Triangle{*this};
+  }
+
   double perimeter() const override {
     return side_1_.length() + side_2_.length() + side_3_.length();
   }
