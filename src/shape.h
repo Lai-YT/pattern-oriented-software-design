@@ -14,6 +14,8 @@ class ShapeVisitor;
 class Shape {
  public:
   virtual ~Shape() = default;
+  /** polymorphic clone */
+  virtual Shape* clone() const = 0;
   virtual double area() const = 0;
   virtual double perimeter() const = 0;
   virtual std::string info() const = 0;

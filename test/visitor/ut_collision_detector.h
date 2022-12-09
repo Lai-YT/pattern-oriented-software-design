@@ -26,7 +26,7 @@ class CollisionDetectorTest : public ::testing::Test {
 };
 
 TEST_F(CollisionDetectorTest,
-       VisitCircleOnCollidedShouldHaveCollidedShapesContainExcatlyThatCircle) {
+       VisitCircleOnCollidedShouldHaveCollidedShapesContainExactlyThatCircle) {
   detector_.visitCircle(&collided_circle_);
 
   std::vector<Shape*> collided_shapes = detector_.collidedShapes();
@@ -44,7 +44,7 @@ TEST_F(CollisionDetectorTest,
 
 TEST_F(
     CollisionDetectorTest,
-    VisitTriangleOnCollidedShouldHaveCollidedShapesContainExcatlyThatTriangle) {
+    VisitTriangleOnCollidedShouldHaveCollidedShapesContainExactlyThatTriangle) {
   detector_.visitTriangle(&collided_triangle_);
 
   std::vector<Shape*> collided_shapes = detector_.collidedShapes();
@@ -62,7 +62,7 @@ TEST_F(CollisionDetectorTest,
 
 TEST_F(
     CollisionDetectorTest,
-    VisitRectangleOnCollidedShouldHaveCollidedShapesContainExcatlyThatTriangle) {
+    VisitRectangleOnCollidedShouldHaveCollidedShapesContainExactlyThatTriangle) {
   detector_.visitRectangle(&collided_rectangle_);
 
   std::vector<Shape*> collided_shapes = detector_.collidedShapes();
@@ -81,26 +81,28 @@ TEST_F(CollisionDetectorTest,
 TEST_F(
     CollisionDetectorTest,
     VisitCompoundShapeOnCollidedShouldHaveCollidedShapesContainThoseCollidedChildShapes) {
-  auto level_two_compound =
-      CompoundShape{{&uncollided_circle_, &collided_rectangle_}};
-  auto level_one_compound = CompoundShape{
-      {&collided_circle_, &collided_triangle_, &level_two_compound}};
+  auto* uncollided_circle = new Circle{uncollided_circle_};
+  auto* collided_rectangle = new Rectangle{collided_rectangle_};
+  auto* collided_triangle = new Triangle{collided_triangle_};
+  Shape* level_two_compound =
+      new CompoundShape{{uncollided_circle, collided_rectangle}};
+  CompoundShape level_one_compound{{collided_triangle, level_two_compound}};
 
   detector_.visitCompoundShape(&level_one_compound);
 
   std::vector<Shape*> collided_shapes = detector_.collidedShapes();
-  ASSERT_EQ(3, collided_shapes.size());
-  ASSERT_EQ(&collided_circle_, collided_shapes.at(0));
-  ASSERT_EQ(&collided_triangle_, collided_shapes.at(1));
-  ASSERT_EQ(&collided_rectangle_, collided_shapes.at(2));
+  ASSERT_EQ(2, collided_shapes.size());
+  ASSERT_EQ(collided_triangle, collided_shapes.at(0));
+  ASSERT_EQ(collided_rectangle, collided_shapes.at(1));
 }
 
 TEST_F(CollisionDetectorTest,
        VisitCompoundShapeOnUncollidedShouldHaveCollidedShapesEmpty) {
-  auto level_two_compound =
-      CompoundShape{{&uncollided_rectangle_, &uncollided_circle_}};
-  auto level_one_compound = CompoundShape{
-      {&uncollided_circle_, &uncollided_triangle_, &level_two_compound}};
+  Shape* level_two_compound = new CompoundShape{
+      {new Rectangle{uncollided_rectangle_}, new Circle{uncollided_circle_}}};
+  auto level_one_compound =
+      CompoundShape{{new Circle{uncollided_circle_},
+                     new Triangle{uncollided_triangle_}, level_two_compound}};
 
   detector_.visitCompoundShape(&level_one_compound);
 

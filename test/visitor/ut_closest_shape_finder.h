@@ -12,9 +12,9 @@ class ClosestShapeFinderTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  Circle circle_{{{1, 2}, {-3, 5}}};
-  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
-  Triangle triangle_{{{0, 0}, {30, 0}}, {{30, 40}, {30, 0}}};
+  Circle* circle_ = new Circle{{{1, 2}, {-3, 5}}};
+  Rectangle* rectangle_ = new Rectangle{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle* triangle_ = new Triangle{{{0, 0}, {30, 0}}, {{30, 40}, {30, 0}}};
   /*
    *     compound_1
    *      /    \
@@ -22,23 +22,23 @@ class ClosestShapeFinderTest : public ::testing::Test {
    *    /      /   \
    *  cir     rec  tri
    */
-  CompoundShape level_two_compound_{{&rectangle_, &triangle_}};
-  CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
+  Shape* level_two_compound_ = new CompoundShape{{rectangle_, triangle_}};
+  CompoundShape level_one_compound_{{circle_, level_two_compound_}};
 };
 
 TEST_F(ClosestShapeFinderTest,
        ClosestShapeOnNonCompoundShapeShouldBeThatShape) {
-  auto closest_finder = ClosestShapeFinder{&circle_};
+  auto closest_finder = ClosestShapeFinder{circle_};
 
-  rectangle_.accept(&closest_finder);
+  rectangle_->accept(&closest_finder);
 
-  ASSERT_EQ(&circle_, closest_finder.getClosestShape());
+  ASSERT_EQ(circle_, closest_finder.getClosestShape());
 }
 
 TEST_F(ClosestShapeFinderTest, ClosestShapeOnCompoundShape) {
   auto closest_finder = ClosestShapeFinder{&level_one_compound_};
 
-  rectangle_.accept(&closest_finder);
-  ASSERT_EQ(&rectangle_, closest_finder.getClosestShape());
-  ASSERT_EQ(&level_two_compound_, closest_finder.getParent());
+  rectangle_->accept(&closest_finder);
+  ASSERT_EQ(rectangle_, closest_finder.getClosestShape());
+  ASSERT_EQ(level_two_compound_, closest_finder.getParent());
 }

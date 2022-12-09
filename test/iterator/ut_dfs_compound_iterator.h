@@ -21,14 +21,14 @@ class DFSCompoundIteratorTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  Circle circle_{{{1, 2}, {-3, 5}}};
-  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
-  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
   IteratorFactory* dfs_factory_ = IteratorFactory::getInstance("DFS");
 };
 
 class DFSCompoundIteratorOnFlatListTest : public DFSCompoundIteratorTest {
  protected:
+  Circle circle_{{{1, 2}, {-3, 5}}};
+  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
   std::list<Shape*> shapes_{&circle_, &rectangle_, &triangle_};
   DFSCompoundIterator<decltype(shapes_)::iterator> dfs_itr_{shapes_.begin(),
                                                             shapes_.end()};
@@ -36,13 +36,13 @@ class DFSCompoundIteratorOnFlatListTest : public DFSCompoundIteratorTest {
 
 TEST_F(DFSCompoundIteratorTest,
        IteratingWithEmptyCompoundShapeChildShouldBeCorrect) {
-  auto compound_child = CompoundShape{{}};
-  auto compound = CompoundShape{{&compound_child}};
+  Shape* compound_child = new CompoundShape{{}};
+  CompoundShape compound{{compound_child}};
 
   auto itr = std::unique_ptr<Iterator>{compound.createIterator(dfs_factory_)};
   itr->first();
 
-  ASSERT_EQ(&compound_child, itr->currentItem());
+  ASSERT_EQ(compound_child, itr->currentItem());
   itr->next();
   ASSERT_TRUE(itr->isDone());
 }
@@ -124,6 +124,9 @@ TEST_F(DFSCompoundIteratorOnFlatListTest, NextShouldThrowExceptionWhenEnd) {
 
 class DFSCompoundIteratorOnFlatArrayTest : public DFSCompoundIteratorTest {
  protected:
+  Circle circle_{{{1, 2}, {-3, 5}}};
+  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
   std::array<Shape*, 3> shapes_{&circle_, &rectangle_, &triangle_};
   DFSCompoundIterator<decltype(shapes_)::iterator> dfs_itr_{shapes_.begin(),
                                                             shapes_.end()};
@@ -160,20 +163,25 @@ TEST_F(DFSCompoundIteratorOnFlatArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
 
 class DFSCompoundIteratorOnCompoundShapeTest : public DFSCompoundIteratorTest {
  protected:
+  Circle* circle1_ = new Circle{{{1, 2}, {-3, 5}}};
+  Rectangle* rectangle_ = new Rectangle{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle* triangle_ = new Triangle{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
+  Circle* circle2_ = new Circle{*circle1_};
+
   /*
    *     compound_1
    *      /      \
-   *    ci     compound_2
+   *    cir1   compound_2
    *         /     |      \
    *       rec compound_3 tri
    *               |
-   *              cir
+   *              cir2
    */
 
-  CompoundShape level_three_compound_{{&circle_}};
-  CompoundShape level_two_compound_{
-      {&rectangle_, &level_three_compound_, &triangle_}};
-  CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
+  Shape* level_three_compound_ = new CompoundShape{{circle2_}};
+  Shape* level_two_compound_ =
+      new CompoundShape{{rectangle_, level_three_compound_, triangle_}};
+  CompoundShape level_one_compound_{{circle1_, level_two_compound_}};
   std::unique_ptr<Iterator> dfs_itr_{
       level_one_compound_.createIterator(dfs_factory_)};
 
@@ -185,15 +193,16 @@ class DFSCompoundIteratorOnCompoundShapeTest : public DFSCompoundIteratorTest {
 TEST_F(DFSCompoundIteratorOnCompoundShapeTest, TestFirst) {
   dfs_itr_->first();
 
-  ASSERT_EQ(&circle_, dfs_itr_->currentItem());
+  ASSERT_EQ(circle1_, dfs_itr_->currentItem());
 }
 
 TEST_F(DFSCompoundIteratorOnCompoundShapeTest, TestNext) {
   dfs_itr_->first();
 
-  auto dfs_order =
-      std::vector<Shape*>{&level_two_compound_, &rectangle_,
-                          &level_three_compound_, &circle_, &triangle_};
+  auto dfs_order = std::vector<Shape*>{
+      level_two_compound_, rectangle_, level_three_compound_, circle2_,
+      triangle_,
+  };
   for (Shape* s : dfs_order) {
     dfs_itr_->next();
 

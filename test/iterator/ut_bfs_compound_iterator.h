@@ -21,9 +21,6 @@ class BFSCompoundIteratorTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  Circle circle_{{{1, 2}, {-3, 5}}};
-  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
-  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
   IteratorFactory* bfs_factory_ = IteratorFactory::getInstance("BFS");
 };
 
@@ -39,19 +36,22 @@ TEST_F(BFSCompoundIteratorTest,
 
 TEST_F(BFSCompoundIteratorTest,
        IteratingWithEmptyCompoundShapeChildShouldBeCorrect) {
-  auto compound_child = CompoundShape{{}};
-  auto compound = CompoundShape{{&compound_child}};
+  Shape* compound_child = new CompoundShape{{}};
+  CompoundShape compound{{compound_child}};
 
   auto itr = std::unique_ptr<Iterator>{compound.createIterator(bfs_factory_)};
   itr->first();
 
-  ASSERT_EQ(&compound_child, itr->currentItem());
+  ASSERT_EQ(compound_child, itr->currentItem());
   itr->next();
   ASSERT_TRUE(itr->isDone());
 }
 
 class BFSCompoundIteratorOnFlatListTest : public BFSCompoundIteratorTest {
  protected:
+  Circle circle_{{{1, 2}, {-3, 5}}};
+  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
   std::list<Shape*> shapes_{&circle_, &rectangle_, &triangle_};
   BFSCompoundIterator<decltype(shapes_)::iterator> bfs_itr_{shapes_.begin(),
                                                             shapes_.end()};
@@ -134,6 +134,9 @@ TEST_F(BFSCompoundIteratorOnFlatListTest, NextShouldThrowExceptionWhenEnd) {
 
 class BFSCompoundIteratorOnFlatArrayTest : public BFSCompoundIteratorTest {
  protected:
+  Circle circle_{{{1, 2}, {-3, 5}}};
+  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
   std::array<Shape*, 3> shapes_{&circle_, &rectangle_, &triangle_};
   BFSCompoundIterator<decltype(shapes_)::iterator> bfs_itr_{shapes_.begin(),
                                                             shapes_.end()};
@@ -170,23 +173,29 @@ TEST_F(BFSCompoundIteratorOnFlatArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
 
 class BFSCompoundIteratorOnCompoundShapeTest : public BFSCompoundIteratorTest {
  protected:
+  Circle* circle_ = new Circle{{{1, 2}, {-3, 5}}};
+  Rectangle* rectangle1_ = new Rectangle{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle* triangle1_ = new Triangle{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
+  Rectangle* rectangle2_ = new Rectangle{*rectangle1_};
+  Triangle* triangle2_ = new Triangle{*triangle1_};
+
   /*
    *         com_1
    *      /         \
    *  com_2_1      com_2_2
    *     |      /     |     \
-   *    tri com_3_1 com_3_2  tri
+   *    tri1 com_3_1 com_3_2  tri2
    *           |     /   \
-   *          rec  cir   rec
+   *          rec1  cir   rec2
    */
 
-  CompoundShape level_three_compound_1_{{&rectangle_}};
-  CompoundShape level_three_compound_2_{{&circle_, &rectangle_}};
-  CompoundShape level_two_compound_1_{{&triangle_}};
-  CompoundShape level_two_compound_2_{
-      {&level_three_compound_1_, &level_three_compound_2_, &triangle_}};
+  Shape* level_three_compound_1_ = new CompoundShape{{rectangle1_}};
+  Shape* level_three_compound_2_ = new CompoundShape{{circle_, rectangle2_}};
+  Shape* level_two_compound_1_ = new CompoundShape{{triangle1_}};
+  Shape* level_two_compound_2_ = new CompoundShape{
+      {level_three_compound_1_, level_three_compound_2_, triangle2_}};
   CompoundShape level_one_compound_{
-      {&level_two_compound_1_, &level_two_compound_2_}};
+      {level_two_compound_1_, level_two_compound_2_}};
   std::unique_ptr<Iterator> bfs_itr_{
       level_one_compound_.createIterator(bfs_factory_)};
 
@@ -198,20 +207,22 @@ class BFSCompoundIteratorOnCompoundShapeTest : public BFSCompoundIteratorTest {
 TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestFirst) {
   bfs_itr_->first();
 
-  ASSERT_EQ(&level_two_compound_1_, bfs_itr_->currentItem());
+  ASSERT_EQ(level_two_compound_1_, bfs_itr_->currentItem());
 }
 
 TEST_F(BFSCompoundIteratorOnCompoundShapeTest, TestNext) {
   bfs_itr_->first();
 
-  auto bfs_order = std::vector<Shape*>{&level_two_compound_2_,
-                                       &triangle_,
-                                       &level_three_compound_1_,
-                                       &level_three_compound_2_,
-                                       &triangle_,
-                                       &rectangle_,
-                                       &circle_,
-                                       &rectangle_};
+  auto bfs_order = std::vector<Shape*>{
+      level_two_compound_2_,
+      triangle1_,
+      level_three_compound_1_,
+      level_three_compound_2_,
+      triangle2_,
+      rectangle1_,
+      circle_,
+      rectangle2_,
+  };
   for (Shape* s : bfs_order) {
     bfs_itr_->next();
 
