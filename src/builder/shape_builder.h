@@ -37,9 +37,9 @@ class ShapeBuilder {
    * the fourth is deduced.
    */
   void buildRectangle(const Point& v1, const Point& v2, const Point& v3) {
-    std::array<const TwoDimensionalVector*, 2> sides =
-        MakeOrthogonalSides_(&v1, &v2, &v3);
-    auto result = new Rectangle{*sides.at(0), *sides.at(1)};
+    std::array<TwoDimensionalVector, 2> sides =
+        MakeOrthogonalSides_(v1, v2, v3);
+    auto result = new Rectangle{sides.at(0), sides.at(1)};
     CompleteBuiltOf_(result);
   }
 
@@ -64,69 +64,43 @@ class ShapeBuilder {
   }
 
   ~ShapeBuilder() {
-    Delete_(results_);
-    Delete_(shapes_to_delete_);
-    Delete_(vectors_to_delete_);
+    for (auto&& v : results_) {
+      delete v;
+    }
   }
 
  private:
   std::vector<Shape*> results_{};
   std::stack<CompoundShape*> compounds_in_built_{};
 
-  /* We lose control over inner vectors / shapes if we don't keep them some
-   * where.
-   * NOTE: The life time of results_ are bounded by the builder since we'll
-   * delete their inner during the destruction. */
-
-  std::vector<const TwoDimensionalVector*> vectors_to_delete_{};
-  std::vector<const Shape*> shapes_to_delete_{};
-
   bool IsBuildingCompound_() const {
     return !compounds_in_built_.empty();
   }
 
-  void DeleteLater_(const TwoDimensionalVector* const to_delete) {
-    vectors_to_delete_.push_back(to_delete);
-  }
-
-  void DeleteLater_(const Shape* const to_delete) {
-    shapes_to_delete_.push_back(to_delete);
-  }
-
-  template <typename ForwardIterableContainer>
-  void Delete_(ForwardIterableContainer& container) {
-    for (auto&& v : container) {
-      delete v;
-    }
-  }
-
   void CompleteBuiltOf_(Shape* const shape) {
     if (IsBuildingCompound_()) {
-      DeleteLater_(shape);
       compounds_in_built_.top()->addShape(shape);
     } else {
       results_.push_back(shape);
     }
   }
 
-  std::array<const TwoDimensionalVector*, 2> MakeOrthogonalSides_(
-      const Point* v1, const Point* v2, const Point* v3) {
-    const Point* common = FindRightAnglePoint_(v1, v2, v3);
+  std::array<TwoDimensionalVector, 2> MakeOrthogonalSides_(const Point& v1,
+                                                           const Point& v2,
+                                                           const Point& v3) {
+    const Point* common = FindRightAnglePoint_(&v1, &v2, &v3);
     if (!common) {
       throw Rectangle::NonOrthogonalSideException{"sides should be orthogonal"};
     }
 
     /* Find the 2 uncommon points. */
-    auto pool = std::set<const Point*>{v1, v2, v3};
-    pool.erase(pool.find(common));
+    auto pool = std::set<Point>{v1, v2, v3};
+    pool.erase(pool.find(*common));
 
     /* So can we make orthogonal sides. */
-    auto sides = std::vector<const TwoDimensionalVector*>{};
-    for (const Point* v : pool) {
-      sides.push_back(new TwoDimensionalVector{common, v});
-    }
-    for (auto&& side : sides) {
-      DeleteLater_(side);
+    auto sides = std::vector<TwoDimensionalVector>{};
+    for (const Point& v : pool) {
+      sides.emplace_back(*common, v);
     }
     assert(sides.size() == 2);
     return {sides.at(0), sides.at(1)};
