@@ -9,13 +9,11 @@
 #include "factory/iterator_factory.h"
 #include "iterator.h"
 
-Iterator* GetBfsCompoundShapeIterator(Shape*);
-
 /** Iterates the illegal nodes in BFS order. */
 class IllegalNodeIterator : public Iterator {
  public:
   IllegalNodeIterator(Shape* root)
-      : bfs_itr_{GetBfsCompoundShapeIterator(root)} {
+      : bfs_itr_{root->createIterator(IteratorFactory::getInstance("BFS"))} {
     first();
   }
 
@@ -51,10 +49,5 @@ class IllegalNodeIterator : public Iterator {
     }
   }
 };
-
-Iterator* GetBfsCompoundShapeIterator(Shape* const shape) {
-  const IteratorFactory* factory = IteratorFactory::getInstance("BFS");
-  return shape->createIterator(factory);
-}
 
 #endif /* end of include guard: SRC_ITERATOR_ILLEGAL_NODE_ITERATOR_H_ */

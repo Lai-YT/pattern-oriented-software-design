@@ -12,9 +12,9 @@ class IllegalNodeCheckerTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  Circle circle_{{{1, 2}, {-3, 5}}};
-  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
-  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
+  Circle* circle_ = new Circle{{{1, 2}, {-3, 5}}};
+  Rectangle* rectangle_ = new Rectangle{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle* triangle_ = new Triangle{{{0, 0}, {30, 0}}, {{30, 40}, {30, 0}}};
 
   /*
    *     compound_1
@@ -23,14 +23,14 @@ class IllegalNodeCheckerTest : public ::testing::Test {
    *    /      /   \
    *  cir     rec  tri
    */
-  CompoundShape level_two_compound_{{&rectangle_, &triangle_}};
-  CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
+  Shape* level_two_compound_ = new CompoundShape{{rectangle_, triangle_}};
+  CompoundShape level_one_compound_{{circle_, level_two_compound_}};
 
   IllegalNodeChecker checker_{};
 };
 
 TEST_F(IllegalNodeCheckerTest, TestIsIllegalShouldBeFalseOnTriangle) {
-  checker_.visitTriangle(&triangle_);
+  checker_.visitTriangle(triangle_);
 
   auto is_illegal = checker_.isIllegal();
 
@@ -38,7 +38,7 @@ TEST_F(IllegalNodeCheckerTest, TestIsIllegalShouldBeFalseOnTriangle) {
 }
 
 TEST_F(IllegalNodeCheckerTest, TestIsIllegalShouldBeFalseOnRectangle) {
-  checker_.visitRectangle(&rectangle_);
+  checker_.visitRectangle(rectangle_);
 
   auto is_illegal = checker_.isIllegal();
 
@@ -46,7 +46,7 @@ TEST_F(IllegalNodeCheckerTest, TestIsIllegalShouldBeFalseOnRectangle) {
 }
 
 TEST_F(IllegalNodeCheckerTest, TestIsIllegalShouldBeFalseOnCircle) {
-  checker_.visitCircle(&circle_);
+  checker_.visitCircle(circle_);
 
   auto is_illegal = checker_.isIllegal();
 
@@ -54,8 +54,9 @@ TEST_F(IllegalNodeCheckerTest, TestIsIllegalShouldBeFalseOnCircle) {
 }
 
 TEST_F(IllegalNodeCheckerTest, TestIsIllegalShouldBeFalseOnLegalCompoundShape) {
-  CompoundShape legal_shape = level_one_compound_;
-  checker_.visitCompoundShape(&legal_shape);
+  /* don't copy, it's shallow */
+  CompoundShape* legal_shape = &level_one_compound_;
+  checker_.visitCompoundShape(legal_shape);
 
   auto is_illegal = checker_.isIllegal();
 

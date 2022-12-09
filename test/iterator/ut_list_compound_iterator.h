@@ -20,14 +20,14 @@ class ListCompoundIteratorTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  Circle circle_{{{1, 2}, {-3, 5}}};
-  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
-  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
   IteratorFactory* list_factory_ = IteratorFactory::getInstance("List");
 };
 
 class ListCompoundIteratorOnFlatListTest : public ListCompoundIteratorTest {
  protected:
+  Circle circle_{{{1, 2}, {-3, 5}}};
+  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
   std::list<Shape*> shapes_{&circle_, &rectangle_, &triangle_};
   ListCompoundIterator<decltype(shapes_)::iterator> list_itr_{shapes_.begin(),
                                                               shapes_.end()};
@@ -35,13 +35,13 @@ class ListCompoundIteratorOnFlatListTest : public ListCompoundIteratorTest {
 
 TEST_F(ListCompoundIteratorTest,
        IteratingWithEmptyCompoundShapeChildShouldBeCorrect) {
-  auto compound_child = CompoundShape{{}};
-  auto compound = CompoundShape{{&compound_child}};
+  Shape* compound_child = new CompoundShape{{}};
+  auto compound = CompoundShape{{compound_child}};
 
   auto itr = std::unique_ptr<Iterator>{compound.createIterator(list_factory_)};
   itr->first();
 
-  ASSERT_EQ(&compound_child, itr->currentItem());
+  ASSERT_EQ(compound_child, itr->currentItem());
   itr->next();
   ASSERT_TRUE(itr->isDone());
 }
@@ -123,6 +123,9 @@ TEST_F(ListCompoundIteratorOnFlatListTest, NextShouldThrowExceptionWhenEnd) {
 
 class ListCompoundIteratorOnFlatArrayTest : public ListCompoundIteratorTest {
  protected:
+  Circle circle_{{{1, 2}, {-3, 5}}};
+  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
   std::array<Shape*, 3> shapes_{&circle_, &rectangle_, &triangle_};
   ListCompoundIterator<decltype(shapes_)::iterator> list_itr_{shapes_.begin(),
                                                               shapes_.end()};
@@ -160,20 +163,25 @@ TEST_F(ListCompoundIteratorOnFlatArrayTest, TestIsDoneShouldBeTrueWhenEnd) {
 class ListCompoundIteratorOnCompoundShapeTest
     : public ListCompoundIteratorTest {
  protected:
+  Circle* circle1_ = new Circle{{{1, 2}, {-3, 5}}};
+  Rectangle* rectangle_ = new Rectangle{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle* triangle_ = new Triangle{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
+  Circle* circle2_ = new Circle{*circle1_};
+
   /*
    *     compound_1
    *      /      \
-   *    ci     compound_2
+   *    cir1   compound_2
    *         /     |      \
    *       rec compound_3 tri
    *               |
-   *              cir
+   *              cir2
    */
 
-  CompoundShape level_three_compound_{{&circle_}};
-  CompoundShape level_two_compound_{
-      {&rectangle_, &level_three_compound_, &triangle_}};
-  CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
+  Shape* level_three_compound_ = new CompoundShape{{circle2_}};
+  Shape* level_two_compound_ =
+      new CompoundShape{{rectangle_, level_three_compound_, triangle_}};
+  CompoundShape level_one_compound_{{circle1_, level_two_compound_}};
   std::unique_ptr<Iterator> list_itr_{
       level_one_compound_.createIterator(list_factory_)};
 
@@ -185,13 +193,13 @@ class ListCompoundIteratorOnCompoundShapeTest
 TEST_F(ListCompoundIteratorOnCompoundShapeTest, TestFirst) {
   list_itr_->first();
 
-  ASSERT_EQ(&circle_, list_itr_->currentItem());
+  ASSERT_EQ(circle1_, list_itr_->currentItem());
 }
 
 TEST_F(ListCompoundIteratorOnCompoundShapeTest, TestNext) {
   list_itr_->first();
 
-  auto list_order = std::vector<Shape*>{&circle_, &level_two_compound_};
+  auto list_order = std::vector<Shape*>{circle1_, level_two_compound_};
   for (Shape* s : list_order) {
     ASSERT_EQ(s, list_itr_->currentItem()) << current_info_() << '\n';
 
