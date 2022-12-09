@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <array>
 #include <set>
 
 #include "../../src/circle.h"
@@ -72,9 +73,13 @@ TEST_F(SDLAdapterTest, DrawTriangleShouldCallRenderDrawLinesWithCorrectPoints) {
 }
 
 TEST_F(SDLAdapterTest,
-       DrawRectangleShouldCallRenderDrawLinesWithCorrectPoints) {
+       DrawRectangleShouldCallRenderDrawLinesWithCorrectOrderedPoints) {
   const auto rectangle = Rectangle{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
-  const auto expected_points = std::set<Point>{{0, 0}, {3, 0}, {3, 4}, {0, 4}};
+  /* The order is important, the lines should not be drawn on the diagonals but
+    the sides. The order is restricted to start from the smaller (<) with the
+    last two swapped. */
+  const auto expected_points = std::array<const Point, 4>{
+      Point{0, 0}, Point{0, 4}, Point{3, 4}, Point{3, 0}};
 
   canvas_.drawRectangle(&rectangle);
 
@@ -83,10 +88,11 @@ TEST_F(SDLAdapterTest,
   const int size = mock_sdl_renderer_.renderDrawLinesCalledSize();
   ASSERT_EQ(expected_points.size() * 2, size);
   const double* x_and_ys = mock_sdl_renderer_.renderDrawLinesCalledPoints();
-  for (int i = 0; i < size; i += 2) {
-    /* order is irrelevant */
-    ASSERT_TRUE(expected_points.find(Point{x_and_ys[i], x_and_ys[i + 1]}) !=
-                expected_points.end());
+  int i = 0;
+  for (const Point& expect : expected_points) {
+    const auto actual = Point{x_and_ys[i++], x_and_ys[i++]};
+    EXPECT_EQ(expect, actual)
+        << "Expect:\n\t" << expect.info() << "\nActual:\n\t" << actual.info();
   }
   delete[] x_and_ys;
 }

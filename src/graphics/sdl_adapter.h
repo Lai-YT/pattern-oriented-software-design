@@ -3,6 +3,7 @@
 
 #include <set>
 #include <stdexcept>
+#include <vector>
 
 #include "../circle.h"
 #include "../point.h"
@@ -40,19 +41,28 @@ class SDLAdapter : public Canvas {
       x_and_ys[i++] = p.y();
     }
     sdl_->renderDrawLines(x_and_ys, points.size() * 2);
-    // delete[] x_and_ys;
   }
 
   void drawRectangle(const Rectangle* rect) const override {
+    /*
+     * The order of points passed to renderDrawLines is important, the lines
+     * should not be drawn on the diagonals but the sides.
+     * The order is restricted to start from the smaller (<) with the last two
+     * swapped.
+     */
+
     const std::set<Point> points = rect->getPoints();
+    auto ordered_points = std::vector<Point>{points.begin(), points.end()};
+    std::swap(ordered_points.at(2), ordered_points.at(3));
+
+    /* flatten into c array */
     double* x_and_ys = new double[points.size() * 2];
     int i = 0;
-    for (const Point& p : points) {
+    for (const Point& p : ordered_points) {
       x_and_ys[i++] = p.x();
       x_and_ys[i++] = p.y();
     }
     sdl_->renderDrawLines(x_and_ys, points.size() * 2);
-    // delete[] x_and_ys;
   }
 
   void display() override {
