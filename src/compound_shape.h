@@ -24,6 +24,12 @@ class CompoundShape : public Shape {
                 const size_t size)
       : shapes_{shapes, shapes + size} {}
 
+  ~CompoundShape() {
+    for (auto* shape : shapes_) {
+      delete shape;
+    }
+  }
+
   double area() const override {
     double result = 0;
     for (const auto& shape : shapes_) {
@@ -77,10 +83,13 @@ class CompoundShape : public Shape {
     shapes_.push_back(shape);
   }
 
-  /** If target appears multiple times, they are all deleted. */
+  /** Removes the shape from the compound shape and deletes it. */
   void deleteShape(Shape* target) override {
     /* from level one */
     shapes_.remove(target);
+    delete target;
+    target = nullptr;
+
     /* recursively from all levels */
     for (auto* s : shapes_) {
       try {
