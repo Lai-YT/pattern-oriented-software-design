@@ -12,13 +12,18 @@
 #include "../src/triangle.h"
 #include "../src/two_dimensional_vector.h"
 
+/*
+ * Requirements: CompoundShape takes ownerships of its inner Shapes.
+ * NOTICE: poor new/delete strategy below, spreading every where.
+ */
+
 class CompoundShapeTest : public ::testing::Test {
  protected:
   const double DELTA = 0.001;
 
-  Circle circle_{{{1, 2}, {-3, 5}}};
-  Rectangle rectangle_{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
-  Triangle triangle_{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
+  Circle* circle_ = new Circle{{{1, 2}, {-3, 5}}};
+  Rectangle* rectangle_ = new Rectangle{{{0, 0}, {3, 0}}, {{0, 0}, {0, 4}}};
+  Triangle* triangle_ = new Triangle{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}};
 };
 
 class CompoundShapeDepthOneTest : public CompoundShapeTest {
@@ -28,7 +33,7 @@ class CompoundShapeDepthOneTest : public CompoundShapeTest {
    *     /   |   \
    *    cir  rec  tri
    */
-  CompoundShape compound_{{&circle_, &rectangle_, &triangle_}};
+  CompoundShape compound_{{circle_, rectangle_, triangle_}};
 };
 
 class CompoundShapeDepthTwoTest : public CompoundShapeTest {
@@ -40,12 +45,14 @@ class CompoundShapeDepthTwoTest : public CompoundShapeTest {
    *    /      /   \
    *  cir     rec  tri
    */
-  CompoundShape level_two_compound_{{&rectangle_, &triangle_}};
-  CompoundShape level_one_compound_{{&circle_, &level_two_compound_}};
+  CompoundShape* level_two_compound_ =
+      new CompoundShape{{rectangle_, triangle_}};
+  CompoundShape level_one_compound_{{circle_, level_two_compound_}};
 };
 
 TEST_F(CompoundShapeTest, TestConstructorTakingCStyleArrayShouldCompile) {
-  Shape* shapes[] = {&circle_, &rectangle_, &triangle_};
+  Shape* shapes[] = {circle_, rectangle_, triangle_};
+
   const auto compound = CompoundShape{shapes, 3};
 }
 
@@ -56,6 +63,10 @@ TEST_F(CompoundShapeTest, TestInfoOfEmptyCompoundShape) {
 
   const std::string expected = "CompoundShape ()";
   ASSERT_EQ(expected, actual);
+
+  delete circle_;
+  delete rectangle_;
+  delete triangle_;
 }
 
 TEST_F(CompoundShapeDepthOneTest, TestArea) {
@@ -101,7 +112,9 @@ TEST_F(CompoundShapeDepthOneTest, TestInfo) {
 }
 
 TEST_F(CompoundShapeDepthOneTest, TestAddShape) {
-  compound_.addShape(&circle_);
+  auto* circle = new Circle{*circle_};
+
+  compound_.addShape(circle);
 
   const std::string actual = compound_.info();
   /* clang-format off */
@@ -117,7 +130,7 @@ TEST_F(CompoundShapeDepthOneTest, TestAddShape) {
 }
 
 TEST_F(CompoundShapeDepthOneTest, TestDeleteExistingShapeFromFront) {
-  compound_.deleteShape(&triangle_);
+  compound_.deleteShape(triangle_);
 
   const std::string actual = compound_.info();
   /* clang-format off */
@@ -131,7 +144,7 @@ TEST_F(CompoundShapeDepthOneTest, TestDeleteExistingShapeFromFront) {
 }
 
 TEST_F(CompoundShapeDepthOneTest, TestDeleteExistingShapeFromEnd) {
-  compound_.deleteShape(&circle_);
+  compound_.deleteShape(circle_);
 
   const std::string actual = compound_.info();
   /* clang-format off */
@@ -145,7 +158,7 @@ TEST_F(CompoundShapeDepthOneTest, TestDeleteExistingShapeFromEnd) {
 }
 
 TEST_F(CompoundShapeDepthOneTest, TestDeleteExistingShapeFromMiddle) {
-  compound_.deleteShape(&rectangle_);
+  compound_.deleteShape(rectangle_);
 
   const std::string actual = compound_.info();
   /* clang-format off */
@@ -159,9 +172,9 @@ TEST_F(CompoundShapeDepthOneTest, TestDeleteExistingShapeFromMiddle) {
 }
 
 TEST_F(CompoundShapeDepthOneTest, DeleteShapeNotExistShouldHaveNoEffect) {
-  auto circle = Circle{{{1, 2}, {0, 0}}};
+  auto* circle = new Circle{{{1, 2}, {0, 0}}};
 
-  compound_.deleteShape(&circle);
+  compound_.deleteShape(circle);
 
   const std::string actual = compound_.info();
   /* clang-format off */
@@ -173,6 +186,8 @@ TEST_F(CompoundShapeDepthOneTest, DeleteShapeNotExistShouldHaveNoEffect) {
       ")";
   /* clang-format on */
   ASSERT_EQ(expected, actual);
+
+  delete circle;
 }
 
 TEST_F(CompoundShapeDepthTwoTest, TestInfo) {
@@ -193,8 +208,9 @@ TEST_F(CompoundShapeDepthTwoTest, TestInfo) {
 
 TEST_F(CompoundShapeDepthTwoTest, TestAddShapeToEmptyCompoundShape) {
   auto compound = CompoundShape{{}};
+  auto* circle = new Circle{*circle_};
 
-  compound.addShape(&circle_);
+  compound.addShape(circle);
 
   const std::string actual = compound.info();
   /* clang-format off */
@@ -207,7 +223,9 @@ TEST_F(CompoundShapeDepthTwoTest, TestAddShapeToEmptyCompoundShape) {
 }
 
 TEST_F(CompoundShapeDepthTwoTest, TestAddShape) {
-  level_one_compound_.addShape(&circle_);
+  auto* circle = new Circle{*circle_};
+
+  level_one_compound_.addShape(circle);
 
   const std::string actual = level_one_compound_.info();
   /* clang-format off */
@@ -227,7 +245,7 @@ TEST_F(CompoundShapeDepthTwoTest, TestAddShape) {
 TEST_F(CompoundShapeDepthTwoTest, TestDeleteShapeFromEmptyCompoundShape) {
   auto compound = CompoundShape{{}};
 
-  compound.deleteShape(&circle_);
+  compound.deleteShape(circle_);
 
   const std::string actual = compound.info();
   const std::string expected = "CompoundShape ()";
@@ -235,7 +253,7 @@ TEST_F(CompoundShapeDepthTwoTest, TestDeleteShapeFromEmptyCompoundShape) {
 }
 
 TEST_F(CompoundShapeDepthTwoTest, TestDeleteShapeFromLowLevel) {
-  level_one_compound_.deleteShape(&rectangle_);
+  level_one_compound_.deleteShape(rectangle_);
 
   const std::string actual = level_one_compound_.info();
   /* clang-format off */
@@ -243,25 +261,6 @@ TEST_F(CompoundShapeDepthTwoTest, TestDeleteShapeFromLowLevel) {
       "CompoundShape ("
         "Circle (Vector ((1.00, 2.00), (-3.00, 5.00))), "
         "CompoundShape ("
-          "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), (3.00, 0.00)))"
-        ")"
-      ")";
-  /* clang-format on */
-  ASSERT_EQ(expected, actual);
-}
-
-TEST_F(CompoundShapeDepthTwoTest, DeleteShapeShouldDeleteAllTargetShapes) {
-  auto level_one_compound =
-      CompoundShape{{&circle_, &level_two_compound_, &circle_}};
-
-  level_one_compound.deleteShape(&circle_);
-
-  const std::string actual = level_one_compound.info();
-  /* clang-format off */
-  const std::string expected =
-      "CompoundShape ("
-        "CompoundShape ("
-          "Rectangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((0.00, 0.00), (0.00, 4.00))), "
           "Triangle (Vector ((0.00, 0.00), (3.00, 0.00)), Vector ((3.00, 4.00), (3.00, 0.00)))"
         ")"
       ")";
@@ -286,7 +285,9 @@ TEST_F(CompoundShapeDepthTwoTest,
 }
 
 TEST_F(CompoundShapeDepthTwoTest, ReplaceShouldReplaceTheShape) {
-  level_one_compound_.replace(&circle_, &triangle_);
+  auto* triangle = new Triangle{*triangle_};
+
+  level_one_compound_.replace(circle_, triangle);
 
   const std::string actual = level_one_compound_.info();
   /* clang-format off */
@@ -300,4 +301,6 @@ TEST_F(CompoundShapeDepthTwoTest, ReplaceShouldReplaceTheShape) {
       ")";
   /* clang-format on */
   ASSERT_EQ(expected, actual);
+
+  delete circle_;
 }
