@@ -206,6 +206,12 @@ TEST_F(CompoundShapeDepthTwoTest, TestInfo) {
   ASSERT_EQ(expected, actual);
 }
 
+TEST_F(CompoundShapeDepthTwoTest, TestClone) {
+  auto clone = std::unique_ptr<CompoundShape>{level_one_compound_.clone()};
+
+  ASSERT_EQ(level_one_compound_.info(), clone->info());
+}
+
 TEST_F(CompoundShapeDepthTwoTest, TestAddShapeToEmptyCompoundShape) {
   auto compound = CompoundShape{{}};
   auto* circle = new Circle{*circle_};

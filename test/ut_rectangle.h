@@ -40,6 +40,12 @@ TEST_F(RectangleTest, TestPerimeter) {
   ASSERT_NEAR(14, rectangle_.perimeter(), DELTA);
 }
 
+TEST_F(RectangleTest, TestClone) {
+  auto clone = std::unique_ptr<Rectangle>{rectangle_.clone()};
+
+  ASSERT_EQ(rectangle_.info(), clone->info());
+}
+
 TEST_F(RectangleTest, PassingNonOrthogonalSidesShouldThrowException) {
   const auto vector_1 = TwoDimensionalVector{{0, 0}, {3, 1}};
   const auto vector_2 = TwoDimensionalVector{{0, 0}, {0, 4}};

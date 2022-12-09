@@ -32,6 +32,12 @@ TEST_F(CircleTest, TestInfo) {
   ASSERT_EQ("Circle (Vector ((1.00, 2.00), (-3.00, 5.00)))", circle_.info());
 }
 
+TEST_F(CircleTest, TestClone) {
+  auto clone = std::unique_ptr<Circle>{circle_.clone()};
+
+  ASSERT_EQ(circle_.info(), clone->info());
+}
+
 TEST_F(CircleTest, AddShapeShouldThrowException) {
   ASSERT_THROW({ circle_.addShape(&circle_); }, Shape::ShapeInaddibleException);
 }

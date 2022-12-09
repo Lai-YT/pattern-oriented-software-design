@@ -32,6 +32,12 @@ TEST_F(TriangleTest, TestInfo) {
       triangle_.info());
 }
 
+TEST_F(TriangleTest, TestClone) {
+  auto clone = std::unique_ptr<Triangle>{triangle_.clone()};
+
+  ASSERT_EQ(triangle_.info(), clone->info());
+}
+
 TEST_F(TriangleTest, PassingVectorsWithNoCommonPointShouldThrowException) {
   const auto vector_1 = TwoDimensionalVector{{0, 0}, {4, 0}};
   const auto vector_2 = TwoDimensionalVector{{3, 4}, {3, 0}};
