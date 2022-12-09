@@ -83,12 +83,18 @@ class CompoundShape : public Shape {
     shapes_.push_back(shape);
   }
 
-  /** Removes the shape from the compound shape and deletes it. */
+  /**
+   * Removes the shape from the compound shape and deletes it, does nothing if
+   * the target isn't part of the compound shape.
+   */
   void deleteShape(Shape* target) override {
     /* from level one */
+    const int original_size = shapes_.size();
     shapes_.remove(target);
-    delete target;
-    target = nullptr;
+    if (shapes_.size() != original_size) {
+      delete target;
+      target = nullptr;
+    }
 
     /* recursively from all levels */
     for (auto* s : shapes_) {
