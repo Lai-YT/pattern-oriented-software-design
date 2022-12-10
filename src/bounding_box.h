@@ -37,6 +37,10 @@ class BoundingBox {
   }
 
   bool collide(const BoundingBox* const box) const {
+    return collide(*box);
+  }
+
+  bool collide(const BoundingBox& box) const {
     /* think in reverse: not (not collide) */
     return !(AtRight_(box) || AtLeft_(box) || AtTop_(box) || AtBottom_(box));
   }
@@ -78,20 +82,20 @@ class BoundingBox {
     return point_with_min_y.y();
   }
 
-  bool AtRight_(const BoundingBox* const box) const {
-    return box->lower_left().x() > this->upper_right().x();
+  bool AtRight_(const BoundingBox& box) const {
+    return box.lower_left().x() > this->upper_right().x();
   }
 
-  bool AtLeft_(const BoundingBox* const box) const {
-    return box->upper_right().x() < this->lower_left().x();
+  bool AtLeft_(const BoundingBox& box) const {
+    return box.upper_right().x() < this->lower_left().x();
   }
 
-  bool AtTop_(const BoundingBox* const box) const {
-    return box->lower_left().y() > this->upper_right().y();
+  bool AtTop_(const BoundingBox& box) const {
+    return box.lower_left().y() > this->upper_right().y();
   }
 
-  bool AtBottom_(const BoundingBox* const box) const {
-    return box->upper_right().y() < this->lower_left().y();
+  bool AtBottom_(const BoundingBox& box) const {
+    return box.upper_right().y() < this->lower_left().y();
   }
 };
 

@@ -2,8 +2,8 @@
 #define SRC_TWO_DIMENSIONAL_VECTOR_H_
 
 #include <cmath>
+#include <optional>
 #include <string>
-#include <utility>
 
 #include "point.h"
 
@@ -82,46 +82,30 @@ bool HasCommonPointWithVector(const Point& point,
   return point == vector.head() || point == vector.tail();
 }
 
-/**
- * If the first value of the returned pair is true, the second value is the
- * common point; otherwise, the second value is meaningless.
- */
-std::pair<bool, Point> FindUncommonPointFromVector(
+std::optional<Point> FindUncommonPointFromVector(
     const TwoDimensionalVector& vector, const Point& common_point) {
-  /*
-   * XXX: return std::optional if supporting C++17.
-   */
   if (vector.tail() == common_point) {
-    return {true, vector.head()};
+    return vector.head();
   } else if (vector.head() == common_point) {
-    return {true, vector.tail()};
+    return vector.tail();
   }
-  auto meaningless_dummy = Point{0, 0};
-  return {false, meaningless_dummy};
+  return std::nullopt;
 }
 
-/**
- * If the first value of the returned pair is true, the second value is the
- * common point; otherwise, the second value is meaningless.
- */
-std::pair<bool, Point> FindCommonPointOfVectors(
+std::optional<Point> FindCommonPointOfVectors(
     const TwoDimensionalVector& vector_1,
     const TwoDimensionalVector& vector_2) {
-  /*
-   * XXX: return std::optional if supporting C++17.
-   */
   bool is_head_of_vector_1 =
       HasCommonPointWithVector(vector_1.head(), vector_2);
   bool is_tail_of_vector_1 =
       HasCommonPointWithVector(vector_1.tail(), vector_2);
   if (!is_head_of_vector_1 && !is_tail_of_vector_1) {
-    auto meaningless_dummy = Point{0, 0};
-    return {false, meaningless_dummy};
+    return std::nullopt;
   }
   if (is_head_of_vector_1) {
-    return {true, vector_1.head()};
+    return vector_1.head();
   }
-  return {true, vector_1.tail()};
+  return vector_1.tail();
 }
 
 #endif /* end of include guard: SRC_TWO_DIMENSIONAL_VECTOR_H_ */

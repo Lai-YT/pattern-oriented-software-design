@@ -1,6 +1,6 @@
 .PHONY: dirs clean clean_coverage
 
-CXXFLAGS = -Wfatal-errors -g -O0 -fno-elide-constructors # let's do things careful
+CXXFLAGS = -std=c++17 -Wfatal-errors -g -O0 -fno-elide-constructors # let's do things careful
 
 # FIXME: test/**/*.h doesn't work for deep files
 SRC = $(shell ls src/*.h src/*/*.h src/*/*/*.h)
@@ -15,10 +15,10 @@ REPLACE_CPP_EXTENSION_WITH_O = sed 's|.cpp|.o|g'
 all: dirs bin/ut_all
 
 bin/ut_all: test/ut_main.cpp $(OBJ) $(TEST) $(SRC)
-	g++ -o $@ $< $(OBJ) -lgtest -lpthread -std=c++11 $(CXXFLAGS)
+	g++ -o $@ $< $(OBJ) -lgtest -lpthread $(CXXFLAGS)
 
 obj/%.o: src/iterator/factory/%.cpp
-	g++ -o $@ -c $< -std=c++11 $(CXXFLAGS)
+	g++ -o $@ -c $< $(CXXFLAGS)
 
 test: all
 	bin/ut_all

@@ -73,10 +73,7 @@ class CompoundShape : public Shape {
   std::set<Point> getPoints() const override {
     auto vertices = std::set<Point>{};
     for (const auto* shape : shapes_) {
-      /* NOTE: use std::set::merge if C++17 is supported */
-      for (const Point vertex : shape->getPoints()) {
-        vertices.insert(vertex);
-      }
+      vertices.merge(shape->getPoints());
     }
     return vertices;
   }
@@ -119,7 +116,7 @@ class CompoundShape : public Shape {
 
   /** Replace the shape under the current compound shape. */
   void replace(Shape* old_shape, Shape* new_shape) {
-    for (Shape*& shape : shapes_) {
+    for (Shape*& /* & to update */ shape : shapes_) {
       if (shape == old_shape) {
         shape = new_shape;
       }
