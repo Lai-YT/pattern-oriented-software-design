@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cassert>
+#include <optional>
 #include <set>
 #include <stack>
 #include <vector>
@@ -88,7 +89,7 @@ class ShapeBuilder {
   std::array<TwoDimensionalVector, 2> MakeOrthogonalSides_(const Point& v1,
                                                            const Point& v2,
                                                            const Point& v3) {
-    const Point* common = FindRightAnglePoint_(&v1, &v2, &v3);
+    std::optional<Point> common = FindRightAnglePoint_(v1, v2, v3);
     if (!common) {
       throw Rectangle::NonOrthogonalSideException{"sides should be orthogonal"};
     }
@@ -106,9 +107,9 @@ class ShapeBuilder {
     return {sides.at(0), sides.at(1)};
   }
 
-  const Point* FindRightAnglePoint_(const Point* vertex_1,
-                                    const Point* vertex_2,
-                                    const Point* vertex_3) const {
+  std::optional<Point> FindRightAnglePoint_(const Point& vertex_1,
+                                            const Point& vertex_2,
+                                            const Point& vertex_3) const {
     using Vector = TwoDimensionalVector;
     if (IsOrthogonal(Vector{vertex_1, vertex_2}, Vector{vertex_1, vertex_3})) {
       return vertex_1;
@@ -119,7 +120,7 @@ class ShapeBuilder {
                             Vector{vertex_3, vertex_2})) {
       return vertex_3;
     }
-    return nullptr;
+    return std::nullopt;
   }
 };
 
