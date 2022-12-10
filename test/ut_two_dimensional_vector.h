@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <utility>
+#include <optional>
 
 #include "../src/point.h"
 #include "../src/two_dimensional_vector.h"
@@ -69,11 +69,11 @@ TEST(VectorHelperTest, FindCommonPointOfVectors) {
   const auto vector_2 = TwoDimensionalVector{{0, 0}, {-3, -10}};
   const auto expect_common_point = Point{0, 0};
 
-  const std::pair<bool, Point> actual_common_point =
+  const std::optional<Point> actual_common_point =
       FindCommonPointOfVectors(vector_1, vector_2);
 
-  ASSERT_TRUE(actual_common_point.first);
-  ASSERT_EQ(expect_common_point, actual_common_point.second);
+  ASSERT_TRUE(actual_common_point);
+  ASSERT_EQ(expect_common_point, *actual_common_point);
 }
 
 TEST(VectorHelperTest,
@@ -81,5 +81,5 @@ TEST(VectorHelperTest,
   const auto vector_1 = TwoDimensionalVector{{1, 2}, {-3, -4}};
   const auto vector_2 = TwoDimensionalVector{{0, 0}, {-3, -10}};
 
-  ASSERT_FALSE(FindCommonPointOfVectors(vector_1, vector_2).first);
+  ASSERT_FALSE(FindCommonPointOfVectors(vector_1, vector_2));
 }

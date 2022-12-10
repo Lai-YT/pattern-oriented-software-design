@@ -1,10 +1,10 @@
 #ifndef SRC_RECTANGLE_H_
 #define SRC_RECTANGLE_H_
 
+#include <optional>
 #include <set>
 #include <stdexcept>
 #include <string>
-#include <utility>
 
 #include "iterator/factory/iterator_factory.h"
 #include "iterator/iterator.h"
@@ -21,7 +21,7 @@ class Rectangle : public Shape {
     if (length_side_.dot(width_side_)) {
       throw NonOrthogonalSideException{"sides should be orthogonal"};
     }
-    if (!FindCommonPointOfVectors(length_side_, width_side_).first) {
+    if (!FindCommonPointOfVectors(length_side_, width_side_)) {
       throw NoCommonPointException{"sides should intersect at one end"};
     }
   }
@@ -56,11 +56,11 @@ class Rectangle : public Shape {
     /* Three of the vertices are held by the under-laying vectors
        while the forth has to be derived. */
     const Point common =
-        FindCommonPointOfVectors(length_side_, width_side_).second;
+        FindCommonPointOfVectors(length_side_, width_side_).value();
     const Point uncommon_in_length =
-        FindUncommonPointFromVector(length_side_, common).second;
+        FindUncommonPointFromVector(length_side_, common).value();
     const Point uncommon_in_width =
-        FindUncommonPointFromVector(width_side_, common).second;
+        FindUncommonPointFromVector(width_side_, common).value();
     return {
         {common},
         {uncommon_in_length},
