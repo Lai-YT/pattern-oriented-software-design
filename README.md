@@ -1,106 +1,81 @@
 # Pattern Oriented Software Design 2022 Fall Assignment
 
-## Assignment 5
+## Assignment 6
 
-#### Deadline: 12/12 Mon. 23:59
+#### Deadline: 12/19 Mon. 23:59
 
 ## Introduction
 
-In this assignment, you are required to refactor the interface of the shape family with [Valgrind](https://valgrind.org/) for memory leak elimination and to implement an `Adapter` to a library: [SDL](https://www.libsdl.org/) for visualization.
+In this assignment, you are required to complete the drag and drop functionality with undo by implementing the `Command` pattern.
 
-The deadline is at 23:59, 12/12(Mon.).
+The deadline is at 23:59, 12/19(Mon.).
 
 ## Problem statement
 
-### 1. The elimination of memory leak
+This assignment includes two parts, the drag and drop function and the undo.
+First we focus the drag and drop function.
 
-The first topic of this assignment is the elimination of memory leak. In the previous assignments, we were not required to manage the memory usage in either source code or unit tests. This time we are going to eliminate all leaks we have made by a tool: [Valgrind](https://valgrind.org/) and learn how to avoid the same issue happens in the future.
+### 1. Drag and drop
 
-Memory leak is that a resource allocated in memory is no longer used and is not released. The resource settles in memory like vagrants. Along with the time passed, the memory space gets lesser and lesser, and the program gets slower and slower. This may happen when the programmer forgets to release the resource or when the **ownership** of the resource is not determined. The ownership of a resource is a responsibility for deleting the resource, meaning that, in terms of OOD, which object should be responsible for deleting the resource after all. Except the situation that the programmer forgets, which object has the ownership should be determined.
+The drag and drop contains three actions: grab, move, and drop. When a user presses his/her mouse on an shape, we say that the user *grabs* the shape. Then, when the user moves his/her mouse on the screen while the mouse is being pressed, we say that the user *moves* the shape and that the shape should be moved with the mouse movement. These two actions, grab and move, are meant to *drag* the shape. When the user release the mouse at a place s/he likes, we say that the user *drops* the shape and that the shape should be placed at the place.
 
-When a C++ program executes, it has a memory layout as shown below. The *Text* section stores the code executed. The *Data* stores some static or global data. The *Heap* stores allocated data. The *Stack* section stores local data such as local variables in function. The *Heap* and *Stack* sections will changes based on the code executed.
+![Drag and drop](assets/drag_and_drop.gif)
 
-<div align="center">
-  <img src="assets/MemoryLayout.png" alt="Memory layout" width=150/>
-</div>
+Below is the class diagram for the three actions, in which we have three commands for the three actions: `GrabCommand`, `MoveCommand`, and `DropCommand`.
 
-In C++, whenever we create an instance by **new**, the instance is allocated in Heap. Taking the example below, we use **new** to create an instance of `Circle` and declare a pointer pointing to the instance. In this case, the `Circle` instance will be allocated and stored in Heap and the pointer will be created and stored in Stack. When the function ends, the pointer will be automatically removed but the instance will be remained in Heap if we do not use **delete** to delete it, in which a memory leak occurs.
+![Drag and drop class diagram](assets/DragAndDropClassDiagram.png)
 
-```c++
-class A {
-  void function() {
-    Circle *circle = new Circle(...);
-    ...
-  }
-};
-```
+`SDLRenderer` is the class responsible for rendering shapes on the screen. It can also detect events from user actions, such as mouse click or mouse move. Whenever it detects an event occurred, it notifies `EventListener` to carry out the corresponding callbacks.
 
-We should use **delete** to release the resource allocated in Heap. For the same example, we say class `A` has the ownership of the `Circle` instance, meaning that class `A` should be responsible for deleting the instance. On the other hand, we can pass the instance to other object, such as the caller of the `function`. In this case, we should determine the caller having the ownership of the instance. The caller should **delete** the instance after the instance is used. For more details about memory leak in C++, you can refer to [this website](https://courses.engr.illinois.edu/cs225/fa2022/resources/stack-heap/).
+The term *callback* refers to an `Command` instance that we register on the `EventListener`. The instance will be invoked when the registered event occurred.
+For example, if we register an `GrabCommand` on the `EventListener` for the `Left_Mouse_Down` event, when the user click the left mouse button, the `SDLRenderer` will notify `EventListener` by calling the leftMouseDown method of the listener, and the `EventListener` will triggered the `GrabCommand` instance by calling the execute method of the command.
 
 ```c++
-class A {
-  void function() {
-    Circle *circle = new Circle(...);
-    ...
-    delete circle;
-  }
-};
+// graphics.cpp
+EventListener eventListener;
+eventListener.on("Left_Mouse_Down", new GrabCommand(...));
+
+// event_listener.h
+void leftMouseDown(...) {
+  _callbacks["Left_Mouse_Down"]->execute();
+}
 ```
 
-In this assignment, we are going to refactor the interface of the shape family for memory leak elimination. Precisely say, we refactor the interface to get rid of the determination of the ownership of the objects allocated.
+We need to register three commands on the listener:
 
-The main modification of the refactoring is using passing by value instead of passing by reference. Previously we used pointers extensively to pass objects. The ownership of these objects is not determined, so sometimes these objects get deleted and sometimes not. The problem using passing by reference is that we treat `Point` and `TwoDimensionalVector` reusable. When we pass a `Point` instance for a circle and use the same `Point` instance for another shape such as a rectangle. Who should be responsible for deleting the `Point`? None of them, because either one will get segmentation fault as it deletes an instance that has already been deleted by another shape.
+1. `GrabCommand` for the `Left_Mouse_Down`,
+2. `MoveCommand` for the `Left_Mouse_Move`, and
+3. `DropCommand` for the `Left_Mouse_Up`.
 
-If we do not reuse `Point` or `TwoDimensionalVector`, we still have the problem when we use `ShapeParser` and `ShapeBuilder`. When we use `ShapeParser` or `ShapeBuilder`, they create the instances of `Point` and `TwoDimensionalVector` but they do not delete the instances. From the perspective of responsibility, `ShapeParser` should focus on parsing the input file, and `ShapeBuilder` should focus on building shapes. Neither should take the responsibility of deleting the instances of `Point` and `TwoDimensionalVector`.
+For these three commands, they both inherit from the `Command` interface and have the same receiver, the `DragAndDrop` component, which has been implemented for the drag and drop function. Therefore in the constructor of these commands, they should take the `DragAndDrop` instance as an argument and calls the corresponding method from the `DragAndDrop`.
 
-**We use passing by value instead.** By doing so, we do not need to **new** instance until necessary. If we do not use **new**, we do not need to delete the instance later and do not need to determine who has the ownership. No instance will be remained in Heap anymore; therefore there is no memory leak.
+The `GrabCommand` calls the `grab` from `DragAndDrop`. The `grab` takes the current position of the mouse as the arguments. So before calling the `drag`, the `GrabCommand` should ask the position of the mouse, same for the `MoveCommand` and `DropCommand`, which call the `move` and the `drop` respectively.
 
-Taking the two example below, for the class `A`, the `Circle` instance will be automatically removed when the `function` ends. No instance is remained in Heap. For the class `B`, if the `Rectangle` instance should be returned, it will be copied. The original instance will be automatically removed when the `function` ends. No instance is remained in Heap.
+### 2. Undo
 
-```c++
-class A {
-  void function() {
-    Circle circle(...);
-    ...
-  }
-};
+In this assignment, we also have to make the program support the undo function. The program undoes the previous action when the user clicks the right mouse button. For example, when the user drags and drops a shape from point A to point B, and then the user clicks the right mouse button, the shape should be moved back from B to A.
 
-class B {
-  Rectangle function() {
-    Rectangle rectangle(...);
-    ...
-    return rectangle;
-  }
-};
-```
+![Undo](assets/undo.gif)
 
-### 2. An adapter for visualization
+Below is the class diagram for undo.
 
-Another topic of this assignment is that we are going to visualize our shapes. To realize this function, we use a graphics library called [SDL](https://www.libsdl.org/) (Simple DirectMedia Layer). As expected, the interface of SDL is not directly compatible to our shape family. We need some extra classes to help us to draw shapes on the screen. In the following, we introduce what is SDL and how to use it and explain what extra classes we need.
+![Command history](assets/CommandHistory.png)
 
-SDL is a graphics library used to draw pixels on the screen. It is also cross-platform, working on Windows, Linux, or MacOS. [Here is a simple example](materials/SDL/01_hello_SDL.cpp). In the example, a 640x480 window is opened and painted all over in white. A while-loop is triggered for detecting whether a close event appears. If the close button of the window is clicked, a close event will be generated, and then the while-loop will detect the event and then stop. The window will be closed after the loop stops.
+There is a new command called `UndoCommand` that should be registered on the listener for the `Right_Mouse_Down` event. When the event is triggered, `UndoCommand` executes `undo` from `CommandHistory`.
 
-As you can see, even a simple function: painting all over the window in white, requires a lot of code to correctly set up the SDL library; we do not have enough time to read and learn the whole SDL library. Fortunately, in this assignment the minimal code to draw shapes has been encapsulated in a class named `SDLRenderer`. We can easily call the public methods of the `SDLRenderer` to draw shapes. In other words, **we are NOT required to implement `SDLRenderer`.**
+`CommandHistory` is the class used to record the commands that have been executed. It has a `stack` for storing commands. Since the stack is Last-in-First-out (LIFO), the command executed lastly can be recovered firstly. For drag and drop, the `GrabCommand`, `MoveCommand`, and `DropCommand` should be stored in the history after being executed.
 
-Below is the class diagram of the `SDLRenderer` and the extra classes we needs. Since we first talk about `SDLRenderer`, we explain the diagram from right to left.
+To undo an "drag and drop", we cannot solely undo a single grab, a single move or a single drop every time the user click right button. We need to undo the entire "drag and drop" to put the shape back to the original place. Therefore, we need `MacroCommand` to help us to store the commands of an "drag and drop" as a single command. For example, if we drag and drop a shape from point A to point B, we will have the sequence of the commands like below:
 
-<div align="center">
-  <img src="assets/GraphicsClassDiagram.png" alt="The class diagram of graphics"/>
-</div>
+GrabCommand<br/>
+MoveCommand<br/>
+...<br/>
+MoveCommand<br/>
+DropCommand<br/>
 
-`SDLRenderer`, as we mentioned, contains the minimal code for drawing shapes. It inherits from an interface: `SDL`. We can see there are some public methods, which are relatively intuitive to use. We focus on the `renderDrawLines` and `renderDrawCircle` methods. `renderDrawLines` is responsible for drawing lines by points. If we give it two points, A and B, with size: 2. This method will draw a line from A to B on the screen. If we give it three points, A, B, and C, with size 3, then it will draw *two lines*. The first line goes from A to B, and the second line goes from B to C. On the other hand, `renderDrawCircle` is responsible for drawing a circle by giving a center and a radius. If we give it a center (-8, 3) with the radius 4, the method will draw a circle having the radius 4 at (-8, 3). However, we cannot directly use these two methods, as we have three kinds of shapes and there are only two kinds of methods and as these two methods mainly take points in double while our shapes only provides `Point`s in std::set. We need an adapter to fulfill the gap between shape and SDL.
+These commands should be put in a `MacroCommand` that is stored in the command history rather than be put in the history directly. In the history since we have the `MacroCommand` that records the entire "drag and drop", if we need to undo the "drag and drop", we just undo the `MacroCommand`. We can also see there are two methods on `CommandHistory`, `beginMacroCommand` and `endMacroCommand`, indicating the history that in the following we are performing a series of commands that should be recorded a macro command.
 
-In the middle of the diagram is `SDLAdapter` and its interface class `Canvas`. `Canvas` is the main interface of the graphics function. It defines the standard drawing methods for each kind of shape. If we have a graphics library that have the same interface as `Canvas`, we can directly inherit the library from `Canvas`, but we do not. **We need an adapter, `SDLAdapter`, which is the one requires you to implement.** `SDLAdapter` is responsible for converting the interface of `Canvas` to the interface of `SDL`. For instance, to draw a triangle, `SDLAdapter` should override the `drawTriangle` method from `Canvas` and invoke the `renderDrawLines` method from `SDL`. In the implementation overriding the `drawTriangle` method, we need to convert a set of `Point`s, which is obtained from the triangle, to an array of doubles.
-
-Finally, at the left side of the diagram, we have `Shape` and `ShapePrinter`. Like the collision detection we did before, visualization does not belong to the nature of shape, so we do not want put the relative operations on shape. Instead, we put the operations in a visitor named `ShapePrinter`. `ShapePrinter` takes an instance of `Canvas` to be an argument. By letting the shapes that we want to draw accept the `ShapePrinter`, the printer calls the corresponding drawing methods on the `Canvas` according to the shape the printer meets. **You are NOT required to implement the `ShapePrinter`.** It works out of the box.
-
-[Here is the basic usage](src/graphics.cpp) of `ShapePrinter`, `SDLAdapter`, and `SDLRenderer`. The graphics cpp file takes an input file. The file contains the shapes that we want to create and visualize. In lines 25-34, the input file are parsed to generate shape instances. At line 36, an instance of `SDLRenderer` is created with the scale 30, meaning that the graphics of the shapes will be magnified 30 times. At line 37, an instance of `SDLAdapter` is created with the window size 1024x768 and takes the `SDLRenderer` instance as an argument. At line 38, a `ShapePrinter` is created for drawing the shapes on the canvas, which is `SDLAdapter`. In lines 39-51, each shape accepts the printer to draw them self on the screen. At line 52, the canvas shows the result. At this moment, a window will display, and you will see the shapes as below.
-
-<div align="center">
-  <img src="assets/GraphicsExample.png" alt="Graphics example" width=500/>
-</div>
-
-In this assignment, you are required to implement an `SDLAdapter` to convert the `SDL` interface for visualizing shapes and to refactor the interface of the shape family for eliminating memory leak.
+This assignment asks you to implement `GrabCommand`, `MoveCommand`, and `DropCommand` to complete the drag and drop function and to implement `UndoCommand`, `MacroCommand`, and `CommandHistory` to complete the undo function.
 
 ## File structure
 
@@ -115,16 +90,29 @@ The file structure is as followed. The project has two parts: `src` and `test`. 
  |   |   ├── scanner.h
  |   |   ├── shape_builder.h
  |   |   └── shape_parser.h
-+│   ├── graphics
-+|   |   ├── sdl
-+|   |   |   ├── piece
-+|   |   |   |   ├── cir_piece.h
-+|   |   |   |   ├── line_piece.h
-+|   |   |   |   └── piece.h
-+|   |   |   ├── sdl_renderer.h
-+|   |   |   └── sdl.h
-+|   |   ├── canvas.h
-+|   |   └── sdl_adapter.h
+ │   ├── graphics
++|   |   ├── drag_and_drop
++|   |   |   ├── command
++|   |   |   |   ├── command.h
++|   |   |   |   ├── grab_command.h
++|   |   |   |   ├── move_command.h
++|   |   |   |   ├── drop_command.h
++|   |   |   |   ├── undo_command.h
++|   |   |   |   ├── macro_command.h
++|   |   |   |   ├── command_history.h
++|   |   |   |   └── refresh_command.h
++|   |   |   ├── drag_and_drop.h
++|   |   |   └── mouse_position.h
+ |   |   ├── sdl
+ |   |   |   ├── piece
+ |   |   |   |   ├── cir_piece.h
+ |   |   |   |   ├── line_piece.h
+ |   |   |   |   └── piece.h
+ |   |   |   ├── sdl_renderer.h
+ |   |   |   └── sdl.h
+ |   |   ├── canvas.h
++|   |   ├── event_listener.h
+ |   |   └── sdl_adapter.h
  │   ├── iterator
  |   |   ├── factory
  |   |   |   ├── iterator_factory.h
@@ -140,8 +128,8 @@ The file structure is as followed. The project has two parts: `src` and `test`. 
  |   |   ├── list_compound_iterator.h
  │   │   ├── iterator.h
  │   │   └── null_iterator.h
-+│   ├── utils
-+│   │   └── file_reader.h
+ │   ├── utils
+ │   │   └── file_reader.h
  │   ├── visitor
  │   │   ├── shape_visitor.h
  │   │   └── collision_detector.h
@@ -153,22 +141,32 @@ The file structure is as followed. The project has two parts: `src` and `test`. 
  │   ├── shape.h
  │   ├── triangle.h
  │   ├── two_dimensional_vector.h
-+│   └── graphics.cpp
+ │   └── graphics.cpp
  ├── test
  │   ├── builder
  |   |   ├── ut_scanner.h
  |   |   ├── ut_shape_builder.h
  |   |   └── ut_shape_parser.h
-+│   ├── graphics
-+|   |   ├── mock_sdl_renderer.h
-+|   |   └── ut_sdl_adapter.h
+ │   ├── graphics
++|   |   ├── drag_and_drop
++|   |   |   ├── command
++|   |   |   |   ├── mock_command.h
++|   |   |   |   ├── ut_grab_command.h
++|   |   |   |   ├── ut_move_command.h
++|   |   |   |   ├── ut_drop_command.h
++|   |   |   |   ├── ut_undo_command.h
++|   |   |   |   ├── ut_macro_command.h
++|   |   |   |   └── ut_command_history.h
++|   |   |   └── mock_drag_and_drop.h
+ |   |   ├── mock_sdl_renderer.h
+ |   |   └── ut_sdl_adapter.h
  │   ├── iterator
  │   │   ├── ut_bfs_compound_iterator.h
  │   │   ├── ut_dfs_compound_iterator.h
  │   │   └── ut_null_iterator.h
-+│   ├── utils
-+│   │   ├── test_input.txt
-+│   │   └── ut_file_reader.h
+ │   ├── utils
+ │   │   ├── test_input.txt
+ │   │   └── ut_file_reader.h
  │   ├── visitor
  │   │   └── ut_collision_detector.h
  │   ├── ut_bounding_box.h
@@ -186,83 +184,66 @@ The file structure is as followed. The project has two parts: `src` and `test`. 
 
 **This section describes all implementation conditions that you should abide by. Please read them carefully.**
 
+For moving shapes, please copy the new implementation of the shape family. Since this is out of the scape of assignment 6, you do not need to write unit tests for them.
 
-### 1. The elimination of memory leak
+* [point.h](src/point.h)
+* [two_dimensional_vector.h](src/two_dimensional_vector.h)
+* [shape.h](src/shape.h)
+* [circle.h](src/circle.h)
+* [triangle.h](src/triangle.h)
+* [rectangle.h](src/rectangle.h)
+* [compound_shape.h](src/compound_shape.h)
 
-#### a. Install Valgrind
+Please also copy the files listed below to support the function.
 
-We first need to install `Valgrind`, which is a great tool to check whether there are any memory leaks.
+* [graphics.app](src/graphics.cpp)
+* [event_listener.h](src/graphics/event_listener.h)
+* [the entire sdl folder](src/graphics/sdl)
+* [the entire drag_and_drop folder](src/graphics/drag_and_drop)
 
-For WSL (Ubuntu), just type
+### 1. Drag and drop
 
-```bash
-sudo apt-get install valgrind
-```
+`Command`: a class defining the standard methods for the *Leaf* command and the *Composite* command.
 
-For MacOS, unfortunately, `Valgrind` has not support the newer version of MacOS yet. You need to run your code on CI server and check the console. We (TA) have tried several ways but none of them works. If you can run valgrind on MacOS, please let us know.
+`GrabCommand`: a class used to handle the "Left_Mouse_Down" event. It takes the `DragAndDrop` and `CommandHistory` instances as the arguments. `GrabCommand` does **NOT** own the `DragAndDrop` and `CommandHistory` instances so it does not delete their instance in the destructor.
 
-To know whether our code has memory leak, copy the makefile in this repository and run `make valgrind`. If the code has no memory leak, the output shows:
+* For the `execute`:
+  1. `GradCommand` should ask the current position of the mouse by asking `MousePosition`, which is a singleton object. Then the command should store the xy got from `MousePosition` as the private member.
+  2. `GradCommand` calls the `grab` method from `DragAndDrop` with the xy.
+  3. `GradCommand` then should **copy** itself into the `CommandHistory`. So, `GradCommand` should have a **copy constructor** to copy itself, in which all data member of the command are copied to the new command instance. Remember to call `beginMacroCommand` before save the command.
+* For the `undo`, `GradCommand` should call the `move` and the `drop` method from `DragAndDrop` to put the target shape to the original position.
 
-![Valgrind - no memory leak](assets/ValgrindNoMemoryLeak.png)
+`MoveCommand`: a class used to handle the "Left_Mouse_Move" event. Same as `GrabCommand`, it takes the `DragAndDrop` and `CommandHistory` instances as the arguments and does not own these instances.
 
-The output of valgrind says *"All heap blocks were freed -- no leaks are possible"*.
+* For the `execute`, `MoveCommand` acts like `GradCommand` except that it calls the `move` method instead of the `grab`.
+* **Note that it depends on you whether `MoveCommand` should be put in the history.** Sometimes the move commands will be lost when the mouse moves due to the inherent flaws in the SDL library; as the result, the undo of the `MoveCommand`s could not make the shape return to the origin. The TA tests also do not test whether or not the `MoveCommand` is copied into the history.
+* For the `undo`, `MoveCommand` should call the `move` method from `DragAndDrop`.
 
-If our code has any memory leaks, the output shows:
+`DropCommand`: a class used to handle the `Left_Mouse_Up` event, with the same arguments of two commands above.
 
-![Valgrind - a memory leak](assets/ValgrindAMemoryLeak.png)
+* For the `execute`, `DropCommand` acts like `GradCommand` except that it calls the `drop` method and calls `endMacroCommand` after saving its copied instance.
+* For the `undo`, it should call the `grab` method from `DragAndDrop`.
 
-The output says there is an error (a leak). The leak happens from the test: *"renderPresentShouldBeCalledWhenAdapterIsDisplayed"*.
+### 2. Undo
 
-Whenever we have added the required **delete**s, we `make valgrind` to check whether there are any leaks. **There should be no leaks.**
+`UndoCommand`: a class used to handle the `Right_Mouse_Down` event. It only takes a `CommandHistory` instance as an argument and does not own the instance.
 
-#### b. The refactoring
+* For the `execute` of `UndoCommand`, the command should call the `undo` from the `CommandHistory`. It does **NOT** copy itself into the history.
+* For the `undo`, `UndoCommand` has no implementation because the `UndoCommand` is solely used to handle the event.
 
-Basically, we need to replace all pointers of `Point` and `TwoDimensionalVector` with the plain value in the source code (**src and test**). For example, `Point *p` should be replaced with `Point p`.
+`CommandHistory`: a class used to record all executed commands in a stack. **It should have the ownership of all commands it stores in the stack**, meaning that it should delete all command instances in the destructor.
 
-The range of the refactoring includes
+* When the client calls `addCommand` without the macro triggered, it simply put the command in the stack.
+* When the client calls `beginMacroCommand`, a `MacroCommand` instance should be created and put in the stack. In the following `addCommand`, the command passed in should be put in the macro command at the top of the stack.
+* When the client calls `endMacroCommand`, the "Macro" mode ends. The following commands passed in should be directly put in the stack.
+* When the client calls `undo`, a command should be popped out from the stack and its undo should be called. The popped out command will not be delete immediately. In order to test the `CommandHistory`, the popped command should be placed in another container, say another stack, and be deleted in the destructor.
 
-* The constructor of `TwoDimensionalVector`, `Circle`, `Triangle`, and `Rectangle`.
-* All comparisons between two `Point`s.
-* All accesses to the `Point` and `TwoDimensionalVector` variables.
-* The element type of `getPoints` of all shapes. (From `const Point*` to `Point`)
-* A new operator overloading for `<` on `Point`. We can put `Point`s in `std::set<Point>` only if we overload the operator`<` on `Point`. Please check [here](src/point.h) to copy the implementation of operator`<`.
+`MacroCommand`: a class used to bundle multiple commands as a single command. In this assignment, we use it to save a series of commands as single for undo. **It should have the ownership of the commands it has.**
 
-### 2. An adapter for visualization
-
-#### a. Install SDL
-
-Please check [here](https://gist.github.com/james-jhang/e16605018e4bee141e61f40a2c0a5789) to install SDL.
-
-To run the visualization, type `make graphics`.
-
-#### b. The adapter
-
-`Canvas`: an interface class defining the standard methods frow drawing shapes. `drawCircle`, `drawTriangle`, and `drawRectangle` take the corresponding shapes as the arguments.
-
-`SDLAdapter`: a class converting the `SDL` interface. `SDLAdapter` inherits from `Canvas`. `drawCircle`, `drawTriangle`, and `drawRectangle` take the corresponding shapes as the arguments and should invoke the corresponding drawing methods from the *adaptee*: `SDL`.
-
-* For `drawCircle`, since we can only get `Point`s used for `BoundingBox` from the pass-in circle. We need to calculate the center of the circle from the set of the `Point`s and pass it to the `renderDrawCircle`.
-* For `drawTriangle`, since we can get all points of the pass-in triangle, we just convert these `Point`s into a 1D array in double. For example, if we get `Point`s: (4, -2), (6, -4), and (6, -8), we need to flat them to an array: [4, -2, 6, -4, 6, -8]. We then pass this array to the `renderDrawLines` with the size 6.
-* For `drawRectangle`, the conversion is same as the `drawTriangle`. We need to flat the `Point`s got from the rectangle and pass it to the `renderDrawLines`.
-* For the last method: `display`, the `renderPresent` of `SDL` should be called in `display`.
-
-To test the `SDLAdapter`, we need a help from a mock class `MockSDLRenderer`. Since we cannot run SDL library in unit test, we use the mock class instead. Below is a simple test showing how to use the mock. We create the mock class and pass it to the `SDLAdapter` as its adaptee. When the `SDLAdapter` initializes, it calls the `init` function from the `SDL` instance, which is the `MockSDLRenderer`. `MockSDLRenderer` records the call by a boolean. Then, we can do an assertion by checking the `isInitCalled` from the mock.
-
-```c++
-TEST(SDLAdapterTest, InitShouldBeCalled) {
-  SDL *mockSDLRenderer = new MockSDLRenderer();
-  Canvas *canvas = new SDLAdapter(1024, 768, mockSDLRenderer);
-  // SDLAdapter calls the init function of the SDL instance.
-  ASSERT_TRUE(mockSDLRenderer->isInitCalled());
-  delete canvas;
-  delete mockSDLRenderer;
-}
-```
-
-You can check other methods on the `MockSDLRenderer`. Make sure there is no change on the interface of `MockSDLRenderer`. Otherwise the TA tests could be failed.
+Like `CompoundShape`, when the client calls the `execute` or `undo` of macro, the macro should call the `execute` or `undo` of the children command.
 
 - **Each class method declared in header files must be implemented and have at least one test case.**
-- **For the refactoring, we will use the existing tests to check whether we do not break any functions, so no more tests are required.**
+- **No more tests are required for the classes other than the mentioned above.**
 - For all classes above, an exception should raise if we give any illegal input to the constructor. The exception type is not specified, which can be as simple as `string`.
 - If the type of returned value is `double`, your assertion should compare the value with the error not greater than `0.001`.
 - All `double` values should be rounded to two decimal place and be padded with 0 when turned into `string`, e.g., `-1.999` will be `"-2.00"`.
@@ -307,3 +288,4 @@ Please use the [workspace](http://140.124.181.100/course/environment_setting) yo
 - [Breadth-First Search](https://www.wikiwand.com/en/Breadth-first_search)
 - [Stack and Heap Memory](https://courses.engr.illinois.edu/cs225/fa2022/resources/stack-heap/)
 - [SDL tutorials](https://lazyfoo.net/tutorials/SDL/index.php)
+- [Drag and drop](https://www.wikiwand.com/en/Drag_and_drop)
