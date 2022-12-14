@@ -17,9 +17,16 @@ class GrabCommand : public Command {
   void execute() override {
     auto* curr_mouse_pos = MousePosition::getInstance();
     drag_and_drop_->grab(curr_mouse_pos->getX(), curr_mouse_pos->getY());
+    was_executed_ = true;
+    prev_x_ = curr_mouse_pos->getX();
+    prev_y_ = curr_mouse_pos->getY();
   }
 
-  void undo() override {}
+  void undo() override {
+    if (was_executed_) {
+      drag_and_drop_->move(prev_x_, prev_y_);
+    }
+  }
 
   double getX() const {}
 
@@ -28,6 +35,10 @@ class GrabCommand : public Command {
  private:
   DragAndDrop* drag_and_drop_;
   CommandHistory* command_history_;
+  bool was_executed_ = false;
+  /* previous x and y are meaningless unless was executed */
+  double prev_x_ = 0;
+  double prev_y_ = 0;
 };
 
 #endif /* end of include guard: \
