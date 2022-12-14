@@ -5,48 +5,48 @@
 #include "../../../../src/graphics/drag_and_drop/mouse_position.h"
 #include "../mock_drag_and_drop.h"
 
-TEST(GrabCommandTest, ExecuteShouldCallGrabWithCorrectMousePosition) {
-  MockDragAndDrop mock_drag_and_drop{};
-  CommandHistory history{};
-  const double grab_x = 85.23;
-  const double grab_y = 232.7;
-  MousePosition::getInstance()->setPos(grab_x, grab_y);
-  GrabCommand grab_command{&mock_drag_and_drop, &history};
+class GrabCommandTest : public testing::Test {
+ protected:
+  const double DELTA = 0.001;
 
-  grab_command.execute();
+  MockDragAndDrop mock_drag_and_drop_{};
+  CommandHistory history_{};
+  GrabCommand grab_command_{&mock_drag_and_drop_, &history_};
+};
 
-  ASSERT_NEAR(grab_x, mock_drag_and_drop.getGrabX(), 0.001);
-  ASSERT_NEAR(grab_y, mock_drag_and_drop.getGrabY(), 0.001);
+TEST_F(GrabCommandTest, ExecuteShouldCallGrabWithCurrentMousePosition) {
+  const double curr_x = 85.23;
+  const double curr_y = 232.7;
+  MousePosition::getInstance()->setPos(curr_x, curr_y);
+
+  grab_command_.execute();
+
+  ASSERT_NEAR(curr_x, mock_drag_and_drop_.getGrabX(), DELTA);
+  ASSERT_NEAR(curr_y, mock_drag_and_drop_.getGrabY(), DELTA);
 }
 
-TEST(GrabCommandTest, UndoWithoutPreCalledExecuteShouldHaveNoEffect) {
-  MockDragAndDrop mock_drag_and_drop{};
-  CommandHistory history{};
+TEST_F(GrabCommandTest, UndoWithoutPreCalledExecuteShouldHaveNoEffect) {
   const double prev_x = 10;
   const double prev_y = 20;
-  const double NOT_CALLED = 0; /* initial value used in mock_drag_and_drop */
+  const double NOT_CALLED = 0; /* initial value used in MockDragAndDrop */
   MousePosition::getInstance()->setPos(prev_x, prev_y);
-  GrabCommand grab_command{&mock_drag_and_drop, &history};
 
-  grab_command.undo();
+  grab_command_.undo();
 
   auto* curr_pos = MousePosition::getInstance();
-  ASSERT_NEAR(NOT_CALLED, mock_drag_and_drop.getMoveX(), 0.001);
-  ASSERT_NEAR(NOT_CALLED, mock_drag_and_drop.getMoveY(), 0.001);
+  ASSERT_NEAR(NOT_CALLED, mock_drag_and_drop_.getMoveX(), DELTA);
+  ASSERT_NEAR(NOT_CALLED, mock_drag_and_drop_.getMoveY(), DELTA);
 }
 
-TEST(GrabCommandTest, UndoShouldCallDropWithPreviousMousePosition) {
-  MockDragAndDrop mock_drag_and_drop{};
-  CommandHistory history{};
+TEST_F(GrabCommandTest, UndoShouldCallDropWithPreviousMousePosition) {
   const double prev_x = 10;
   const double prev_y = 20;
   MousePosition::getInstance()->setPos(prev_x, prev_y);
-  GrabCommand grab_command{&mock_drag_and_drop, &history};
   /* to undo, you have to execute first */
-  grab_command.execute();
+  grab_command_.execute();
 
-  grab_command.undo();
+  grab_command_.undo();
 
-  ASSERT_NEAR(prev_x, mock_drag_and_drop.getMoveX(), 0.001);
-  ASSERT_NEAR(prev_y, mock_drag_and_drop.getMoveY(), 0.001);
+  ASSERT_NEAR(prev_x, mock_drag_and_drop_.getMoveX(), DELTA);
+  ASSERT_NEAR(prev_y, mock_drag_and_drop_.getMoveY(), DELTA);
 }
