@@ -3,8 +3,8 @@
 CXXFLAGS = -std=c++17 -Wfatal-errors -g -O0 -fno-elide-constructors # let's do things careful
 
 # FIXME: test/**/*.h doesn't work for deep files
-SRC = $(shell ls src/*.h src/*/*.h src/*/*/*.h)
-TEST = $(shell ls test/*.h test/*/*.h test/*/*/*.h)
+SRC = $(shell ls src/*.h src/*/*.h src/*/*/*.h src/*/*/*/*.h)
+TEST = $(shell ls test/*.h test/*/*.h test/*/*/*.h test/*/*/*/*.h)
 OBJ = $(shell ls src/iterator/factory/*.cpp \
 	| $(STRIP_PARENT_PATH) \
 	| $(REPLACE_CPP_EXTENSION_WITH_O))
