@@ -15,11 +15,12 @@ class GrabCommand : public Command {
       default; /* shallow copy is allowed since the pointers are shared */
 
   void execute() override {
+    /* so undo-able */
+    was_executed_ = true;
+    RecordPosition_();
+
     auto* curr_mouse_pos = MousePosition::getInstance();
     drag_and_drop_->grab(curr_mouse_pos->getX(), curr_mouse_pos->getY());
-    was_executed_ = true;
-    prev_x_ = curr_mouse_pos->getX();
-    prev_y_ = curr_mouse_pos->getY();
   }
 
   void undo() override {
@@ -35,10 +36,18 @@ class GrabCommand : public Command {
  private:
   DragAndDrop* drag_and_drop_;
   CommandHistory* command_history_;
+
+  /* states for undo */
   bool was_executed_ = false;
   /* previous x and y are meaningless unless was executed */
   double prev_x_ = 0;
   double prev_y_ = 0;
+
+  void RecordPosition_() {
+    auto* curr_mouse_pos = MousePosition::getInstance();
+    prev_x_ = curr_mouse_pos->getX();
+    prev_y_ = curr_mouse_pos->getY();
+  }
 };
 
 #endif /* end of include guard: \
