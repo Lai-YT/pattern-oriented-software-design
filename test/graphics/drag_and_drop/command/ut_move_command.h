@@ -24,3 +24,31 @@ TEST_F(MoveCommandTest, ExecuteShouldCallMoveWithCurrentMousePosition) {
   ASSERT_NEAR(curr_x, mock_drag_and_drop_.getMoveX(), DELTA);
   ASSERT_NEAR(curr_y, mock_drag_and_drop_.getMoveY(), DELTA);
 }
+
+TEST_F(MoveCommandTest, UndoWithoutPreCalledExecuteShouldHaveNoEffect) {
+  const double prev_x = 10;
+  const double prev_y = 20;
+  const double NOT_CALLED = 0; /* initial value used in MockDragAndDrop */
+  MousePosition::getInstance()->setPos(prev_x, prev_y);
+
+  move_command_.undo();
+
+  auto* curr_pos = MousePosition::getInstance();
+  ASSERT_NEAR(NOT_CALLED, mock_drag_and_drop_.getMoveX(), DELTA);
+  ASSERT_NEAR(NOT_CALLED, mock_drag_and_drop_.getMoveY(), DELTA);
+}
+
+TEST_F(MoveCommandTest, UndoShouldCallMoveWithPreviousMousePosition) {
+  const double prev_x = 10;
+  const double prev_y = 20;
+  const double NOT_CALLED = 0; /* initial value used in MockDragAndDrop */
+  MousePosition::getInstance()->setPos(prev_x, prev_y);
+  /* to undo, you have to execute first */
+  move_command_.execute();
+  mock_drag_and_drop_.move(NOT_CALLED, NOT_CALLED); /* clear */
+
+  move_command_.undo();
+
+  ASSERT_NEAR(prev_x, mock_drag_and_drop_.getMoveX(), DELTA);
+  ASSERT_NEAR(prev_y, mock_drag_and_drop_.getMoveY(), DELTA);
+}
