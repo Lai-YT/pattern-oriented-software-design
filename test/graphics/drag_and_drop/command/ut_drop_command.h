@@ -50,3 +50,17 @@ TEST_F(DropCommandTest, UndoShouldCallGrabWithWhereWasDropped) {
   ASSERT_NEAR(dropped_x, mock_drag_and_drop_.getGrabX(), DELTA);
   ASSERT_NEAR(dropped_y, mock_drag_and_drop_.getGrabY(), DELTA);
 }
+
+TEST_F(DropCommandTest,
+       GetXAndYShouldReturnThePositionWhereTheCommandWasExecuted) {
+  const double executed_x = 10;
+  const double executed_y = 20;
+  MousePosition::getInstance()->setPos(executed_x, executed_y);
+  drop_command_.execute();
+
+  const double got_x = drop_command_.getX();
+  const double got_y = drop_command_.getY();
+
+  ASSERT_NEAR(executed_x, got_x, DELTA);
+  ASSERT_NEAR(executed_y, got_y, DELTA);
+}

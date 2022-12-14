@@ -29,9 +29,13 @@ class DropCommand : public Command {
     }
   }
 
-  double getX() const {}
+  double getX() const {
+    return dropped_x_;
+  }
 
-  double getY() const {}
+  double getY() const {
+    return dropped_y_;
+  }
 
  private:
   DragAndDrop* drag_and_drop_;
