@@ -3,6 +3,7 @@
 #include "builder/ut_scanner.h"
 #include "builder/ut_shape_builder.h"
 #include "builder/ut_shape_parser.h"
+#include "graphics/drag_and_drop/command/ut_grab_command.h"
 #include "graphics/ut_sdl_adapter.h"
 #include "iterator/factory/ut_iterator_factory.h"
 #include "iterator/ut_bfs_compound_iterator.h"
