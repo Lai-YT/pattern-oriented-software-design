@@ -29,9 +29,13 @@ class GrabCommand : public Command {
     }
   }
 
-  double getX() const {}
+  double getX() const {
+    return prev_x_;
+  }
 
-  double getY() const {}
+  double getY() const {
+    return prev_y_;
+  }
 
  private:
   DragAndDrop* drag_and_drop_;
