@@ -13,6 +13,6 @@ protected:
 
 public:
     Piece(SDL_Renderer *renderer) : _renderer(renderer) {}
-    ~Piece () {};
+    virtual ~Piece () {};
     virtual void draw() = 0;
 };

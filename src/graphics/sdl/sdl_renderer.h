@@ -7,6 +7,7 @@
 #include "sdl.h"
 #include "./piece/cir_piece.h"
 #include "./piece/line_piece.h"
+#include "../event_listener.h"
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
@@ -25,16 +26,17 @@ private:
     SDL_Window *_window = NULL;
     SDL_Renderer *_renderer = NULL;
     std::vector<Piece *> _pieces;
+    EventListener *_eventListener;
 
 public:
-    SDLRenderer(double scale = 1.0) : _scale(scale) {}
+    SDLRenderer(double scale, EventListener *eventListener) : _scale(scale), _eventListener(eventListener) {}
 
     ~SDLRenderer()
     {
         destroy();
     }
 
-    void init(int width, int height)
+    void init(int width, int height) override
     {
         SCREEN_WIDTH = width;
         SCREEN_HEIGHT = height;
@@ -103,7 +105,7 @@ public:
         }
     };
 
-    void renderDrawLines(double *points, int size)
+    void renderDrawLines(double *points, int size) override
     {
         SDL_Point *sdlPoints = new SDL_Point[size / 2 + 1];
         for (int i = 0; i < size; i += 2)
@@ -119,7 +121,7 @@ public:
             new LinePiece(_renderer, sdlPoints, size / 2 + 1));
     };
 
-    void renderDrawCircle(double centreX, double centreY, double radius)
+    void renderDrawCircle(double centreX, double centreY, double radius) override
     {
         _pieces.push_back(
             new CirPiece(
@@ -129,7 +131,50 @@ public:
                 (int)(radius * _scale)));
     };
 
-    void renderPresent()
+    void handle(SDL_Event e)
+    {
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        double rx = (x - _xOffset) / _scale;
+        double ry = (_yOffset - y) / _scale;
+        if (e.type == SDL_MOUSEMOTION && e.button.button == SDL_BUTTON_LEFT)
+        {
+            _eventListener->leftMouseMove(rx, ry);
+        }
+        else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
+        {
+            _eventListener->leftMouseDown(rx, ry);
+        }
+        else if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_RIGHT)
+        {
+            _eventListener->rightMouseDown(rx, ry);
+        }
+        else if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT)
+        {
+            _eventListener->leftMouseUp(rx, ry);
+        }
+    }
+
+    void refresh()
+    {
+        for (std::vector<Piece *>::iterator it = _pieces.begin(); it != _pieces.end(); it++)
+            delete (*it);
+        _pieces.clear();
+        SDL_SetRenderDrawColor(_renderer, 0x00, 0x1D, 0x3D, 0xFF);
+        SDL_RenderClear(_renderer);
+        SDL_SetRenderDrawColor(_renderer, 0xED, 0xED, 0xE9, 0xFF);
+        for (int i = 0; i < SCREEN_HEIGHT; i += 4)
+            SDL_RenderDrawPoint(_renderer, SCREEN_WIDTH / 2, i);
+        for (int i = 0; i < SCREEN_WIDTH; i += 4)
+            SDL_RenderDrawPoint(_renderer, i, SCREEN_HEIGHT / 2);
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        double rx = (x - _xOffset) / _scale;
+        double ry = (_yOffset - y) / _scale;
+        _eventListener->refresh(rx, ry);
+    }
+
+    void renderPresent() override
     {
         SDL_Event e;
         bool quit = false;
@@ -137,23 +182,20 @@ public:
         while (!quit)
         {
             while (SDL_PollEvent(&e) != 0)
+            {
                 if (e.type == SDL_QUIT)
                     quit = true;
-            SDL_SetRenderDrawColor(_renderer, 0x00, 0x1D, 0x3D, 0xFF);
-            SDL_RenderClear(_renderer);
-            SDL_SetRenderDrawColor(_renderer, 0xED, 0xED, 0xE9, 0xFF);
-            for (int i = 0; i < SCREEN_HEIGHT; i += 4)
-                SDL_RenderDrawPoint(_renderer, SCREEN_WIDTH / 2, i);
-            for (int i = 0; i < SCREEN_WIDTH; i += 4)
-                SDL_RenderDrawPoint(_renderer, i, SCREEN_HEIGHT / 2);
+                handle(e);
+            }
+            refresh();
             for (std::vector<Piece *>::iterator it = _pieces.begin(); it != _pieces.end(); it++)
                 (*it)->draw();
             SDL_RenderPresent(_renderer);
-            SDL_Delay(100);
+            SDL_Delay(50);
         }
     }
 
-    void destroy()
+    void destroy() override
     {
         for (std::vector<Piece *>::iterator it = _pieces.begin(); it != _pieces.end(); it++)
             delete (*it);

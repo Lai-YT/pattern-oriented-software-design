@@ -64,6 +64,11 @@ class TwoDimensionalVector {
     return cross(*that);
   }
 
+  void move(const double delta_x, const double delta_y) {
+    head_.move(delta_x, delta_y);
+    tail_.move(delta_x, delta_y);
+  }
+
  private:
   Point head_;
   Point tail_;

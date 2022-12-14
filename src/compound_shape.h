@@ -69,6 +69,12 @@ class CompoundShape : public Shape {
     return "CompoundShape (" + inner_info + ")";
   }
 
+  void move(const double delta_x, const double delta_y) override {
+    for (auto* shape : shapes_) {
+      shape->move(delta_x, delta_y);
+    }
+  }
+
   /** Returns all vertices of the shapes contained by compound shape. */
   std::set<Point> getPoints() const override {
     auto vertices = std::set<Point>{};

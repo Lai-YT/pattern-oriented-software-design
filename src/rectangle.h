@@ -51,6 +51,11 @@ class Rectangle : public Shape {
     return width_side_.length();
   }
 
+  void move(const double delta_x, const double delta_y) override {
+    length_side_.move(delta_x, delta_y);
+    width_side_.move(delta_x, delta_y);
+  }
+
   /** Returns the four vertices of the rectangle. */
   std::set<Point> getPoints() const override {
     /* Three of the vertices are held by the under-laying vectors

@@ -37,6 +37,11 @@ class Point {
     return sqrt(Pow2_(x_ - other.x_) + Pow2_(y_ - other.y_));
   }
 
+  void move(const double delta_x, const double delta_y) {
+    x_ += delta_x;
+    y_ += delta_y;
+  }
+
   /**
    * Points with their x, y values the same correspondingly after rounded to the
    * second decimal places are considered as equal.

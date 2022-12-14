@@ -37,6 +37,10 @@ class Circle : public Shape {
     return "Circle (" + represent_vector_.info() + ")";
   }
 
+  virtual void move(const double delta_x, const double delta_y) override {
+    represent_vector_.move(delta_x, delta_y);
+  }
+
   /**
    * Returns the upper right and lower left points which represent the bounding
    * box of the circle.

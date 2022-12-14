@@ -51,6 +51,12 @@ class Triangle : public Shape {
     return "Triangle (" + side_1_.info() + ", " + side_2_.info() + ")";
   }
 
+  void move(const double delta_x, const double delta_y) override {
+    for (auto* side : {&side_1_, &side_2_, &side_3_}) {
+      side->move(delta_x, delta_y);
+    }
+  }
+
   /** Returns the three vertices of the triangle. */
   std::set<Point> getPoints() const override {
     const Point common_between_side_1_and_2 =
