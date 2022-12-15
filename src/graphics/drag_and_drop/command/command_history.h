@@ -14,11 +14,22 @@ class CommandHistory {
     macros_under_construction_.push(new MacroCommand{});
   }
 
-  void addCommand(Command* command) {}
+  void addCommand(Command* const command) {
+    if (macros_under_construction_.empty()) {
+      histories_.push(command);
+    } else {
+      macros_under_construction_.top()->addCommand(command);
+    }
+  }
 
   void endMacroCommand() {
-    histories_.push(macros_under_construction_.top());
+    auto* macro = macros_under_construction_.top();
     macros_under_construction_.pop();
+    if (macros_under_construction_.empty()) {
+      histories_.push(macro);
+    } else {
+      macros_under_construction_.top()->addCommand(macro);
+    }
   }
 
   void undo() {}
