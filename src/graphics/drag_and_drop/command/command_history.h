@@ -17,21 +17,9 @@ class CommandHistory {
       delete; /* TODO: need polymorphic cloning support */
 
   ~CommandHistory() {
-    while (!macros_under_construction_.empty()) {
-      auto* macro = macros_under_construction_.top();
-      macros_under_construction_.pop();
-      delete macro;
-    }
-    while (!histories_.empty()) {
-      auto* macro = histories_.top();
-      histories_.pop();
-      delete macro;
-    }
-    while (!undid_histories_.empty()) {
-      auto* macro = undid_histories_.top();
-      undid_histories_.pop();
-      delete macro;
-    }
+    DeleteStackOf_(undid_histories_);
+    DeleteStackOf_(macros_under_construction_);
+    DeleteStackOf_(histories_);
   }
 
   void beginMacroCommand() {
@@ -50,11 +38,7 @@ class CommandHistory {
   void endMacroCommand() {
     auto* macro = macros_under_construction_.top();
     macros_under_construction_.pop();
-    if (macros_under_construction_.empty()) {
-      histories_.push(macro);
-    } else {
-      macros_under_construction_.top()->addCommand(macro);
-    }
+    addCommand(macro);
   }
 
   /** @brief Undoes the latest history. */
@@ -76,6 +60,14 @@ class CommandHistory {
   std::stack<Command*> histories_{};
   std::stack<MacroCommand*> macros_under_construction_{};
   std::stack<Command*> undid_histories_{};
+
+  template <typename T>
+  void DeleteStackOf_(std::stack<T*>& targets) {
+    while (!targets.empty()) {
+      delete targets.top();
+      targets.pop();
+    }
+  }
 };
 
 #endif /* end of include guard: \
