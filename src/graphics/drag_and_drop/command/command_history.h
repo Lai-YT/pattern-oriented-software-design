@@ -8,12 +8,24 @@
 
 class CommandHistory {
  public:
-  ~CommandHistory() {}
+  ~CommandHistory() {
+    while (!macros_under_construction_.empty()) {
+      auto* macro = macros_under_construction_.top();
+      macros_under_construction_.pop();
+      delete macro;
+    }
+    while (!histories_.empty()) {
+      auto* macro = histories_.top();
+      histories_.pop();
+      delete macro;
+    }
+  }
 
   void beginMacroCommand() {
     macros_under_construction_.push(new MacroCommand{});
   }
 
+  /** @brief Takes the ownership of the commands. */
   void addCommand(Command* const command) {
     if (macros_under_construction_.empty()) {
       histories_.push(command);
