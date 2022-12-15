@@ -25,7 +25,7 @@ TEST(MacroCommandTest, ExecuteShouldExecuteAllChildCommands) {
   macro_command.execute();
 
   ASSERT_TRUE(child_command_1->isExecuteCalled());
-  ASSERT_TRUE(child_command_1->isExecuteCalled());
+  ASSERT_TRUE(child_command_2->isExecuteCalled());
   ASSERT_TRUE(child_command_3->isExecuteCalled());
   ASSERT_TRUE(child_command_4->isExecuteCalled());
 }
@@ -48,7 +48,7 @@ TEST(MacroCommandTest, UndoShouldUndoAllChildCommands) {
   macro_command.undo();
 
   ASSERT_TRUE(child_command_1->isUndoCalled());
-  ASSERT_TRUE(child_command_1->isUndoCalled());
+  ASSERT_TRUE(child_command_2->isUndoCalled());
   ASSERT_TRUE(child_command_3->isUndoCalled());
   ASSERT_TRUE(child_command_4->isUndoCalled());
 }
