@@ -35,7 +35,7 @@ class MacroCommand : public Command {
   }
 
   /**
-   * @brief Undoes all commands contained by the MacroCommand in the revered
+   * @brief Undoes all commands contained by the MacroCommand in the reversed
    * order of they are added.
    */
   void undo() override {
@@ -48,7 +48,7 @@ class MacroCommand : public Command {
    * @brief Returns all first level commands contained by the MacroCommand in
    * the order of they are added.
    *
-   * NOTE: you should not delete the commands since the ownership are kept by
+   * @note you should not delete the commands since the ownership are kept by
    * the MacroCommand.
    */
   std::vector<Command*> getCommands() override {
