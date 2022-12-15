@@ -5,16 +5,58 @@
 
 class MacroCommand : public Command {
  public:
-  MacroCommand() {}
-  ~MacroCommand() {}
+  MacroCommand() = default;
 
-  void execute() override {}
+  MacroCommand(const MacroCommand& other) =
+      delete; /* TODO: need polymorphic cloning support */
 
-  void addCommand(Command* command) override {}
+  MacroCommand& operator=(const MacroCommand& other) =
+      delete; /* TODO: need polymorphic cloning support */
 
-  void undo() override {}
+  ~MacroCommand() {
+    for (auto* command : commands_) {
+      delete command;
+    }
+  }
 
-  std::vector<Command*> getCommands() override {}
+  /**
+   * @brief Executes all commands contained by the MacroCommand in the order
+   * they are added.
+   */
+  void execute() override {
+    for (auto* command : commands_) {
+      command->execute();
+    }
+  }
+
+  /** @brief Takes the ownership of the commands. */
+  void addCommand(Command* const command) override {
+    commands_.push_back(command);
+  }
+
+  /**
+   * @brief Undoes all commands contained by the MacroCommand in the reversed
+   * order they are added.
+   */
+  void undo() override {
+    for (auto itr = commands_.rbegin(); itr != commands_.rend(); itr++) {
+      (*itr)->undo();
+    }
+  }
+
+  /**
+   * @brief Returns all first level commands contained by the MacroCommand in
+   * the order they are added.
+   *
+   * @note you should not delete the commands since the ownership are kept by
+   * the MacroCommand.
+   */
+  std::vector<Command*> getCommands() override {
+    return commands_;
+  }
+
+ private:
+  std::vector<Command*> commands_{};
 };
 
 #endif /* end of include guard: \
