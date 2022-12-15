@@ -20,7 +20,7 @@ class MacroCommand : public Command {
   }
 
   /**
-   * @brief Executes all commands contained by the MacroCommand in the order of
+   * @brief Executes all commands contained by the MacroCommand in the order
    * they are added.
    */
   void execute() override {
@@ -36,7 +36,7 @@ class MacroCommand : public Command {
 
   /**
    * @brief Undoes all commands contained by the MacroCommand in the reversed
-   * order of they are added.
+   * order they are added.
    */
   void undo() override {
     for (auto itr = commands_.rbegin(); itr != commands_.rend(); itr++) {
@@ -46,7 +46,7 @@ class MacroCommand : public Command {
 
   /**
    * @brief Returns all first level commands contained by the MacroCommand in
-   * the order of they are added.
+   * the order they are added.
    *
    * @note you should not delete the commands since the ownership are kept by
    * the MacroCommand.

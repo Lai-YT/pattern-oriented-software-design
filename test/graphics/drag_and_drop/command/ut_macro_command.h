@@ -48,7 +48,7 @@ TEST_F(MacroCommandTest, UndoShouldUndoAllChildCommands) {
 }
 
 TEST_F(MacroCommandTest,
-       GetCommandsShouldReturnFirstLevelChildCommandsInTheOrderOfTheyAreAdded) {
+       GetCommandsShouldReturnFirstLevelChildCommandsInTheOrderTheyAreAdded) {
   const std::vector<Command*> commands = macro_command_.getCommands();
 
   ASSERT_EQ(3, commands.size());
