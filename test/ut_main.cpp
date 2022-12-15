@@ -5,6 +5,7 @@
 #include "builder/ut_shape_parser.h"
 #include "graphics/drag_and_drop/command/ut_drop_command.h"
 #include "graphics/drag_and_drop/command/ut_grab_command.h"
+#include "graphics/drag_and_drop/command/ut_macro_command.h"
 #include "graphics/drag_and_drop/command/ut_move_command.h"
 #include "graphics/ut_sdl_adapter.h"
 #include "iterator/factory/ut_iterator_factory.h"

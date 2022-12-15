@@ -5,16 +5,35 @@
 
 class MacroCommand : public Command {
  public:
-  MacroCommand() {}
-  ~MacroCommand() {}
+  MacroCommand() = default;
 
-  void execute() override {}
+  ~MacroCommand() {
+    for (auto* command : commands_) {
+      delete command;
+    }
+  }
 
-  void addCommand(Command* command) override {}
+  /**
+   * @brief Executes all commands contained by the MacroCommand in the order of
+   * the are added.
+   */
+  void execute() override {
+    for (auto* command : commands_) {
+      command->execute();
+    }
+  }
+
+  /** @brief Takes the ownership of the commands. */
+  void addCommand(Command* const command) override {
+    commands_.push_back(command);
+  }
 
   void undo() override {}
 
   std::vector<Command*> getCommands() override {}
+
+ private:
+  std::vector<Command*> commands_{};
 };
 
 #endif /* end of include guard: \
