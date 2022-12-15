@@ -7,6 +7,12 @@ class MacroCommand : public Command {
  public:
   MacroCommand() = default;
 
+  MacroCommand(const MacroCommand& other) =
+      delete; /* TODO: need polymorphic cloning support */
+
+  MacroCommand& operator=(const MacroCommand& other) =
+      delete; /* TODO: need polymorphic cloning support */
+
   ~MacroCommand() {
     for (auto* command : commands_) {
       delete command;
