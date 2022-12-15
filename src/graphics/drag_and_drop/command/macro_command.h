@@ -28,7 +28,15 @@ class MacroCommand : public Command {
     commands_.push_back(command);
   }
 
-  void undo() override {}
+  /**
+   * @brief Undoes all commands contained by the MacroCommand in the revered
+   * order of the are added.
+   */
+  void undo() override {
+    for (auto itr = commands_.rbegin(); itr != commands_.rend(); itr++) {
+      (*itr)->undo();
+    }
+  }
 
   std::vector<Command*> getCommands() override {}
 
