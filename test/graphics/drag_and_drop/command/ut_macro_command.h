@@ -9,72 +9,50 @@
 
 /* TODO: how do I test the order which the child commands are executed? */
 
-TEST(MacroCommandTest, ExecuteShouldExecuteAllChildCommands) {
+class MacroCommandTest : public testing::Test {
+ protected:
+  MacroCommandTest() {
+    child_macro_command_->addCommand(child_command_2_);
+    child_macro_command_->addCommand(child_command_3_);
+    macro_command_.addCommand(child_command_1_);
+    macro_command_.addCommand(child_macro_command_);
+    macro_command_.addCommand(child_command_4_);
+  }
   /* create child commands */
-  auto* child_command_1 = new MockCommand{};
-  auto* child_command_2 = new MockCommand{};
-  auto* child_command_3 = new MockCommand{};
-  auto* child_macro_command = new MacroCommand{};
-  child_macro_command->addCommand(child_command_2);
-  child_macro_command->addCommand(child_command_3);
-  auto child_command_4 = new MockCommand{};
+  MockCommand* child_command_1_ = new MockCommand{};
+  MockCommand* child_command_2_ = new MockCommand{};
+  MockCommand* child_command_3_ = new MockCommand{};
+  MacroCommand* child_macro_command_ = new MacroCommand{};
+  MockCommand* child_command_4_ = new MockCommand{};
+
   /* create the test target */
-  auto macro_command = MacroCommand{};
-  macro_command.addCommand(child_command_1);
-  macro_command.addCommand(child_macro_command);
-  macro_command.addCommand(child_command_4);
+  MacroCommand macro_command_{};
+};
 
-  macro_command.execute();
+TEST_F(MacroCommandTest, ExecuteShouldExecuteAllChildCommands) {
+  macro_command_.execute();
 
-  ASSERT_TRUE(child_command_1->isExecuteCalled());
-  ASSERT_TRUE(child_command_2->isExecuteCalled());
-  ASSERT_TRUE(child_command_3->isExecuteCalled());
-  ASSERT_TRUE(child_command_4->isExecuteCalled());
+  ASSERT_TRUE(child_command_1_->isExecuteCalled());
+  ASSERT_TRUE(child_command_2_->isExecuteCalled());
+  ASSERT_TRUE(child_command_3_->isExecuteCalled());
+  ASSERT_TRUE(child_command_4_->isExecuteCalled());
 }
 
-TEST(MacroCommandTest, UndoShouldUndoAllChildCommands) {
-  /* create child commands */
-  auto* child_command_1 = new MockCommand{};
-  auto* child_command_2 = new MockCommand{};
-  auto* child_command_3 = new MockCommand{};
-  auto* child_macro_command = new MacroCommand{};
-  child_macro_command->addCommand(child_command_2);
-  child_macro_command->addCommand(child_command_3);
-  auto child_command_4 = new MockCommand{};
-  /* create the test target */
-  auto macro_command = MacroCommand{};
-  macro_command.addCommand(child_command_1);
-  macro_command.addCommand(child_macro_command);
-  macro_command.addCommand(child_command_4);
+TEST_F(MacroCommandTest, UndoShouldUndoAllChildCommands) {
+  macro_command_.undo();
 
-  macro_command.undo();
-
-  ASSERT_TRUE(child_command_1->isUndoCalled());
-  ASSERT_TRUE(child_command_2->isUndoCalled());
-  ASSERT_TRUE(child_command_3->isUndoCalled());
-  ASSERT_TRUE(child_command_4->isUndoCalled());
+  ASSERT_TRUE(child_command_1_->isUndoCalled());
+  ASSERT_TRUE(child_command_2_->isUndoCalled());
+  ASSERT_TRUE(child_command_3_->isUndoCalled());
+  ASSERT_TRUE(child_command_4_->isUndoCalled());
 }
 
-TEST(MacroCommandTest,
-     GetCommandShouldReturnFirstLevelChildCommandsInTheOrderedOfTheyAreAdded) {
-  /* create child commands */
-  auto* child_command_1 = new MockCommand{};
-  auto* child_command_2 = new MockCommand{};
-  auto* child_command_3 = new MockCommand{};
-  auto* child_macro_command = new MacroCommand{};
-  child_macro_command->addCommand(child_command_2);
-  child_macro_command->addCommand(child_command_3);
-  auto child_command_4 = new MockCommand{};
-  /* create the test target */
-  auto macro_command = MacroCommand{};
-  macro_command.addCommand(child_command_1);
-  macro_command.addCommand(child_macro_command);
-  macro_command.addCommand(child_command_4);
-
-  const std::vector<Command*> commands = macro_command.getCommands();
+TEST_F(MacroCommandTest,
+       GetCommandsShouldReturnFirstLevelChildCommandsInTheOrderOfTheyAreAdded) {
+  const std::vector<Command*> commands = macro_command_.getCommands();
 
   ASSERT_EQ(3, commands.size());
-  ASSERT_EQ(child_command_1, commands.at(0));
-  ASSERT_EQ(child_macro_command, commands.at(1));
-  ASSERT_EQ(child_command_4, commands.at(2));
+  ASSERT_EQ(child_command_1_, commands.at(0));
+  ASSERT_EQ(child_macro_command_, commands.at(1));
+  ASSERT_EQ(child_command_4_, commands.at(2));
 }
