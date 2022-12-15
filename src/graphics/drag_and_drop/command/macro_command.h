@@ -21,7 +21,7 @@ class MacroCommand : public Command {
 
   /**
    * @brief Executes all commands contained by the MacroCommand in the order of
-   * the are added.
+   * they are added.
    */
   void execute() override {
     for (auto* command : commands_) {
@@ -36,7 +36,7 @@ class MacroCommand : public Command {
 
   /**
    * @brief Undoes all commands contained by the MacroCommand in the revered
-   * order of the are added.
+   * order of they are added.
    */
   void undo() override {
     for (auto itr = commands_.rbegin(); itr != commands_.rend(); itr++) {
