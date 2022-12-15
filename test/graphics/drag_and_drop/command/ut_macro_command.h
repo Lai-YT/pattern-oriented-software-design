@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <vector>
+
 #include "../../../../src/graphics/drag_and_drop/command/command_history.h"
 #include "../../../../src/graphics/drag_and_drop/command/macro_command.h"
 #include "../mock_drag_and_drop.h"
@@ -51,4 +53,28 @@ TEST(MacroCommandTest, UndoShouldUndoAllChildCommands) {
   ASSERT_TRUE(child_command_2->isUndoCalled());
   ASSERT_TRUE(child_command_3->isUndoCalled());
   ASSERT_TRUE(child_command_4->isUndoCalled());
+}
+
+TEST(MacroCommandTest,
+     GetCommandShouldReturnFirstLevelChildCommandsInTheOrderedOfTheyAreAdded) {
+  /* create child commands */
+  auto* child_command_1 = new MockCommand{};
+  auto* child_command_2 = new MockCommand{};
+  auto* child_command_3 = new MockCommand{};
+  auto* child_macro_command = new MacroCommand{};
+  child_macro_command->addCommand(child_command_2);
+  child_macro_command->addCommand(child_command_3);
+  auto child_command_4 = new MockCommand{};
+  /* create the test target */
+  auto macro_command = MacroCommand{};
+  macro_command.addCommand(child_command_1);
+  macro_command.addCommand(child_macro_command);
+  macro_command.addCommand(child_command_4);
+
+  const std::vector<Command*> commands = macro_command.getCommands();
+
+  ASSERT_EQ(3, commands.size());
+  ASSERT_EQ(child_command_1, commands.at(0));
+  ASSERT_EQ(child_macro_command, commands.at(1));
+  ASSERT_EQ(child_command_4, commands.at(2));
 }

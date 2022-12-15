@@ -44,7 +44,16 @@ class MacroCommand : public Command {
     }
   }
 
-  std::vector<Command*> getCommands() override {}
+  /**
+   * @brief Returns all first level commands contained by the MacroCommand in
+   * the order of they are added.
+   *
+   * NOTE: you should not delete the commands since the ownership are kept by
+   * the MacroCommand.
+   */
+  std::vector<Command*> getCommands() override {
+    return commands_;
+  }
 
  private:
   std::vector<Command*> commands_{};
