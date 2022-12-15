@@ -8,6 +8,14 @@
 
 class CommandHistory {
  public:
+  CommandHistory() = default;
+
+  CommandHistory(const CommandHistory& other) =
+      delete; /* TODO: need polymorphic cloning support */
+
+  CommandHistory& operator=(const CommandHistory& other) =
+      delete; /* TODO: need polymorphic cloning support */
+
   ~CommandHistory() {
     while (!macros_under_construction_.empty()) {
       auto* macro = macros_under_construction_.top();
