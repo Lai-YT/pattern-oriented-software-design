@@ -27,6 +27,11 @@ class CommandHistory {
       histories_.pop();
       delete macro;
     }
+    while (!undid_histories_.empty()) {
+      auto* macro = undid_histories_.top();
+      undid_histories_.pop();
+      delete macro;
+    }
   }
 
   void beginMacroCommand() {
@@ -52,7 +57,16 @@ class CommandHistory {
     }
   }
 
-  void undo() {}
+  /** @brief Undoes the latest history. */
+  void undo() {
+    /* In order to test the CommandHistory, the popped command should be placed
+      in another container, say another stack, and be deleted in the
+      destructor. */
+    Command* const latest = histories_.top();
+    histories_.pop();
+    latest->undo();
+    undid_histories_.push(latest);
+  }
 
   std::stack<Command*> getHistory() const {
     return histories_;
@@ -61,6 +75,7 @@ class CommandHistory {
  private:
   std::stack<Command*> histories_{};
   std::stack<MacroCommand*> macros_under_construction_{};
+  std::stack<Command*> undid_histories_{};
 };
 
 #endif /* end of include guard: \

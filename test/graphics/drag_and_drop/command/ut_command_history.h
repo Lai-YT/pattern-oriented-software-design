@@ -70,3 +70,22 @@ TEST(CommandHistoryTest,
     }
   }
 }
+
+TEST(CommandHistoryTest, UndoShouldUndoTheLatestCommandRemoveItFromHistory) {
+  auto* child_command_1_ = new MockCommand{};
+  auto* child_command_2_ = new MockCommand{};
+  CommandHistory history{};
+
+  history.beginMacroCommand();
+  history.addCommand(child_command_1_);
+  history.endMacroCommand();
+  history.addCommand(child_command_2_);
+
+  history.undo();
+  ASSERT_TRUE(child_command_2_->isUndoCalled());
+  ASSERT_EQ(1, history.getHistory().size());
+
+  history.undo();
+  ASSERT_TRUE(child_command_1_->isUndoCalled());
+  ASSERT_TRUE(history.getHistory().empty());
+}
