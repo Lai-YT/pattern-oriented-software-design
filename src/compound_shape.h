@@ -30,6 +30,19 @@ class CompoundShape : public Shape {
     }
   }
 
+  CompoundShape& operator=(const CompoundShape& other) {
+    if (&other != this) {
+      for (auto* shape : this->shapes_) {
+        delete shape;
+      }
+      this->shapes_.clear();
+      for (auto* shape : other.shapes_) {
+        shapes_.push_back(shape->clone());
+      }
+    }
+    return *this;
+  }
+
   CompoundShape* clone() const override {
     return new CompoundShape{*this};
   }

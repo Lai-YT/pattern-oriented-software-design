@@ -310,3 +310,19 @@ TEST_F(CompoundShapeDepthTwoTest, ReplaceShouldReplaceTheShape) {
 
   delete circle_;
 }
+
+TEST_F(CompoundShapeDepthTwoTest,
+       TestCopyConstructorShouldCopyShapesOfAllLevels) {
+  CompoundShape copy{level_one_compound_};
+
+  ASSERT_EQ(level_one_compound_.info(), copy.info());
+}
+
+TEST_F(CompoundShapeDepthTwoTest,
+       TestCopyAssignmentShouldCopyShapesOfAllLevels) {
+  CompoundShape copy{{}};
+
+  copy = level_one_compound_;
+
+  ASSERT_EQ(level_one_compound_.info(), copy.info());
+}
