@@ -18,27 +18,41 @@ class CommandHistory {
 
   ~CommandHistory() {
     DeleteStackOf_(undid_histories_);
-    DeleteStackOf_(macros_under_construction_);
     DeleteStackOf_(histories_);
   }
 
+  /**
+   * @brief Begins the construction of a MacroCommand. All future commands will
+   * be added into the MacroCommand until endMacroCommand is called.
+   * @note If this begins a non-composite MacroCommand, the MacroCommand is
+   * immediately added to the history and will be modified along with the
+   * construction.
+   */
   void beginMacroCommand() {
-    macros_under_construction_.push(new MacroCommand{});
+    auto* macro = new MacroCommand{};
+    if (!IsConstructingMacro_()) {
+      histories_.push(macro);
+    }
+    macros_under_construction_.push(macro);
   }
 
   /** @brief Takes the ownership of the commands. */
   void addCommand(Command* const command) {
-    if (macros_under_construction_.empty()) {
+    if (!IsConstructingMacro_()) {
       histories_.push(command);
     } else {
-      macros_under_construction_.top()->addCommand(command);
+      auto* macro = macros_under_construction_.top();
+      macro->addCommand(command);
     }
   }
 
   void endMacroCommand() {
     auto* macro = macros_under_construction_.top();
     macros_under_construction_.pop();
-    addCommand(macro);
+    if (IsConstructingMacro_()) {
+      auto* parent = macros_under_construction_.top();
+      parent->addCommand(macro);
+    }
   }
 
   /** @brief Undoes the latest history. */
@@ -58,8 +72,15 @@ class CommandHistory {
 
  private:
   std::stack<Command*> histories_{};
-  std::stack<MacroCommand*> macros_under_construction_{};
   std::stack<Command*> undid_histories_{};
+
+  /* All macros under construction are already added to histories.
+    Be careful no to double free. */
+  std::stack<MacroCommand*> macros_under_construction_{};
+
+  bool IsConstructingMacro_() const {
+    return !macros_under_construction_.empty();
+  }
 
   template <typename T>
   void DeleteStackOf_(std::stack<T*>& targets) {
