@@ -7,7 +7,8 @@
 
 class UndoCommand : public Command {
  public:
-  UndoCommand(DragAndDrop* drag_and_drop, CommandHistory* command_history)
+  UndoCommand(DragAndDrop* const drag_and_drop,
+              CommandHistory* const command_history)
       : history_{command_history} {}
 
   void execute() override {
