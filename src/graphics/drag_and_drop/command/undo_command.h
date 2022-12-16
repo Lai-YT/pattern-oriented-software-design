@@ -7,11 +7,19 @@
 
 class UndoCommand : public Command {
  public:
-  UndoCommand(DragAndDrop* drag_and_drop, CommandHistory* command_history) {}
+  UndoCommand(DragAndDrop* const drag_and_drop,
+              CommandHistory* const command_history)
+      : history_{command_history} {}
 
-  void execute() override {}
+  void execute() override {
+    history_->undo();
+  }
 
+  /** @brief Does nothing. UndoCommand is solely used to handle the event. */
   void undo() override {}
+
+ private:
+  CommandHistory* history_;
 };
 
 #endif /* end of include guard: \
