@@ -22,6 +22,7 @@ class GrabCommand : public Command {
     /* so undo-able */
     was_executed_ = true;
     RecordPosition_(*curr_mouse_pos);
+    command_history_->beginMacroCommand();
     command_history_->addCommand(new GrabCommand{*this});
   }
 
