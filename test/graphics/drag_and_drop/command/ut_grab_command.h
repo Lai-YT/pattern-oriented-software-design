@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <stack>
+#include <vector>
+
 #include "../../../../src/graphics/drag_and_drop/command/command_history.h"
 #include "../../../../src/graphics/drag_and_drop/command/grab_command.h"
 #include "../../../../src/graphics/drag_and_drop/mouse_position.h"
@@ -63,4 +66,22 @@ TEST_F(GrabCommandTest,
 
   ASSERT_NEAR(executed_x, got_x, DELTA);
   ASSERT_NEAR(executed_y, got_y, DELTA);
+}
+
+TEST_F(GrabCommandTest, ExecuteShouldBeginMacroAndCopyItselfIntoHistory) {
+  const double executed_x = 10;
+  const double executed_y = 20;
+  MousePosition::getInstance()->setPos(executed_x, executed_y);
+
+  grab_command_.execute();
+
+  const std::stack<Command*> histories = history_.getHistory();
+  ASSERT_EQ(1, histories.size());
+  auto* macro = dynamic_cast<MacroCommand*>(histories.top());
+  ASSERT_TRUE(macro);
+  const std::vector<Command*> latest_commands = macro->getCommands();
+  ASSERT_EQ(1, latest_commands.size());
+  auto* latest = dynamic_cast<GrabCommand*>(latest_commands.at(0));
+  ASSERT_NEAR(executed_x, latest->getX(), DELTA);
+  ASSERT_NEAR(executed_y, latest->getY(), DELTA);
 }

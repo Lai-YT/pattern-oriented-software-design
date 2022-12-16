@@ -16,12 +16,14 @@ class DropCommand : public Command {
       default; /* shallow copy is allowed since the pointers are shared */
 
   void execute() override {
-    /* so undo-able */
-    was_executed_ = true;
-    RecordPosition_();
-
     auto* curr_mouse_pos = MousePosition::getInstance();
     drag_and_drop_->drop(curr_mouse_pos->getX(), curr_mouse_pos->getY());
+
+    /* so undo-able */
+    was_executed_ = true;
+    RecordPosition_(*curr_mouse_pos);
+    command_history_->addCommand(new DropCommand{*this});
+    command_history_->endMacroCommand();
   }
 
   void undo() override {
@@ -48,10 +50,13 @@ class DropCommand : public Command {
   double dropped_x_ = 0;
   double dropped_y_ = 0;
 
-  void RecordPosition_() {
-    auto* curr_mouse_pos = MousePosition::getInstance();
-    dropped_x_ = curr_mouse_pos->getX();
-    dropped_y_ = curr_mouse_pos->getY();
+  /**
+   * @note Can't be const-reference since the getters of MousePosition are
+   * surprisingly non-const.
+   */
+  void RecordPosition_(MousePosition& dropped_pos) {
+    dropped_x_ = dropped_pos.getX();
+    dropped_y_ = dropped_pos.getY();
   }
 };
 
