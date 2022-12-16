@@ -46,7 +46,11 @@ class CommandHistory {
     }
   }
 
+  /** @note Does nothing if not in the construction of MacroCommand. */
   void endMacroCommand() {
+    if (!IsConstructingMacro_()) {
+      return;
+    }
     auto* macro = macros_under_construction_.top();
     macros_under_construction_.pop();
     if (IsConstructingMacro_()) {
