@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <stack>
+
 #include "../../../../src/graphics/drag_and_drop/command/command_history.h"
 #include "../../../../src/graphics/drag_and_drop/command/drop_command.h"
 #include "../../../../src/graphics/drag_and_drop/mouse_position.h"
@@ -63,4 +65,19 @@ TEST_F(DropCommandTest,
 
   ASSERT_NEAR(executed_x, got_x, DELTA);
   ASSERT_NEAR(executed_y, got_y, DELTA);
+}
+
+TEST_F(DropCommandTest, ShouldCopyItselfIntoTheHistoryAfterExecution) {
+  const double executed_x = 10;
+  const double executed_y = 20;
+  MousePosition::getInstance()->setPos(executed_x, executed_y);
+
+  drop_command_.execute();
+
+  const std::stack<Command*> histories = history_.getHistory();
+  ASSERT_EQ(1, histories.size());
+  auto* latest_command = dynamic_cast<DropCommand*>(histories.top());
+  ASSERT_TRUE(latest_command);
+  ASSERT_NEAR(executed_x, latest_command->getX(), DELTA);
+  ASSERT_NEAR(executed_y, latest_command->getY(), DELTA);
 }
