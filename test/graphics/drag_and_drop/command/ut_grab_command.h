@@ -7,6 +7,7 @@
 #include "../../../../src/graphics/drag_and_drop/command/grab_command.h"
 #include "../../../../src/graphics/drag_and_drop/mouse_position.h"
 #include "../mock_drag_and_drop.h"
+#include "mock_command.h"
 
 class GrabCommandTest : public testing::Test {
  protected:
@@ -86,4 +87,14 @@ TEST_F(GrabCommandTest, ExecuteShouldBeginMacroAndCopyItselfIntoHistory) {
   auto* latest = dynamic_cast<GrabCommand*>(latest_commands.at(0));
   ASSERT_NEAR(executed_x, latest->getX(), DELTA);
   ASSERT_NEAR(executed_y, latest->getY(), DELTA);
+}
+
+TEST_F(GrabCommandTest, AddCommandShouldThrowException) {
+  auto command = MockCommand{};
+
+  ASSERT_ANY_THROW({ grab_command_.addCommand(&command); });
+}
+
+TEST_F(GrabCommandTest, GetCommandsShouldThrowException) {
+  ASSERT_ANY_THROW({ grab_command_.getCommands(); });
 }

@@ -4,6 +4,7 @@
 #include "../../../../src/graphics/drag_and_drop/command/move_command.h"
 #include "../../../../src/graphics/drag_and_drop/mouse_position.h"
 #include "../mock_drag_and_drop.h"
+#include "mock_command.h"
 
 class MoveCommandTest : public testing::Test {
  protected:
@@ -80,4 +81,14 @@ TEST_F(MoveCommandTest, ShouldCopyItselfIntoTheHistoryAfterExecution) {
   ASSERT_TRUE(latest_command);
   ASSERT_NEAR(executed_x, latest_command->getX(), DELTA);
   ASSERT_NEAR(executed_y, latest_command->getY(), DELTA);
+}
+
+TEST_F(MoveCommandTest, AddCommandShouldThrowException) {
+  auto command = MockCommand{};
+
+  ASSERT_ANY_THROW({ move_command_.addCommand(&command); });
+}
+
+TEST_F(MoveCommandTest, GetCommandsShouldThrowException) {
+  ASSERT_ANY_THROW({ move_command_.getCommands(); });
 }

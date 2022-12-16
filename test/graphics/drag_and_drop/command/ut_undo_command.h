@@ -20,3 +20,13 @@ TEST_F(UndoCommandTest, ExecuteShouldCallUndoOnCommandHistory) {
 
   ASSERT_TRUE(latest_command->isUndoCalled());
 }
+
+TEST_F(UndoCommandTest, AddCommandShouldThrowException) {
+  auto command = MockCommand{};
+
+  ASSERT_ANY_THROW({ undo_command_.addCommand(&command); });
+}
+
+TEST_F(UndoCommandTest, GetCommandsShouldThrowException) {
+  ASSERT_ANY_THROW({ undo_command_.getCommands(); });
+}

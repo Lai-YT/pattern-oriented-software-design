@@ -1,11 +1,13 @@
 #include <gtest/gtest.h>
 
 #include <stack>
+#include <vector>
 
 #include "../../../../src/graphics/drag_and_drop/command/command_history.h"
 #include "../../../../src/graphics/drag_and_drop/command/drop_command.h"
 #include "../../../../src/graphics/drag_and_drop/mouse_position.h"
 #include "../mock_drag_and_drop.h"
+#include "mock_command.h"
 
 class DropCommandTest : public testing::Test {
  protected:
@@ -98,4 +100,14 @@ TEST_F(DropCommandTest, ExecuteShouldCopyItselfIntoHistoryAndEndMacro) {
     ASSERT_NEAR(executed_x, latest->getX(), DELTA);
     ASSERT_NEAR(executed_y, latest->getY(), DELTA);
   }
+}
+
+TEST_F(DropCommandTest, AddCommandShouldThrowException) {
+  auto command = MockCommand{};
+
+  ASSERT_ANY_THROW({ drop_command_.addCommand(&command); });
+}
+
+TEST_F(DropCommandTest, GetCommandsShouldThrowException) {
+  ASSERT_ANY_THROW({ drop_command_.getCommands(); });
 }
