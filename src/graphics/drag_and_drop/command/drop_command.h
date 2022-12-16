@@ -8,7 +8,8 @@
 
 class DropCommand : public Command {
  public:
-  DropCommand(DragAndDrop* drag_and_drop, CommandHistory* command_history)
+  DropCommand(DragAndDrop* const drag_and_drop,
+              CommandHistory* const command_history)
       : drag_and_drop_{drag_and_drop}, command_history_{command_history} {}
 
   DropCommand(const DropCommand& drop_command) =

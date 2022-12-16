@@ -8,7 +8,8 @@
 
 class MoveCommand : public Command {
  public:
-  MoveCommand(DragAndDrop* drag_and_drop, CommandHistory* command_history)
+  MoveCommand(DragAndDrop* const drag_and_drop,
+              CommandHistory* const command_history)
       : drag_and_drop_{drag_and_drop}, command_history_{command_history} {}
 
   MoveCommand(const MoveCommand& move_command) =

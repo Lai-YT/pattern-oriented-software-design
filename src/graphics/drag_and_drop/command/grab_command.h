@@ -8,7 +8,8 @@
 
 class GrabCommand : public Command {
  public:
-  GrabCommand(DragAndDrop* drag_and_drop, CommandHistory* command_history)
+  GrabCommand(DragAndDrop* const drag_and_drop,
+              CommandHistory* const command_history)
       : drag_and_drop_{drag_and_drop}, command_history_{command_history} {}
 
   GrabCommand(const GrabCommand& grab_command) =
