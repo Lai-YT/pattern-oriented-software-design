@@ -9,14 +9,14 @@ class UndoCommandTest : public testing::Test {
  protected:
   MockDragAndDrop drag_and_drop_{};
   CommandHistory command_history_{};
+  UndoCommand undo_command_{&drag_and_drop_, &command_history_};
 };
 
 TEST_F(UndoCommandTest, ExecuteShouldCallUndoOnCommandHistory) {
   auto* latest_command = new MockCommand{};
   command_history_.addCommand(latest_command);
-  UndoCommand undo_command{&drag_and_drop_, &command_history_};
 
-  undo_command.execute();
+  undo_command_.execute();
 
   ASSERT_TRUE(latest_command->isUndoCalled());
 }
