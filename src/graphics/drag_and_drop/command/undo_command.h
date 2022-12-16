@@ -14,6 +14,7 @@ class UndoCommand : public Command {
     history_->undo();
   }
 
+  /** @brief Does nothing. UndoCommand is solely used to handle the event. */
   void undo() override {}
 
  private:
