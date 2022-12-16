@@ -7,11 +7,17 @@
 
 class UndoCommand : public Command {
  public:
-  UndoCommand(DragAndDrop* drag_and_drop, CommandHistory* command_history) {}
+  UndoCommand(DragAndDrop* drag_and_drop, CommandHistory* command_history)
+      : history_{command_history} {}
 
-  void execute() override {}
+  void execute() override {
+    history_->undo();
+  }
 
   void undo() override {}
+
+ private:
+  CommandHistory* history_;
 };
 
 #endif /* end of include guard: \
