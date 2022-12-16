@@ -1,40 +1,47 @@
-#ifndef SRC_GRAPHICS_DRAG_AND_DROP_COMMAND_REFRESH_COMMAND_H_
-#define SRC_GRAPHICS_DRAG_AND_DROP_COMMAND_REFRESH_COMMAND_H_
+/*
+ * This class is provided by the TAs.
+ */
 
-#include <memory>
-#include <vector>
+#pragma once
 
-#include "../../../iterator/factory/iterator_factory.h"
-#include "../../../iterator/iterator.h"
+#include "command.h"
+#include "../../canvas.h"
 #include "../../../shape.h"
 #include "../../../visitor/shape_printer.h"
-#include "../../canvas.h"
-#include "command.h"
+#include "../../../iterator/iterator.h"
+#include "../../../iterator/factory/iterator_factory.h"
+#include <vector>
 
-class RefreshCommand : public Command {
- public:
-  RefreshCommand(Canvas* const canvas, const std::vector<Shape*>& shapes)
-      : canvas_(canvas), shapes_(shapes), printer_{canvas_} {}
+class RefreshCommand : public Command
+{
+private:
+    Canvas *_canvas;
+    ShapePrinter *_printer;
+    std::vector<Shape *> _shapes;
 
-  void execute() override {
-    for (auto* shape : shapes_) {
-      ;
-      shape->accept(&printer_);
-      for (auto it = std::unique_ptr<Iterator>{shape->createIterator(
-               IteratorFactory::getInstance("DFS"))};
-           !it->isDone(); it->next()) {
-        it->currentItem()->accept(&printer_);
-      }
+public:
+    RefreshCommand(Canvas *canvas, std::vector<Shape *> shapes) : _canvas(canvas), _shapes(shapes)
+    {
+        _printer = new ShapePrinter(_canvas);
     }
-  }
 
-  void undo() override {}
+    ~RefreshCommand()
+    {
+        delete _printer;
+    }
 
- private:
-  Canvas* canvas_;
-  ShapePrinter printer_;
-  std::vector<Shape*> shapes_;
+    void execute() override
+    {
+        for (std::vector<Shape *>::iterator it = _shapes.begin(); it != _shapes.end(); it++)
+        {
+            Iterator *sit = (*it)->createIterator(IteratorFactory::getInstance("DFS"));
+            (*it)->accept(_printer);
+            for (; !sit->isDone(); sit->next())
+                sit->currentItem()->accept(_printer);
+        }
+    }
+
+    void undo() override
+    {
+    }
 };
-
-#endif /* end of include guard: \
-          SRC_GRAPHICS_DRAG_AND_DROP_COMMAND_REFRESH_COMMAND_H_ */
