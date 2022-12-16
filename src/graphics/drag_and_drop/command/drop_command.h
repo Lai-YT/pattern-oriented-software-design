@@ -23,6 +23,7 @@ class DropCommand : public Command {
     was_executed_ = true;
     RecordPosition_(*curr_mouse_pos);
     command_history_->addCommand(new DropCommand{*this});
+    command_history_->endMacroCommand();
   }
 
   void undo() override {

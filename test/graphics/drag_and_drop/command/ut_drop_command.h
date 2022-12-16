@@ -67,17 +67,35 @@ TEST_F(DropCommandTest,
   ASSERT_NEAR(executed_y, got_y, DELTA);
 }
 
-TEST_F(DropCommandTest, ShouldCopyItselfIntoTheHistoryAfterExecution) {
+TEST_F(DropCommandTest, ExecuteShouldCopyItselfIntoHistoryAndEndMacro) {
   const double executed_x = 10;
   const double executed_y = 20;
   MousePosition::getInstance()->setPos(executed_x, executed_y);
 
+  /* History:
+   *  Macro {
+   *    Drop
+   *  }  // ended by drop
+   *  Mock
+   */
+  history_.beginMacroCommand();
   drop_command_.execute();
+  /* The MockCommand added after execute is critical. If endMacroCommand isn't
+    called, the MockCommand will be inside the macro. */
+  history_.addCommand(new MockCommand{});
 
-  const std::stack<Command*> histories = history_.getHistory();
-  ASSERT_EQ(1, histories.size());
-  auto* latest_command = dynamic_cast<DropCommand*>(histories.top());
-  ASSERT_TRUE(latest_command);
-  ASSERT_NEAR(executed_x, latest_command->getX(), DELTA);
-  ASSERT_NEAR(executed_y, latest_command->getY(), DELTA);
+  std::stack<Command*> histories = history_.getHistory();
+  ASSERT_EQ(2, histories.size());
+  auto* mock = dynamic_cast<MockCommand*>(histories.top());
+  ASSERT_TRUE(mock);
+  histories.pop();
+  { /* make the feeling of levels with block */
+    auto* macro = dynamic_cast<MacroCommand*>(histories.top());
+    ASSERT_TRUE(macro);
+    const std::vector<Command*> latest_commands = macro->getCommands();
+    ASSERT_EQ(1, latest_commands.size());
+    auto* latest = dynamic_cast<DropCommand*>(latest_commands.at(0));
+    ASSERT_NEAR(executed_x, latest->getX(), DELTA);
+    ASSERT_NEAR(executed_y, latest->getY(), DELTA);
+  }
 }
