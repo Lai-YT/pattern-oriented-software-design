@@ -16,12 +16,13 @@ class MoveCommand : public Command {
       default; /* shallow copy is allowed since the pointers are shared */
 
   void execute() override {
-    /* so undo-able */
-    was_executed_ = true;
-    RecordPosition_();
-
     auto* curr_mouse_pos = MousePosition::getInstance();
     drag_and_drop_->move(curr_mouse_pos->getX(), curr_mouse_pos->getY());
+
+    /* so undo-able */
+    was_executed_ = true;
+    RecordPosition_(*curr_mouse_pos);
+    command_history_->addCommand(new MoveCommand{*this});
   }
 
   void undo() override {
@@ -48,10 +49,13 @@ class MoveCommand : public Command {
   double prev_x_ = 0;
   double prev_y_ = 0;
 
-  void RecordPosition_() {
-    auto* curr_mouse_pos = MousePosition::getInstance();
-    prev_x_ = curr_mouse_pos->getX();
-    prev_y_ = curr_mouse_pos->getY();
+  /**
+   * @note Can't be const-reference since the getters of MousePosition are
+   * surprisingly non-const.
+   */
+  void RecordPosition_(MousePosition& prev_pos) {
+    prev_x_ = prev_pos.getX();
+    prev_y_ = prev_pos.getY();
   }
 };
 
