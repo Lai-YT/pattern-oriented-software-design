@@ -23,6 +23,19 @@ TEST(CommandHistoryTest,
 }
 
 TEST(CommandHistoryTest,
+     BeginMacroCommandShouldAddAnEmptyMacroIntoHistoryAlthoughNotEndedYet) {
+  CommandHistory history{};
+
+  history.beginMacroCommand();
+
+  const std::stack<Command*> histories = history.getHistory();
+
+  ASSERT_EQ(1, histories.size());
+  std::vector<Command*> commands = histories.top()->getCommands();
+  ASSERT_TRUE(commands.empty());
+}
+
+TEST(CommandHistoryTest,
      BeginAndEndMacroCommandWithAddCommandShouldBuildInCorrectCompositeManner) {
   auto* child_command_1_ = new MockCommand{};
   auto* child_command_2_ = new MockCommand{};
