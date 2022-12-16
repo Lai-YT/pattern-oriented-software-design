@@ -29,6 +29,7 @@ class GrabCommand : public Command {
   void undo() override {
     if (was_executed_) {
       drag_and_drop_->move(grabbed_x_, grabbed_y_);
+      drag_and_drop_->drop(grabbed_x_, grabbed_y_);
     }
   }
 

@@ -41,7 +41,7 @@ TEST_F(GrabCommandTest, UndoWithoutPreCalledExecuteShouldHaveNoEffect) {
   ASSERT_NEAR(NOT_CALLED, mock_drag_and_drop_.getMoveY(), DELTA);
 }
 
-TEST_F(GrabCommandTest, UndoShouldCallDropWithPreviousMousePosition) {
+TEST_F(GrabCommandTest, UndoShouldCallMoveAndDropWithPreviousMousePosition) {
   const double prev_x = 10;
   const double prev_y = 20;
   MousePosition::getInstance()->setPos(prev_x, prev_y);
@@ -52,6 +52,8 @@ TEST_F(GrabCommandTest, UndoShouldCallDropWithPreviousMousePosition) {
 
   ASSERT_NEAR(prev_x, mock_drag_and_drop_.getMoveX(), DELTA);
   ASSERT_NEAR(prev_y, mock_drag_and_drop_.getMoveY(), DELTA);
+  ASSERT_NEAR(prev_x, mock_drag_and_drop_.getDropX(), DELTA);
+  ASSERT_NEAR(prev_y, mock_drag_and_drop_.getDropY(), DELTA);
 }
 
 TEST_F(GrabCommandTest,
