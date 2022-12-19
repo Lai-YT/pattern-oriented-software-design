@@ -313,16 +313,25 @@ TEST_F(CompoundShapeDepthTwoTest, ReplaceShouldReplaceTheShape) {
 
 TEST_F(CompoundShapeDepthTwoTest,
        TestCopyConstructorShouldCopyShapesOfAllLevels) {
-  CompoundShape copy{level_one_compound_};
+  const CompoundShape copy{level_one_compound_};
 
   ASSERT_EQ(level_one_compound_.info(), copy.info());
 }
 
 TEST_F(CompoundShapeDepthTwoTest,
        TestCopyAssignmentShouldCopyShapesOfAllLevels) {
-  CompoundShape copy{{}};
+  const CompoundShape compound{{new Circle{{{2, 17}, {-3, 5}}}}};
+  const std::string expected_info = compound.info();
 
-  copy = level_one_compound_;
+  level_one_compound_ = compound;
 
-  ASSERT_EQ(level_one_compound_.info(), copy.info());
+  ASSERT_EQ(expected_info, level_one_compound_.info());
+}
+
+TEST_F(CompoundShapeDepthTwoTest, TestSelfAssignmentShouldNotBreak) {
+  const std::string expected_info = level_one_compound_.info();
+
+  level_one_compound_ = level_one_compound_;
+
+  ASSERT_EQ(expected_info, level_one_compound_.info());
 }
