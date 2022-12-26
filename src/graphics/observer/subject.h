@@ -13,7 +13,23 @@ class Subject {
   }
 
   /** @throw ObserverNotFoundError */
-  void detach(Observer* observer) {}
+  void detach(Observer* observer) {
+    auto itr = observers_.cbegin();
+    bool not_found = true;
+    while (itr != observers_.cend()) {
+      if ((*itr) == observer) {
+        /* a single observer may be attached multiple times */
+        itr = observers_.erase(itr);
+        not_found = false;
+      } else {
+        itr++;
+      }
+    }
+    if (not_found) {
+      throw ObserverNotFoundError{
+          "the observer wasn't attached to the subject."};
+    }
+  }
 
   void notify() {}
 
