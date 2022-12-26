@@ -12,6 +12,8 @@
 
 class RealCanvasTest : public testing::Test {
  protected:
+  const double DELTA = 0.001;
+
   Drawing drawing_{{new Circle{{{1, 2}, {4, 6}}},
                     new Triangle{{{0, 0}, {3, 0}}, {{3, 4}, {3, 0}}}}};
   MockSDLRenderer mock_sdl_renderer_{};
@@ -25,9 +27,9 @@ TEST_F(RealCanvasTest, UpdateShouldDrawAllShapes) {
 
   { /* circle should be drawn */
     const double* args = mock_sdl_renderer_.renderDrawCircleCalledArgs();
-    ASSERT_NEAR(1, args[0], 0.001);
-    ASSERT_NEAR(2, args[1], 0.001);
-    ASSERT_NEAR(5, args[2], 0.001);
+    ASSERT_NEAR(1, args[0], DELTA);
+    ASSERT_NEAR(2, args[1], DELTA);
+    ASSERT_NEAR(5, args[2], DELTA);
   }
   { /* triangle should be drawn */
     const auto expected_points = std::set<Point>{{0, 0}, {3, 0}, {3, 4}};
@@ -39,9 +41,7 @@ TEST_F(RealCanvasTest, UpdateShouldDrawAllShapes) {
       ASSERT_TRUE(expected_points.find(Point{x_and_ys[i], x_and_ys[i + 1]}) !=
                   expected_points.end());
     }
-    /* XXX: the mocking class takes the ownership, while the real class
-     * doesn't.
-     */
-    delete[] x_and_ys;
+    delete[] x_and_ys; /* the mocking class takes the ownership, while the real
+                          class doesn't */
   }
 }
