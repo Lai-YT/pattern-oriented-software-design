@@ -45,3 +45,16 @@ TEST(SubjectTest, DetachUnattachedObserverShouldThrowObserverNotFoundError) {
 
   ASSERT_THROW({subject.detach(&un_attached_observer);}, Subject::ObserverNotFoundError);
 }
+
+TEST(SubjectTest, NotifyShouldUpdateAllAttachedObservers) {
+  auto subject = Subject{};
+  auto observer_1 = MockObserver{};
+  subject.attach(&observer_1);
+  auto observer_2 = MockObserver{};
+  subject.attach(&observer_2);
+
+  subject.notify();
+
+  ASSERT_TRUE(observer_1.isUpdated());
+  ASSERT_TRUE(observer_2.isUpdated());
+}

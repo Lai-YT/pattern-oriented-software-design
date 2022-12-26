@@ -31,7 +31,11 @@ class Subject {
     }
   }
 
-  void notify() {}
+  void notify() {
+    for (auto* observer : observers_) {
+      observer->update();
+    }
+  }
 
   /** @brief Returns the observers for testability. */
   std::vector<Observer*> getObservers() const {
