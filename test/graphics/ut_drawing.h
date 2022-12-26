@@ -2,7 +2,9 @@
 
 #include <vector>
 
+#include "../../src/circle.h"
 #include "../../src/graphics/drawing.h"
+#include "../../src/shape.h"
 #include "observer/mock_observer.h"
 
 TEST(DrawingTest, AttachShouldAddObservers) {
@@ -58,4 +60,19 @@ TEST(DrawingTest, NotifyShouldUpdateAllAttachedObservers) {
 
   ASSERT_TRUE(observer_1.isUpdated());
   ASSERT_TRUE(observer_2.isUpdated());
+}
+
+TEST(DrawingTest, ShapesShouldReturnShapesPassedToTheConstructor) {
+  /* the values of shapes don't matter */
+  auto expected_shapes = std::vector<Shape*>{new Circle{{{1, 2}, {-3, 5}}},
+                                             new Circle{{{2, 4}, {-3, 6}}},
+                                             new Circle{{{0, 1}, {4, 9}}}};
+  /* the ownership of shapes are transferred */
+  auto drawing = Drawing{expected_shapes};
+
+  std::vector<Shape*> actual_shapes = drawing.shapes();
+  ASSERT_EQ(3, actual_shapes.size());
+  ASSERT_EQ(expected_shapes.at(0), actual_shapes.at(0));
+  ASSERT_EQ(expected_shapes.at(1), actual_shapes.at(1));
+  ASSERT_EQ(expected_shapes.at(2), actual_shapes.at(2));
 }
