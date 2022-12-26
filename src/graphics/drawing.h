@@ -15,6 +15,11 @@ class Drawing : public Subject {
   /** @note The ownership of shapes are transferred. */
   Drawing(const std::vector<Shape*>& shapes) : shapes_{shapes} {}
 
+  Drawing(const Drawing& other) = delete; /* prevent shallow copying */
+
+  Drawing& operator=(const Drawing& other) =
+      delete; /* prevent shallow copying */
+
   ~Drawing() {
     for (auto* shape : shapes_) {
       delete shape;
