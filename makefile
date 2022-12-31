@@ -15,7 +15,7 @@ REPLACE_CPP_EXTENSION_WITH_O = sed 's|.cpp|.o|g'
 all: dirs bin/ut_all
 
 bin/ut_all: test/ut_main.cpp $(OBJ) $(TEST) $(SRC)
-	g++ -o $@ $< $(OBJ) -lgtest -lpthread $(CXXFLAGS)
+	g++ -o $@ $< $(OBJ) -lgtest -pthread $(CXXFLAGS)
 
 obj/%.o: src/iterator/factory/%.cpp
 	g++ -o $@ -c $< $(CXXFLAGS)
