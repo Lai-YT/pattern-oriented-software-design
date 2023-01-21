@@ -31,6 +31,7 @@ clean:
 
 GCOV_FLAGS = --relative-only --branch-probabilities
 
+# FIXME: files under src/iterator/factory aren't detected
 coverage: CXXFLAGS += -fprofile-arcs -ftest-coverage -O0 -fno-inline -fno-elide-constructors
 coverage: clean test
 	gcov test/ut_main.cpp -o bin/ut_all-ut_main $(GCOV_FLAGS)
